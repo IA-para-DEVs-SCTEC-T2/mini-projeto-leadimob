@@ -22,3 +22,23 @@ function hasDuplicateAI(nums) {
 console.log("IA:");
 console.log(hasDuplicateAI([1,2,3,4])); // false
 console.log(hasDuplicateAI([1,2,3,2])); // true
+
+// =========================
+// 3. Versão melhorada (aprendizado aplicado)
+// =========================
+function hasDuplicateMelhorado(nums) {
+    const seen = new Set();
+
+    for (let num of nums) {
+        if (seen.has(num)) {
+            return true;
+        }
+        seen.add(num);
+    }
+
+    return false;
+}
+
+console.log("Melhorado:");
+console.log(hasDuplicateMelhorado([1,2,3,4])); // false
+console.log(hasDuplicateMelhorado([1,2,3,2])); // true
