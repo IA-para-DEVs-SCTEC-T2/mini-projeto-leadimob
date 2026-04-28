@@ -1,3 +1,16 @@
+function has_Duplicate(nums) {
+  const vistos = new Set();
+
+  for (const n of nums) {
+    if (vistos.has(n)) {
+      return true;
+    }
+    vistos.add(n);
+  }
+
+  return false;
+}
+
 function hashDuplicate(nums) {
     const seen = new Set()
 
@@ -52,25 +65,15 @@ function verificarDuplicados(numeros) {
 }
 
 // Verifica se existe algum número duplicado no array — O(n²)
+// Verifica se existe algum número duplicado no array — O(n)
 function has_duplicate(nums) {
+  const vistos = new Set();
 
-  // Para cada número, compara com todos os outros
-  for (let i = 0; i < nums.length; i++) {
-
-    for (let j = i + 1; j < nums.length; j++) {
-
-      let numeroAtual    = nums[i];
-      let numeroSeguinte = nums[j];
-
-      // Se encontrar dois iguais, já retorna verdadeiro
-      if (numeroAtual === numeroSeguinte) {
-        return true;
-      }
-
-    }
+  for (const num of nums) {
+    if (vistos.has(num)) return true;
+    vistos.add(num);
   }
 
-  // Nenhum duplicado encontrado
   return false;
 }
 
