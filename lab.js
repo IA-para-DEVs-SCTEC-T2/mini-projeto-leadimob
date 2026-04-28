@@ -11,3 +11,14 @@ function hasDuplicate(nums) {
 
 console.log(hasDuplicate([1,2,3,4]));
 console.log(hasDuplicate([1,2,3,2]));
+
+// =========================
+// 2. Versão com IA (O(n))
+// =========================
+function hasDuplicateAI(nums) {
+    return new Set(nums).size !== nums.length;
+}
+
+console.log("IA:");
+console.log(hasDuplicateAI([1,2,3,4])); // false
+console.log(hasDuplicateAI([1,2,3,2])); // true
