@@ -59,6 +59,25 @@ Regras:
 
 ---
 
+### Bugfix (em desenvolvimento)
+Padrão:
+
+feature/fix-descricao
+
+Exemplo:
+- feature/fix-calculo-indice
+- feature/fix-validacao-lead
+
+Regras:
+- Criar sempre a partir de `develop`
+- Merge de volta para `develop`
+- Não criar branches `bugfix/` separadas na v1
+
+> ℹ️ Correções de bugs em desenvolvimento seguem o mesmo fluxo de feature branches.
+> Apenas bugs em produção utilizam `hotfix/`.
+
+---
+
 ## Convenção de Commits
 
 Utilizar Conventional Commits.
@@ -92,6 +111,7 @@ Todo PR deve conter:
 2. Branch de origem e destino
 3. Checklist:
    - Testado localmente
+   - Testes automatizados passando (domínio e serviços)
    - Sem conflitos
    - Segue padrão de commits
 
