@@ -25,6 +25,8 @@ O LeadImobi centraliza o cadastro de leads e calcula automaticamente um **Índic
 
    Baseada no padrão bancário de comprometimento máximo de 30% da renda mensal (equivalente a financiamento em até 5 anos de renda anual).
 
+   > ⚠️ Se `Valor do Imóvel` for zero ou nulo, o índice deve ser tratado como inválido e o lead não deve ser classificado.
+
 3. **Lista Priorizada** — leads são exibidos ordenados pelo índice, com classificação visual:
    - 🟢 **Alto** (≥ 80) — alta capacidade de financiamento
    - 🟡 **Médio** (40–79) — capacidade moderada
