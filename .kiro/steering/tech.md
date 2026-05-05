@@ -64,7 +64,7 @@ Motivos:
 
 ## Estilização
 
-### Tailwind CSS (sugerido)
+### Tailwind CSS
 
 Motivos:
 - Rapidez no desenvolvimento

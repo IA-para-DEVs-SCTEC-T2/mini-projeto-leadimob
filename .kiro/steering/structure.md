@@ -84,44 +84,69 @@ Exemplo:
 
 ---
 
+### schemas/
+Contratos de entrada do sistema definidos com Zod.
+
+Contém:
+- Schemas de validação para dados recebidos pelo usuário
+- Definição do formato esperado antes de qualquer lógica de negócio
+
+⚠️ Schemas Zod ficam aqui, não no domain. O domain nunca depende de Zod diretamente.
+
+---
+
+### types/
+Tipos TypeScript compartilhados entre camadas.
+
+Contém:
+- Interfaces e tipos do domínio (ex: `Lead`, `LeadPriority`)
+- Tipos reutilizados por mais de uma camada
+
+⚠️ Não deve conter lógica, apenas definições de tipos.
+
+---
+
 ## Estrutura de pastas
+
+```
 src/
 ├── app/
-│ ├── leads/
-│ │ ├── page.tsx
-│ │ ├── actions.ts
-│ │ └── route.ts
+│   ├── leads/
+│   │   ├── page.tsx
+│   │   ├── actions.ts
+│   │   └── route.ts
 │
 ├── domain/
-│ ├── entities/
-│ │ └── lead.ts
-│ └── rules/
-│ └── calculate_lead_score.ts
+│   ├── entities/
+│   │   └── lead.ts
+│   └── rules/
+│       └── calculate_lead_score.ts
 │
 ├── services/
-│ ├── create_lead.ts
-│ ├── list_leads.ts
-│ └── rank_leads.ts
+│   ├── create_lead.ts
+│   ├── list_leads.ts
+│   └── rank_leads.ts
 │
 ├── infra/
-│ ├── db/
-│ │ └── prisma.ts
-│ └── repositories/
-│ └── lead_repository.ts
+│   ├── db/
+│   │   └── prisma.ts
+│   └── repositories/
+│       └── lead_repository.ts
 │
 ├── components/
-│ ├── lead_form.tsx
-│ ├── lead_card.tsx
-│ └── priority_badge.tsx
+│   ├── lead_form.tsx
+│   ├── lead_card.tsx
+│   └── priority_badge.tsx
 │
 ├── schemas/
-│ └── lead.schema.ts
+│   └── lead.schema.ts
 │
 ├── types/
-│ └── lead.ts
+│   └── lead.ts
 │
 └── lib/
-└── formatters.ts
+    └── formatters.ts
+```
 
 ---
 
