@@ -294,12 +294,12 @@ interface CreateLeadInput {
   renda_mensal: number
 }
 
-interface LeadScoreResult {
-  valid: boolean
-  score: number | null
-  priority: LeadPriority
-}
+type LeadScoreResult =
+  | { valid: true; score: number; priority: LeadPriority }
+  | { valid: false; priority: 'NaoClassificado' }
 ```
+
+> **Nota:** `LeadScoreResult` é definido como union discriminada (não interface plana) para habilitar type narrowing seguro. Ao verificar `result.valid === true`, o TypeScript infere automaticamente que `result.score` é `number` (não `number | null`), eliminando a necessidade de asserções de tipo.
 
 ---
 

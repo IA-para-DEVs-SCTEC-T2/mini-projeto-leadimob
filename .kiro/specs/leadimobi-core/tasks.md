@@ -45,6 +45,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Definir `interface Lead` com campos: `id`, `nome`, `email`, `telefone`, `valor_imovel`, `renda_mensal`, `score` (number | null), `priority`, `created_at`
     - Definir `interface CreateLeadInput` com campos: `nome`, `email`, `telefone`, `valor_imovel`, `renda_mensal`
     - Definir `type LeadScoreResult` como union discriminada: `{ valid: true; score: number; priority: LeadPriority } | { valid: false; priority: 'NaoClassificado' }`
+    - Usar union discriminada (não interface plana) para habilitar type narrowing seguro: ao verificar `result.valid === true`, TypeScript infere `result.score` como `number` sem asserções de tipo
     - Garantir que nenhum tipo importa de `infra/`, `schemas/` ou libs externas
     - _Requirements: LI-6.1.2, LI-6.2.2, LI-5.2.1_
 
