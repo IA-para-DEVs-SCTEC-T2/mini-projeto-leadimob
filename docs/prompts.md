@@ -121,3 +121,80 @@ Adiciona no prompts.md os prompts novos utilizados nessa sessão e após realize
 | Arquivos revisados | `gitflow.md`, `product.md`, `structure.md`, `tech.md` |
 | Decisão | ⚠️ APPROVE WITH CHANGES |
 | Comentário publicado | [#issuecomment-4380804849](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/3#issuecomment-4380804849) |
+
+---
+
+# Prompts Utilizados na Sessão — Geração de Specs LeadImobi Core
+
+Registro dos prompts utilizados durante a sessão de criação das specs do projeto LeadImobi Core.
+
+---
+
+## Prompt 8 — Geração das Specs do Projeto
+
+```
+Com base em mini-projeto-leadimob/tech.md, mini-projeto-leadimob/product.md e
+mini-projeto-leadimob/structure.md, gere todas as specs do projeto utilizando o padrão de LI-1, LI-1.1.
+
+IMPORTANTE:
+- Modo specification only
+- Não realizar implementação
+- Não gerar código
+- Não executar alterações estruturais
+- Não criar componentes, funções ou arquivos executáveis
+
+Entregue somente a documentação técnica e funcional necessária para posterior implementação.
+```
+
+---
+
+## Prompt 9 — Geração do Design Técnico
+
+```
+Sim
+```
+
+*(Aprovação do documento de requisitos e solicitação de avanço para o design técnico)*
+
+---
+
+## Prompt 10 — Geração do Plano de Tarefas
+
+```
+Sim
+```
+
+*(Aprovação do documento de design e solicitação de avanço para o plano de tarefas)*
+
+---
+
+## Prompt 11 — Correção da Numeração dos Critérios de Aceitação
+
+```
+Não encontrei alguns Requirements. Por exemplo LI-4.2.1 ou LI-6.1.1
+```
+
+*(Solicitação de correção da numeração explícita dos critérios de aceitação no requirements.md)*
+
+---
+
+## Prompt 12 — Registro dos Prompts da Sessão
+
+```
+Adicionar no /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md
+os prompts que utilizei nessa sessão.
+```
+
+---
+
+## Contexto da Sessão — Specs LeadImobi Core
+
+| Item | Detalhe |
+|------|---------|
+| Feature | `leadimobi-core` |
+| Workflow | Requirements-First |
+| Arquivos gerados | `requirements.md`, `design.md`, `tasks.md` |
+| Padrão de numeração | LI-1, LI-1.1, LI-1.1.1 |
+| Features cobertas | LI-1 a LI-6 (22 sub-features, ~60 critérios de aceitação) |
+| Correctness Properties | 8 propriedades PBT com `fast-check` |
+| Correção aplicada | Numeração explícita `LI-X.Y.Z` em todos os critérios de aceitação |
