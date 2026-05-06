@@ -171,6 +171,27 @@ type LeadScoreResult =
 
 Representa a entidade de domínio Lead com seus invariantes. Não depende de Prisma ou Zod.
 
+**Invariantes da entidade Lead:**
+
+1. **Email normalizado** — o campo `email` SHALL ser armazenado e comparado sempre em lowercase. A normalização ocorre na entidade antes de qualquer persistência, garantindo que `Ana@Email.com` e `ana@email.com` sejam tratados como o mesmo endereço.
+
+2. **Score arredondado** — quando `valid: true`, o campo `score` SHALL conter sempre um número arredondado para exatamente 2 casas decimais. Um score com mais casas decimais é considerado inválido como invariante da entidade.
+
+3. **Consistência entre score e priority** — os campos `score` e `priority` SHALL ser mutuamente consistentes:
+   - `score >= 80` → `priority === 'Alto'`
+   - `score >= 40 && score < 80` → `priority === 'Medio'`
+   - `score > 0 && score < 40` → `priority === 'Baixo'`
+   - `score === null` → `priority === 'NaoClassificado'`
+   - Nenhuma combinação fora dessas é válida como estado da entidade.
+
+4. **Valores financeiros positivos** — `valor_imovel` e `renda_mensal` SHALL ser maiores que zero quando a entidade é considerada válida para classificação.
+
+5. **ID imutável** — o campo `id` não pode ser alterado após a criação da entidade.
+
+**Responsabilidade de garantia dos invariantes:**
+
+Os invariantes 1 (normalização de email) e 3 (consistência score/priority) são garantidos pela função `calculate_lead_score` no momento do cálculo e pela função `create_lead` no momento da criação. A entidade `lead.ts` expõe uma função `validate_lead_invariants` que pode ser usada em testes para verificar que um objeto `Lead` satisfaz todos os invariantes acima.
+
 ---
 
 ### Camada `services/`

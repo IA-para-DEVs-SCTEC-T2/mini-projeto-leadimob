@@ -106,9 +106,18 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - _Requirements: LI-2.1.5, LI-2.1.6, LI-2.2.1, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3_
 
   - [ ] 5.4 Criar `src/domain/entities/lead.ts`
-    - Definir a entidade de domínio `Lead` reexportando ou estendendo o tipo de `types/lead.ts`
-    - Sem dependências de Prisma, Zod ou Next.js
-    - _Requirements: LI-5.2.2, LI-6.1.2_
+    - Importar o tipo `Lead` e `LeadPriority` de `@/types/lead` — sem dependências de Prisma, Zod ou Next.js
+    - Implementar `function normalize_email(email: string): string` que retorna o email em lowercase (invariante 1)
+    - Implementar `function validate_lead_invariants(lead: Lead): boolean` que verifica:
+      - `email === email.toLowerCase()` (email normalizado)
+      - `score === null || score === Math.round(score * 100) / 100` (score arredondado a 2 casas)
+      - Consistência entre `score` e `priority`:
+        - `score >= 80` → `priority === 'Alto'`
+        - `score >= 40 && score < 80` → `priority === 'Medio'`
+        - `score > 0 && score < 40` → `priority === 'Baixo'`
+        - `score === null` → `priority === 'NaoClassificado'`
+    - Exportar `normalize_email` e `validate_lead_invariants` para uso em `services/create_lead.ts` e testes
+    - _Requirements: LI-1.3.5, LI-2.1.2, LI-2.3.1, LI-2.3.2, LI-2.3.3, LI-5.2.2, LI-6.1.2_
 
 - [ ] 6. Checkpoint — domínio
   - Garantir que todos os testes das tarefas 5.2 e 5.3 passam. Verificar que nenhum arquivo em `domain/` importa de `infra/`, `app/` ou `schemas/`. Perguntar ao usuário se há dúvidas antes de prosseguir.
@@ -150,11 +159,12 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
 
   - [ ] 8.4 Criar `src/services/create_lead.ts`
     - Implementar `async function create_lead(input: CreateLeadInput): Promise<Lead>`
+    - Normalizar o email com `normalize_email(input.email)` antes de qualquer operação (invariante da entidade)
     - Chamar `calculate_lead_score(input.renda_mensal, input.valor_imovel)` para obter `{ score, priority }`
     - Montar objeto `CreateLeadData` com score (null se `valid: false`) e priority
     - Chamar `lead_repository.create(data)` e retornar o `Lead` criado
     - Propagar erros tipados do repositório (`EMAIL_ALREADY_EXISTS`, `DATABASE_UNAVAILABLE`) sem transformação
-    - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.2, LI-2.2.3, LI-6.1.3_
+    - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.2, LI-1.3.5, LI-2.2.3, LI-6.1.3_
 
   - [ ]* 8.5 Escrever testes de integração para `create_lead` com mock do repositório
     - Mockar `lead_repository` com Jest (`jest.mock`)
