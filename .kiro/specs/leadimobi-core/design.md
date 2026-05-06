@@ -148,7 +148,7 @@ sequenceDiagram
 Função pura que encapsula toda a lógica de cálculo e classificação do Índice de Qualificação Financeira. Não possui dependências externas — recebe apenas tipos primitivos e retorna um tipo definido em `types/`.
 
 **Responsabilidades:**
-- Calcular o índice: `(renda_mensal × 12 × 5) ÷ valor_imovel × 100`
+- Calcular o índice: `((renda_mensal × 12 × 5) ÷ valor_imovel) × 100`
 - Arredondar para 2 casas decimais
 - Classificar em `Alto`, `Médio`, `Baixo` ou `NaoClassificado`
 - Tratar entradas inválidas (zero, nulo) sem lançar exceções
@@ -466,6 +466,8 @@ function map_prisma_to_lead(prisma_lead: PrismaLead): Lead {
 
 **Validates: Requirements LI-2.1.1, LI-2.1.2**
 
+> **Nota de implementação:** A fórmula com parênteses explícitos é `((renda_mensal * 12 * 5) / valor_imovel) * 100`, garantindo que a divisão ocorre antes da multiplicação final por 100.
+
 ---
 
 ### Property 5: Ordenação estável da lista priorizada
@@ -497,6 +499,14 @@ function map_prisma_to_lead(prisma_lead: PrismaLead): Lead {
 *Para qualquer* objeto de entrada com todos os campos dentro dos limites válidos (nome 2–100 chars, email RFC 5322, telefone 10–15 dígitos, valor_imovel > 0, renda_mensal > 0), `CreateLeadSchema.safeParse` SHALL retornar `{ success: true }` com um objeto tipado livre de erros.
 
 **Validates: Requirements LI-1.2.7, LI-5.1.1**
+
+---
+
+### Property 9: Consistência da lista após criação de lead
+
+*Para qualquer* lead válido criado via `create_lead`, o array retornado por `list_leads` em chamada subsequente SHALL conter o novo lead e o resultado de `rank_leads` aplicado sobre esse array SHALL posicionar o novo lead na posição correta segundo os critérios de ordenação (score desc, created_at asc, NaoClassificado ao final).
+
+**Validates: Requirements LI-3.1.3**
 
 ---
 
@@ -564,6 +574,7 @@ A feature é adequada para PBT porque:
 - Property 6: Round-trip de formatação monetária
 - Property 7: Rejeição de entradas inválidas
 - Property 8: Aceitação de entradas válidas
+- Property 9: Consistência da lista após criação de lead
 
 ### Testes de Exemplo (Unitários)
 

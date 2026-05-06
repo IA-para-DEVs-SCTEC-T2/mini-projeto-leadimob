@@ -79,7 +79,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
   - [ ] 5.1 Criar `src/domain/rules/calculate_lead_score.ts`
     - Implementar `function calculate_lead_score(renda_mensal: number, valor_imovel: number): LeadScoreResult`
     - Retornar `{ valid: false, priority: 'NaoClassificado' }` se `valor_imovel <= 0` ou `renda_mensal <= 0` (sem lançar exceção)
-    - Calcular `score = Math.round((renda_mensal * 12 * 5 / valor_imovel * 100) * 100) / 100`
+    - Calcular `score = Math.round(((renda_mensal * 12 * 5) / valor_imovel) * 100 * 100) / 100`
     - Classificar: `score >= 80` → `'Alto'`; `score >= 40` → `'Medio'`; `score < 40` → `'Baixo'`
     - Retornar `{ valid: true, score, priority }`
     - Importar apenas de `@/types/lead` — sem dependências de Zod, Prisma ou Next.js
@@ -167,6 +167,13 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Passar o array para `rank_leads(leads)` e retornar o resultado ordenado
     - _Requirements: LI-3.1.1, LI-3.1.5_
 
+  - [ ]* 8.7 Escrever teste de integração para consistência da lista após criação (Property 9)
+    - **Property 9: Consistência da lista após criação de lead**
+    - Mockar `lead_repository` para simular `create` seguido de `find_all` retornando o lead criado
+    - Verificar que o resultado de `list_leads()` após `create_lead(input)` contém o novo lead e que `rank_leads` o posiciona corretamente (score desc, created_at asc, NaoClassificado ao final)
+    - Anotar com `// Feature: leadimobi-core, Property 9: Consistência da lista após criação de lead`
+    - **Validates: Requirements LI-3.1.3**
+
 - [ ] 9. Checkpoint — serviços e domínio integrados
   - Garantir que todos os testes das tarefas 8.2, 8.3 e 8.5 passam. Verificar que `services/` é a única camada que acessa `infra/`. Perguntar ao usuário se há dúvidas antes de prosseguir.
 
@@ -218,10 +225,12 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
       - Extrair campos do `FormData` e converter tipos (strings para numbers onde necessário)
       - Validar com `CreateLeadSchema.safeParse(data)`
       - Se inválido: retornar `{ success: false, errors: zodError.flatten().fieldErrors }`
-      - Se válido: chamar `create_lead(input)` do service
+      - Se válido: chamar `create_lead(input)` do service dentro de bloco `try/catch`
       - Se `EMAIL_ALREADY_EXISTS`: retornar `{ success: false, errors: { email: ['Este e-mail já está cadastrado'] } }`
       - Se sucesso: chamar `redirect('/leads')` do Next.js
-    - _Requirements: LI-1.1.2, LI-1.1.3, LI-1.2.6, LI-1.3.4, LI-1.3.5, LI-5.1.2, LI-5.1.3_
+      - Em caso de erro não mapeado (bloco `catch` genérico): retornar `{ success: false, errors: { _form: ['Erro interno. Tente novamente.'] } }` e logar o erro no servidor com `console.error`
+    - O redirect para `/leads` após cadastro bem-sucedido satisfaz LI-3.1.3: a lista recarregada pelo Server Component refletirá automaticamente o novo lead na posição correta da ordenação
+    - _Requirements: LI-1.1.2, LI-1.1.3, LI-1.2.6, LI-1.3.4, LI-1.3.5, LI-3.1.3, LI-5.1.2, LI-5.1.3_
 
   - [ ] 12.2 Criar `src/app/leads/page.tsx` — lista priorizada
     - Implementar Server Component que chama `list_leads()` e renderiza a lista

@@ -106,7 +106,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 
 ##### Critérios de Aceitação
 
-- **LI-2.1.1** WHEN um lead com Renda_Mensal e Valor_Imovel válidos é fornecido, THE Índice_Calculator SHALL calcular o Índice aplicando a fórmula: `Índice = (Renda_Mensal × 12 × 5) ÷ Valor_Imovel × 100`.
+- **LI-2.1.1** WHEN um lead com Renda_Mensal e Valor_Imovel válidos é fornecido, THE Índice_Calculator SHALL calcular o Índice aplicando a fórmula: `Índice = ((Renda_Mensal × 12 × 5) ÷ Valor_Imovel) × 100`.
 - **LI-2.1.2** THE Índice_Calculator SHALL retornar o Índice como número de ponto flutuante arredondado para duas casas decimais.
 - **LI-2.1.3** THE Índice_Calculator SHALL ser implementado na camada `domain/`, sem dependência de frameworks, banco de dados ou bibliotecas externas.
 - **LI-2.1.4** FOR ALL pares válidos de (Renda_Mensal, Valor_Imovel), THE Índice_Calculator SHALL produzir resultados determinísticos — a mesma entrada sempre produz a mesma saída.
