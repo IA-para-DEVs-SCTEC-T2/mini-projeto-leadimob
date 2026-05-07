@@ -10,7 +10,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
 
 ## Tarefas
 
-- [-] 1. Setup do projeto e configuração base
+- [x] 1. Setup do projeto e configuração base
   - [x] 1.1 Inicializar projeto Next.js com App Router e TypeScript strict
     - Criar projeto com `create-next-app` usando flags `--typescript --app --tailwind --eslint`
     - Configurar `tsconfig.json` com `"strict": true` e path aliases (`@/` apontando para `src/`)
@@ -34,7 +34,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Executar `npx prisma migrate dev --name init` para criar a migration inicial
     - _Requirements: LI-1.3.1, LI-1.3.3, LI-6.1.1_
 
-  - [ ] 1.4 Criar estrutura de pastas do projeto
+  - [x] 1.4 Criar estrutura de pastas do projeto
     - Criar diretórios: `src/domain/rules/`, `src/domain/entities/`, `src/services/`, `src/infra/db/`, `src/infra/repositories/`, `src/components/`, `src/schemas/`, `src/types/`, `src/lib/`
     - Criar diretório de testes: `src/__tests__/domain/`, `src/__tests__/services/`, `src/__tests__/lib/`, `src/__tests__/schemas/`
     - _Requirements: LI-6.1.1_

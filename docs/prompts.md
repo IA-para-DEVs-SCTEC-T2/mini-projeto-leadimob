@@ -651,3 +651,46 @@ scripts do package.json e atualização do prompts.md)*
 | Banco criado | `leadimobi` no PostgreSQL local (localhost:5432) |
 | Prisma Client gerado | `src/generated/prisma` |
 | Scripts adicionados | `db:migrate`, `db:migrate:prod`, `db:reset`, `db:generate`, `db:studio`, `db:push`, `setup` |
+
+---
+
+# Prompts Utilizados na Sessão — Estrutura de Pastas do Projeto
+
+---
+
+## Prompt 37 — Criação da Estrutura de Pastas (Task 1.4)
+
+```
+Sim
+```
+
+*(Confirmação para executar a task 1.4 — criação da estrutura de pastas do projeto)*
+
+**Como foi executado:**
+- Criados 13 diretórios com arquivos `.gitkeep` para rastreamento pelo git
+- Camadas da aplicação: `src/domain/rules/`, `src/domain/entities/`, `src/services/`, `src/infra/db/`, `src/infra/repositories/`, `src/components/`, `src/schemas/`, `src/types/`, `src/lib/`
+- Diretórios de testes: `src/__tests__/domain/`, `src/__tests__/services/`, `src/__tests__/lib/`, `src/__tests__/schemas/`
+- Task 1 (Setup do projeto) marcada como concluída
+
+---
+
+## Prompt 38 — Commit da Estrutura de Pastas
+
+```
+Faça o commit de tudo pendente, seguindo o padrão de mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Commit da task 1.4 e encerramento da Task 1 — Setup do projeto e configuração base)*
+
+---
+
+## Contexto da Sessão — Estrutura de Pastas
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Task | 1.4 — Criar estrutura de pastas do projeto |
+| Diretórios criados | 13 (9 de aplicação + 4 de testes) |
+| Arquivos criados | `.gitkeep` em cada diretório |
+| Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
