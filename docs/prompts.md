@@ -300,3 +300,106 @@ Publica esse Code Review no PR e adicione os prompts utilizados nessa sessão
 | Commits de correção | `1bf05e3`, `d05c433`, `b075b79` |
 | Decisão final | ✅ APPROVE |
 | Reviews publicados | [#4392356945](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/4#issuecomment-4392356945) · [#4392399522](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/4#issuecomment-4392399522) · [#4392428760](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/4#issuecomment-4392428760) · [#4392450396](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/4#issuecomment-4392450396) |
+
+---
+
+# Prompts Utilizados na Sessão — Criação de Issues no GitHub Project
+
+Registro dos prompts utilizados durante a sessão de criação de issues a partir das specs do LeadImobi Core.
+
+---
+
+## Prompt 20 — Criação de Issues no GitHub Project
+
+```
+# PROMPT ESTRUTURADO
+Criar issues no GitHub Project a partir do /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/specs/leadimobi-core/tasks.md
+relacionando com /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/specs/leadimobi-core/requirements.md
+utilizando GitHub CLI
+
+# Instrução
+Você é um agente técnico especializado em planejamento ágil, análise de requisitos e automação via GitHub CLI.
+Sua função é:
+1. Ler o conteúdo de /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/specs/leadimobi-core/tasks.md
+2. Correlacionar cada tarefa com os requisitos descritos em /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/specs/leadimobi-core/requirements.md
+3. Criar issues estruturadas no GitHub
+4. Adicionar automaticamente as issues ao projeto:
+   `https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1`
+5. Utilizar exclusivamente GitHub CLI (`gh`)
+
+# Objetivo
+Transformar tarefas documentadas em issues rastreáveis, padronizadas e vinculadas ao contexto funcional definido nos requisitos do projeto.
+
+# Regras
+- utilizar apenas GitHub CLI
+- criar uma issue por tarefa
+- relacionar cada issue com ao menos um requisito
+- manter títulos curtos e objetivos
+- gerar descrições técnicas claras
+- incluir critérios de aceite
+- adicionar labels apropriadas
+- evitar duplicidade de issues
+- não criar issues sem contexto funcional
+- utilizar markdown compatível com GitHub
+- manter padronização entre todas as issues
+
+# Estrutura da Issue
+## Title
+Título curto e objetivo
+
+## Body
+A issue deve conter:
+## Contexto
+Descrição resumida da necessidade
+
+## Requisito Relacionado
+Referência ao requisito do `#requirements.md`
+
+## Objetivo
+Resultado esperado da implementação
+
+## Critérios de Aceite
+- [ ] Critério 1
+- [ ] Critério 2
+
+## Observações Técnicas
+Detalhes importantes para implementação
+```
+
+*(19 issues criadas e adicionadas ao GitHub Project #10)*
+
+---
+
+## Contexto da Sessão — Criação de Issues
+
+| Item | Detalhe |
+|------|---------|
+| Projeto GitHub | `IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob` |
+| GitHub Project | #10 — [View](https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1) |
+| Issues criadas | 19 issues (#12 a #30) |
+| Labels utilizadas | Nenhuma (labels não existiam no repositório) |
+| Estrutura | Contexto, Requisito Relacionado, Objetivo, Critérios de Aceite, Observações Técnicas |
+
+### Issues Criadas
+
+| Issue | Título |
+|-------|--------|
+| #12 | Setup do projeto e configuração base |
+| #13 | Criar tipos compartilhados em types/lead.ts |
+| #14 | Criar schema Zod de validação em schemas/lead.schema.ts |
+| #15 | Implementar cálculo do índice de qualificação em domain/rules |
+| #16 | Criar entidade Lead e validadores de invariante em domain/entities |
+| #17 | Criar singleton do Prisma Client em infra/db/prisma.ts |
+| #18 | Implementar repositório de leads em infra/repositories |
+| #19 | Implementar serviço de ordenação de leads em services/rank_leads.ts |
+| #20 | Implementar serviço de criação de leads em services/create_lead.ts |
+| #21 | Implementar serviço de listagem de leads em services/list_leads.ts |
+| #22 | Criar funções de formatação em lib/formatters.ts |
+| #23 | Criar componente PriorityBadge em components/priority_badge.tsx |
+| #24 | Criar componente LeadCard em components/lead_card.tsx |
+| #25 | Criar componente LeadForm em components/lead_form.tsx |
+| #26 | Criar Server Actions em app/leads/actions.ts |
+| #27 | Criar página de lista de leads em app/leads/page.tsx |
+| #28 | Criar página de cadastro em app/leads/new/page.tsx |
+| #29 | Criar página de detalhe do lead em app/leads/[id]/page.tsx |
+| #30 | Criar API Route GET /api/leads (opcional) |
