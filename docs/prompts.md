@@ -524,3 +524,52 @@ foi executado em docs/prompts.md
 | Arquivos criados | `.kiro/steering/nextjs16.md` |
 | Arquivos modificados | `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/globals.css` |
 | Próximo passo | Task 1.1 — Inicializar projeto Next.js com App Router e TypeScript strict |
+
+---
+
+# Prompts Utilizados na Sessão — Correção de Vulnerabilidades
+
+---
+
+## Prompt 30 — Resolução das Vulnerabilidades npm
+
+```
+Ainda não va para a 1.3, antes vamos resolver as dependencias:
+188 packages are looking for funding
+run `npm fund` for details
+5 moderate severity vulnerabilities
+```
+
+*(Solicitação de correção das 5 vulnerabilidades moderate antes de continuar a implementação)*
+
+**Como foi executado:**
+- Executado `npm audit` para identificar as vulnerabilidades
+- Identificadas 2 origens:
+  - `postcss < 8.5.10` — dependência interna do Next.js 16 (XSS via CSS stringify)
+  - `@hono/node-server < 1.19.13` — dependência interna do `@prisma/dev` (middleware bypass)
+- Descartado `npm audit fix --force` pois instalaria Next.js 9.3.3 (downgrade catastrófico)
+- Solução: adicionado bloco `"overrides"` no `package.json` forçando versões corrigidas das dependências transitivas
+- Resultado: `found 0 vulnerabilities` após `npm install`
+
+---
+
+## Prompt 31 — Commit da Correção de Vulnerabilidades
+
+```
+Faça o commit dessa tarefa seguindo o mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Solicitação de commit das correções de segurança e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Correção de Vulnerabilidades
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Vulnerabilidades encontradas | 5 moderate (2 grupos) |
+| Vulnerabilidades resolvidas | 5/5 (100%) |
+| Solução aplicada | `overrides` no `package.json` — sem downgrade de dependências principais |
+| Arquivos modificados | `package.json`, `package-lock.json` |
