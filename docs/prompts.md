@@ -403,3 +403,124 @@ Detalhes importantes para implementação
 | #28 | Criar página de cadastro em app/leads/new/page.tsx |
 | #29 | Criar página de detalhe do lead em app/leads/[id]/page.tsx |
 | #30 | Criar API Route GET /api/leads (opcional) |
+
+---
+
+# Prompts Utilizados na Sessão — Setup do Projeto e Configuração Base
+
+Registro dos prompts utilizados durante a sessão de inicialização do projeto LeadImobi Core na branch `feature/setup-base`.
+
+---
+
+## Prompt 21 — Início da Task #12 (Setup do Projeto)
+
+```
+Nos temos uma automação que le as tasks dos #leadimobi-core e cria as issues em
+Backlog · Mini Projeto LeadImobi, quero que comece a desenvolver a task
+Setup do projeto e configuração base #12 APENAS, crie uma nova branch chamada setup,
+para trabalharmos nessa tarefa
+```
+
+*(Solicitação de início da task #12 com criação de branch)*
+
+---
+
+## Prompt 22 — Escolha do Nome da Branch
+
+```
+Seria melhor outro nome?
+```
+
+*(Questionamento sobre o nome da branch `setup`)*
+
+---
+
+## Prompt 23 — Confirmação do Nome da Branch
+
+```
+feature/setup-base
+```
+
+*(Confirmação do nome da branch seguindo o padrão GitFlow — branch `feature/setup-base` criada)*
+
+---
+
+## Prompt 24 — Criação do Steering File do Next.js 16
+
+```
+A versão mais recente e estável do framework Next.js é a 16, crie um arquivo de steering
+com as regras das novas mudanças, e depois continue com a task 1
+```
+
+*(Solicitação de documentação das mudanças do Next.js 16 como steering file antes de iniciar a implementação)*
+
+---
+
+## Prompt 25 — Remoção da Pasta nextapp-tmp
+
+```
+Pq tem duas pastas node_modules? uma na raiz outra em nextapp-tmp
+```
+
+*(Identificação de pasta temporária duplicada — `nextapp-tmp/` removida)*
+
+---
+
+## Prompt 26 — Limpeza da Instalação
+
+```
+Antes de continuar limpe a instalação, removendo arquivos desnecessários,
+como a pagina do next, icones. CLAUDE.MD, AGENTS.MD, etc
+```
+
+*(Limpeza do projeto: remoção de SVGs padrão, CLAUDE.md, AGENTS.md, lab.js,
+reset da page.tsx, layout.tsx e globals.css)*
+
+---
+
+## Prompt 27 — Verificação do Source Control
+
+```
+Ok. em source Control esta mais de 10k de arquivos para o github, esta correto isso?
+```
+
+*(Verificação do .gitignore — confirmado que node_modules está corretamente ignorado,
+os 10k arquivos são untracked locais que não vão para o GitHub)*
+
+---
+
+## Prompt 28 — Exclusão do lab.js
+
+```
+O lab.js pode excluir
+```
+
+*(lab.js já havia sido deletado anteriormente — aparecia como "D" no git status
+por ter existido no histórico)*
+
+---
+
+## Prompt 29 — Commit e Registro de Prompts
+
+```
+Pode continuar, podem antes de ir para 1.1, faça o commit do que foi feito até agora,
+seguindo o padrão de commit de .kiro/steering/gitflow.md, e registre os prompts e como
+foi executado em docs/prompts.md
+```
+
+*(Solicitação de commit das alterações de setup e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Setup do Projeto
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Issue | #12 — Setup do projeto e configuração base |
+| Stack | Next.js 16.2.5, React 19.2.4, TypeScript 5, Tailwind CSS 4, Zod |
+| Ações realizadas | Criação da branch, steering file Next.js 16, remoção de arquivos desnecessários, limpeza da instalação padrão |
+| Arquivos removidos | `AGENTS.md`, `CLAUDE.md`, `lab.js`, `nextapp-tmp/`, SVGs padrão do Next.js |
+| Arquivos criados | `.kiro/steering/nextjs16.md` |
+| Arquivos modificados | `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/globals.css` |
+| Próximo passo | Task 1.1 — Inicializar projeto Next.js com App Router e TypeScript strict |
