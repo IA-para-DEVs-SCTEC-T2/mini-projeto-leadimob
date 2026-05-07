@@ -573,3 +573,81 @@ e registre os prompts em docs/prompts.md
 | Vulnerabilidades resolvidas | 5/5 (100%) |
 | Solução aplicada | `overrides` no `package.json` — sem downgrade de dependências principais |
 | Arquivos modificados | `package.json`, `package-lock.json` |
+
+---
+
+# Prompts Utilizados na Sessão — Configuração do Prisma e Scripts do Projeto
+
+Registro dos prompts utilizados durante a sessão de configuração do Prisma ORM e scripts do `package.json`.
+
+---
+
+## Prompt 32 — Início da Task 1.3 (Configurar Prisma)
+
+```
+comece a task 1.3 Configurar Prisma e schema do banco de dados,
+precisa criar o .env para dados sensiveis
+```
+
+*(Execução da task 1.3: `npx prisma init`, definição do model `Lead` no schema Prisma,
+criação do `.env` com `DATABASE_URL` usando placeholders, validação com `npx prisma validate`)*
+
+---
+
+## Prompt 33 — Questionamento sobre prisma.config.ts
+
+```
+Se não me engano essa versão do prisma não precisa de prisma.config.ts
+```
+
+*(Verificação da documentação oficial do Prisma 7 — confirmado que `prisma.config.ts` é
+necessário na v7: `url` no `datasource` do `schema.prisma` foi deprecated, e o
+`prisma.config.ts` é agora o lugar padrão para configurar a URL de conexão para o CLI)*
+
+---
+
+## Prompt 34 — Teste da Configuração e Criação do Banco
+
+```
+Faça um test se está tudo certo, se não existir o db deve ser criado
+```
+
+*(Executado `npx prisma migrate dev --name init` — banco `leadimobi` criado automaticamente
+no PostgreSQL, migration `20260507184654_init` aplicada, tabela `leads` criada com sucesso)*
+
+---
+
+## Prompt 35 — Configuração dos Scripts do package.json
+
+```
+Configure o comando de inicialização e para rodar o prisma
+```
+
+*(Scripts adicionados ao `package.json`: `db:migrate`, `db:migrate:prod`, `db:reset`,
+`db:generate`, `db:studio`, `db:push`, `setup`. Prisma Client gerado em `src/generated/prisma`)*
+
+---
+
+## Prompt 36 — Commit das Alterações Pendentes
+
+```
+Faça o commit de tudo pendente, seguindo o padrão de mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Commit das alterações da task 1.3: schema Prisma, migration, .env, prisma.config.ts,
+scripts do package.json e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Configuração do Prisma
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Task | 1.3 — Configurar Prisma e schema do banco de dados |
+| Arquivos criados | `prisma/schema.prisma`, `.env`, `prisma.config.ts`, `prisma/migrations/20260507184654_init/migration.sql` |
+| Arquivos modificados | `package.json`, `package-lock.json`, `.kiro/specs/leadimobi-core/tasks.md` |
+| Banco criado | `leadimobi` no PostgreSQL local (localhost:5432) |
+| Prisma Client gerado | `src/generated/prisma` |
+| Scripts adicionados | `db:migrate`, `db:migrate:prod`, `db:reset`, `db:generate`, `db:studio`, `db:push`, `setup` |

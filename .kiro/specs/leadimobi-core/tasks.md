@@ -17,7 +17,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Verificar que `next.config.ts` está configurado corretamente
     - _Requirements: LI-6.2.3_
 
-  - [-] 1.2 Instalar e configurar dependências
+  - [x] 1.2 Instalar e configurar dependências
     - Instalar Prisma: `prisma` (dev) e `@prisma/client`
     - Instalar Zod: `zod`
     - Instalar fast-check para PBT: `fast-check` (dev)
@@ -25,7 +25,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Configurar `jest.config.ts` com preset `ts-jest` e path aliases
     - _Requirements: LI-5.1.1, LI-6.2.1_
 
-  - [ ] 1.3 Configurar Prisma e schema do banco de dados
+  - [x] 1.3 Configurar Prisma e schema do banco de dados
     - Executar `npx prisma init` para criar `prisma/schema.prisma` e `.env`
     - Definir o model `Lead` no schema Prisma conforme especificado no design:
       - Campos: `id` (cuid), `nome`, `email` (unique), `telefone`, `valor_imovel` (Decimal 15,2), `renda_mensal` (Decimal 15,2), `score` (Decimal? 8,2), `priority` (String), `created_at` (DateTime now)

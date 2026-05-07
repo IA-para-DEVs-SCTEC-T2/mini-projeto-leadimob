@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Lead {
+  id           String   @id @default(cuid())
+  nome         String
+  email        String   @unique
+  telefone     String
+  valor_imovel Decimal  @db.Decimal(15, 2)
+  renda_mensal Decimal  @db.Decimal(15, 2)
+  score        Decimal? @db.Decimal(8, 2)
+  priority     String   // 'Alto' | 'Medio' | 'Baixo' | 'NaoClassificado'
+  created_at   DateTime @default(now())
+
+  @@map("leads")
+}
