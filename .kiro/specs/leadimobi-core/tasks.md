@@ -10,14 +10,14 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
 
 ## Tarefas
 
-- [ ] 1. Setup do projeto e configuração base
-  - [ ] 1.1 Inicializar projeto Next.js com App Router e TypeScript strict
+- [x] 1. Setup do projeto e configuração base
+  - [x] 1.1 Inicializar projeto Next.js com App Router e TypeScript strict
     - Criar projeto com `create-next-app` usando flags `--typescript --app --tailwind --eslint`
     - Configurar `tsconfig.json` com `"strict": true` e path aliases (`@/` apontando para `src/`)
     - Verificar que `next.config.ts` está configurado corretamente
     - _Requirements: LI-6.2.3_
 
-  - [ ] 1.2 Instalar e configurar dependências
+  - [x] 1.2 Instalar e configurar dependências
     - Instalar Prisma: `prisma` (dev) e `@prisma/client`
     - Instalar Zod: `zod`
     - Instalar fast-check para PBT: `fast-check` (dev)
@@ -25,7 +25,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Configurar `jest.config.ts` com preset `ts-jest` e path aliases
     - _Requirements: LI-5.1.1, LI-6.2.1_
 
-  - [ ] 1.3 Configurar Prisma e schema do banco de dados
+  - [x] 1.3 Configurar Prisma e schema do banco de dados
     - Executar `npx prisma init` para criar `prisma/schema.prisma` e `.env`
     - Definir o model `Lead` no schema Prisma conforme especificado no design:
       - Campos: `id` (cuid), `nome`, `email` (unique), `telefone`, `valor_imovel` (Decimal 15,2), `renda_mensal` (Decimal 15,2), `score` (Decimal? 8,2), `priority` (String), `created_at` (DateTime now)
@@ -34,7 +34,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Executar `npx prisma migrate dev --name init` para criar a migration inicial
     - _Requirements: LI-1.3.1, LI-1.3.3, LI-6.1.1_
 
-  - [ ] 1.4 Criar estrutura de pastas do projeto
+  - [x] 1.4 Criar estrutura de pastas do projeto
     - Criar diretórios: `src/domain/rules/`, `src/domain/entities/`, `src/services/`, `src/infra/db/`, `src/infra/repositories/`, `src/components/`, `src/schemas/`, `src/types/`, `src/lib/`
     - Criar diretório de testes: `src/__tests__/domain/`, `src/__tests__/services/`, `src/__tests__/lib/`, `src/__tests__/schemas/`
     - _Requirements: LI-6.1.1_

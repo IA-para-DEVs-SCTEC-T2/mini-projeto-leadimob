@@ -403,3 +403,294 @@ Detalhes importantes para implementação
 | #28 | Criar página de cadastro em app/leads/new/page.tsx |
 | #29 | Criar página de detalhe do lead em app/leads/[id]/page.tsx |
 | #30 | Criar API Route GET /api/leads (opcional) |
+
+---
+
+# Prompts Utilizados na Sessão — Setup do Projeto e Configuração Base
+
+Registro dos prompts utilizados durante a sessão de inicialização do projeto LeadImobi Core na branch `feature/setup-base`.
+
+---
+
+## Prompt 21 — Início da Task #12 (Setup do Projeto)
+
+```
+Nos temos uma automação que le as tasks dos #leadimobi-core e cria as issues em
+Backlog · Mini Projeto LeadImobi, quero que comece a desenvolver a task
+Setup do projeto e configuração base #12 APENAS, crie uma nova branch chamada setup,
+para trabalharmos nessa tarefa
+```
+
+*(Solicitação de início da task #12 com criação de branch)*
+
+---
+
+## Prompt 22 — Escolha do Nome da Branch
+
+```
+Seria melhor outro nome?
+```
+
+*(Questionamento sobre o nome da branch `setup`)*
+
+---
+
+## Prompt 23 — Confirmação do Nome da Branch
+
+```
+feature/setup-base
+```
+
+*(Confirmação do nome da branch seguindo o padrão GitFlow — branch `feature/setup-base` criada)*
+
+---
+
+## Prompt 24 — Criação do Steering File do Next.js 16
+
+```
+A versão mais recente e estável do framework Next.js é a 16, crie um arquivo de steering
+com as regras das novas mudanças, e depois continue com a task 1
+```
+
+*(Solicitação de documentação das mudanças do Next.js 16 como steering file antes de iniciar a implementação)*
+
+---
+
+## Prompt 25 — Remoção da Pasta nextapp-tmp
+
+```
+Pq tem duas pastas node_modules? uma na raiz outra em nextapp-tmp
+```
+
+*(Identificação de pasta temporária duplicada — `nextapp-tmp/` removida)*
+
+---
+
+## Prompt 26 — Limpeza da Instalação
+
+```
+Antes de continuar limpe a instalação, removendo arquivos desnecessários,
+como a pagina do next, icones. CLAUDE.MD, AGENTS.MD, etc
+```
+
+*(Limpeza do projeto: remoção de SVGs padrão, CLAUDE.md, AGENTS.md, lab.js,
+reset da page.tsx, layout.tsx e globals.css)*
+
+---
+
+## Prompt 27 — Verificação do Source Control
+
+```
+Ok. em source Control esta mais de 10k de arquivos para o github, esta correto isso?
+```
+
+*(Verificação do .gitignore — confirmado que node_modules está corretamente ignorado,
+os 10k arquivos são untracked locais que não vão para o GitHub)*
+
+---
+
+## Prompt 28 — Exclusão do lab.js
+
+```
+O lab.js pode excluir
+```
+
+*(lab.js já havia sido deletado anteriormente — aparecia como "D" no git status
+por ter existido no histórico)*
+
+---
+
+## Prompt 29 — Commit e Registro de Prompts
+
+```
+Pode continuar, podem antes de ir para 1.1, faça o commit do que foi feito até agora,
+seguindo o padrão de commit de .kiro/steering/gitflow.md, e registre os prompts e como
+foi executado em docs/prompts.md
+```
+
+*(Solicitação de commit das alterações de setup e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Setup do Projeto
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Issue | #12 — Setup do projeto e configuração base |
+| Stack | Next.js 16.2.5, React 19.2.4, TypeScript 5, Tailwind CSS 4, Zod |
+| Ações realizadas | Criação da branch, steering file Next.js 16, remoção de arquivos desnecessários, limpeza da instalação padrão |
+| Arquivos removidos | `AGENTS.md`, `CLAUDE.md`, `lab.js`, `nextapp-tmp/`, SVGs padrão do Next.js |
+| Arquivos criados | `.kiro/steering/nextjs16.md` |
+| Arquivos modificados | `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/globals.css` |
+| Próximo passo | Task 1.1 — Inicializar projeto Next.js com App Router e TypeScript strict |
+
+---
+
+# Prompts Utilizados na Sessão — Correção de Vulnerabilidades
+
+---
+
+## Prompt 30 — Resolução das Vulnerabilidades npm
+
+```
+Ainda não va para a 1.3, antes vamos resolver as dependencias:
+188 packages are looking for funding
+run `npm fund` for details
+5 moderate severity vulnerabilities
+```
+
+*(Solicitação de correção das 5 vulnerabilidades moderate antes de continuar a implementação)*
+
+**Como foi executado:**
+- Executado `npm audit` para identificar as vulnerabilidades
+- Identificadas 2 origens:
+  - `postcss < 8.5.10` — dependência interna do Next.js 16 (XSS via CSS stringify)
+  - `@hono/node-server < 1.19.13` — dependência interna do `@prisma/dev` (middleware bypass)
+- Descartado `npm audit fix --force` pois instalaria Next.js 9.3.3 (downgrade catastrófico)
+- Solução: adicionado bloco `"overrides"` no `package.json` forçando versões corrigidas das dependências transitivas
+- Resultado: `found 0 vulnerabilities` após `npm install`
+
+---
+
+## Prompt 31 — Commit da Correção de Vulnerabilidades
+
+```
+Faça o commit dessa tarefa seguindo o mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Solicitação de commit das correções de segurança e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Correção de Vulnerabilidades
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Vulnerabilidades encontradas | 5 moderate (2 grupos) |
+| Vulnerabilidades resolvidas | 5/5 (100%) |
+| Solução aplicada | `overrides` no `package.json` — sem downgrade de dependências principais |
+| Arquivos modificados | `package.json`, `package-lock.json` |
+
+---
+
+# Prompts Utilizados na Sessão — Configuração do Prisma e Scripts do Projeto
+
+Registro dos prompts utilizados durante a sessão de configuração do Prisma ORM e scripts do `package.json`.
+
+---
+
+## Prompt 32 — Início da Task 1.3 (Configurar Prisma)
+
+```
+comece a task 1.3 Configurar Prisma e schema do banco de dados,
+precisa criar o .env para dados sensiveis
+```
+
+*(Execução da task 1.3: `npx prisma init`, definição do model `Lead` no schema Prisma,
+criação do `.env` com `DATABASE_URL` usando placeholders, validação com `npx prisma validate`)*
+
+---
+
+## Prompt 33 — Questionamento sobre prisma.config.ts
+
+```
+Se não me engano essa versão do prisma não precisa de prisma.config.ts
+```
+
+*(Verificação da documentação oficial do Prisma 7 — confirmado que `prisma.config.ts` é
+necessário na v7: `url` no `datasource` do `schema.prisma` foi deprecated, e o
+`prisma.config.ts` é agora o lugar padrão para configurar a URL de conexão para o CLI)*
+
+---
+
+## Prompt 34 — Teste da Configuração e Criação do Banco
+
+```
+Faça um test se está tudo certo, se não existir o db deve ser criado
+```
+
+*(Executado `npx prisma migrate dev --name init` — banco `leadimobi` criado automaticamente
+no PostgreSQL, migration `20260507184654_init` aplicada, tabela `leads` criada com sucesso)*
+
+---
+
+## Prompt 35 — Configuração dos Scripts do package.json
+
+```
+Configure o comando de inicialização e para rodar o prisma
+```
+
+*(Scripts adicionados ao `package.json`: `db:migrate`, `db:migrate:prod`, `db:reset`,
+`db:generate`, `db:studio`, `db:push`, `setup`. Prisma Client gerado em `src/generated/prisma`)*
+
+---
+
+## Prompt 36 — Commit das Alterações Pendentes
+
+```
+Faça o commit de tudo pendente, seguindo o padrão de mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Commit das alterações da task 1.3: schema Prisma, migration, .env, prisma.config.ts,
+scripts do package.json e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Configuração do Prisma
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Task | 1.3 — Configurar Prisma e schema do banco de dados |
+| Arquivos criados | `prisma/schema.prisma`, `.env`, `prisma.config.ts`, `prisma/migrations/20260507184654_init/migration.sql` |
+| Arquivos modificados | `package.json`, `package-lock.json`, `.kiro/specs/leadimobi-core/tasks.md` |
+| Banco criado | `leadimobi` no PostgreSQL local (localhost:5432) |
+| Prisma Client gerado | `src/generated/prisma` |
+| Scripts adicionados | `db:migrate`, `db:migrate:prod`, `db:reset`, `db:generate`, `db:studio`, `db:push`, `setup` |
+
+---
+
+# Prompts Utilizados na Sessão — Estrutura de Pastas do Projeto
+
+---
+
+## Prompt 37 — Criação da Estrutura de Pastas (Task 1.4)
+
+```
+Sim
+```
+
+*(Confirmação para executar a task 1.4 — criação da estrutura de pastas do projeto)*
+
+**Como foi executado:**
+- Criados 13 diretórios com arquivos `.gitkeep` para rastreamento pelo git
+- Camadas da aplicação: `src/domain/rules/`, `src/domain/entities/`, `src/services/`, `src/infra/db/`, `src/infra/repositories/`, `src/components/`, `src/schemas/`, `src/types/`, `src/lib/`
+- Diretórios de testes: `src/__tests__/domain/`, `src/__tests__/services/`, `src/__tests__/lib/`, `src/__tests__/schemas/`
+- Task 1 (Setup do projeto) marcada como concluída
+
+---
+
+## Prompt 38 — Commit da Estrutura de Pastas
+
+```
+Faça o commit de tudo pendente, seguindo o padrão de mini-projeto-leadimob/gitflow.md
+e registre os prompts em docs/prompts.md
+```
+
+*(Commit da task 1.4 e encerramento da Task 1 — Setup do projeto e configuração base)*
+
+---
+
+## Contexto da Sessão — Estrutura de Pastas
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Task | 1.4 — Criar estrutura de pastas do projeto |
+| Diretórios criados | 13 (9 de aplicação + 4 de testes) |
+| Arquivos criados | `.gitkeep` em cada diretório |
+| Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
