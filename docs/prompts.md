@@ -694,3 +694,149 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+# Prompts Utilizados na Sessão — Tipos Compartilhados e Serviço de Ranking de Leads
+
+Registro dos prompts utilizados durante a sessão de implementação das tasks #13 e #19 do LeadImobi Core.
+
+---
+
+## Prompt 39 — Task #13 Shared Lead Types
+
+```
+Contexto:
+Estou trabalhando em um projeto Next.js 16 com TypeScript seguindo arquitetura em camadas e spec-driven development.
+
+Arquitetura:
+- src/types contém tipos compartilhados entre camadas
+- domain não pode depender de framework
+- types não devem conter lógica
+- tipagem forte obrigatória
+- evitar acoplamento com Prisma/Zod/Next.js
+
+Objetivo:
+Criar o arquivo `src/types/lead.ts` para o domínio de leads.
+
+Requisitos obrigatórios:
+
+1. Criar:
+export type LeadPriority =
+  | 'Alto'
+  | 'Medio'
+  | 'Baixo'
+  | 'NaoClassificado';
+
+2. Criar interface Lead contendo:
+- id
+- nome
+- email
+- telefone
+- valor_imovel
+- renda_mensal
+- score
+- priority
+- created_at
+
+3. Criar interface CreateLeadInput contendo:
+- nome
+- email
+- telefone
+- valor_imovel
+- renda_mensal
+
+4. Criar union discriminada:
+export type LeadScoreResult =
+  | {
+      valid: true;
+      score: number;
+      priority: LeadPriority;
+    }
+  | {
+      valid: false;
+      priority: 'NaoClassificado';
+    };
+
+Restrições:
+- NÃO importar bibliotecas
+- NÃO importar Prisma
+- NÃO importar Zod
+- NÃO usar any
+- created_at deve ser Date
+- usar TypeScript estrito
+- exportar todos os tipos
+- código limpo e minimalista
+- sem comentários desnecessários
+- sem overengineering
+```
+
+**Objetivo da task:** criar os tipos compartilhados do domínio de leads em `src/types/lead.ts`, sem dependência de frameworks, Prisma ou Zod.
+
+**Resultado esperado:** `LeadPriority`, `Lead`, `CreateLeadInput` e `LeadScoreResult` exportados com tipagem estrita para uso entre camadas.
+
+---
+
+## Prompt 40 — Ajuste da Task #13 Shared Lead Types
+
+```
+A implementação está quase correta, mas há um problema de compatibilidade com o spec do projeto.
+
+No tipo `Lead`, o campo `score` deve aceitar `null`, porque leads classificados como `NaoClassificado` não possuem score válido.
+
+Corrija apenas isso:
+- alterar `score: number`
+- para `score: number | null`
+
+Não altere mais nada no arquivo.
+```
+
+**Objetivo da task:** ajustar a compatibilidade do tipo `Lead` com o spec do projeto para leads `NaoClassificado`.
+
+**Resultado esperado:** campo `score` em `Lead` tipado como `number | null`, sem outras alterações no arquivo.
+
+---
+
+## Prompt 41 — Task #19 Rank Leads Service
+
+```
+Contexto:
+Estou trabalhando em um projeto Next.js 16 com TypeScript seguindo arquitetura em camadas e spec-driven development.
+
+Objetivo:
+Implementar o serviço puro `rank_leads` em `src/services/rank_leads.ts`.
+
+Requisitos obrigatórios:
+- importar apenas de `@/types/lead`
+- exportar função:
+  `rank_leads(leads: Lead[]): Lead[]`
+
+Regras de negócio:
+1. Leads com score válido devem vir primeiro
+2. Ordenar score em ordem decrescente
+3. Em caso de empate:
+   ordenar por created_at crescente
+   (mais antigo primeiro)
+4. Leads com score null
+   (NaoClassificado)
+   devem ficar sempre no final
+5. NÃO modificar o array original
+
+Restrições:
+- função pura
+- sem libs externas
+- sem any
+- sem imports além de @/types/lead
+- código limpo e minimalista
+- evitar sort complexo gigante
+- separar válidos dos nao classificados antes da ordenação
+
+Dica arquitetural:
+- criar cópias do array
+- ordenar apenas válidos
+- concatenar no final
+```
+
+**Objetivo da task:** implementar o serviço puro de ordenação de leads em `src/services/rank_leads.ts`.
+
+**Resultado esperado:** função `rank_leads(leads: Lead[]): Lead[]` exportada, sem modificar o array original, ordenando leads com score válido antes dos não classificados e aplicando desempate por `created_at`.
