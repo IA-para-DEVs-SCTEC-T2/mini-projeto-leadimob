@@ -694,3 +694,86 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+## Prompt 39 — Task #13 Shared Lead Domain Types
+
+Contexto:
+Implementação dos tipos compartilhados do domínio de leads.
+
+Objetivo:
+Criar o arquivo `src/types/lead.ts` contendo contratos reutilizáveis do domínio de leads.
+
+Requisitos:
+
+* criar `LeadPriority`
+* criar `Lead`
+* criar `CreateLeadInput`
+* criar `LeadScoreResult`
+* utilizar TypeScript estrito
+* evitar `any`
+* manter nomenclatura orientada ao domínio
+* manter implementação desacoplada de framework
+
+Resultado:
+Contratos compartilhados preparados para serviços de ranking, listagem e futura integração com repositories.
+
+---
+
+## Prompt 40 — Task #19 Lead Ranking Service
+
+Contexto:
+Implementação de um serviço puro de ranking de leads utilizando os tipos compartilhados do domínio.
+
+Objetivo:
+Criar `src/services/rank_leads.ts`.
+
+Requisitos:
+
+* importar os tipos compartilhados
+* implementar lógica pura de ranking
+* classificar leads por score de qualificação
+* preservar imutabilidade
+* evitar efeitos colaterais
+* utilizar TypeScript estrito
+* sem acoplamento com infraestrutura
+* sem acesso ao Prisma
+* sem `any`
+
+Resultado:
+Serviço puro de priorização de leads isolado da infraestrutura e reutilizável entre as camadas da aplicação.
+
+---
+
+## Prompt 41 — Task #21 List Leads Service
+
+Contexto:
+Implementação do serviço de listagem de leads seguindo arquitetura em camadas e desacoplamento da infraestrutura.
+
+Objetivo:
+Criar `src/services/list_leads.ts`.
+
+Requisitos:
+
+* importar `Lead`
+* importar `rank_leads`
+* criar interface `LeadRepository`
+* repository deve possuir:
+  `find_all(): Promise<Lead[]>`
+* exportar função async:
+  `list_leads(lead_repository: LeadRepository): Promise<Lead[]>`
+
+Regras:
+
+* buscar leads via repository
+* ordenar utilizando `rank_leads`
+* retornar lista ordenada
+* manter desacoplamento da camada de infraestrutura
+* não acessar Prisma diretamente
+* utilizar TypeScript estrito
+* evitar `any`
+* manter código limpo e minimalista
+
+Resultado:
+Serviço de listagem desacoplado da infraestrutura e preparado para futura integração com repositories Prisma.
