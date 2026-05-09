@@ -694,3 +694,37 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+## Prompt 39 — Task #21 List Leads Service
+
+```txt
+Contexto:
+Estou trabalhando em um projeto Next.js 16 com TypeScript seguindo arquitetura em camadas e spec-driven development.
+
+Objetivo:
+Implementar o serviço `list_leads` em `src/services/list_leads.ts`.
+
+Requisitos obrigatórios:
+- importar `Lead`
+- importar `rank_leads`
+- criar interface `LeadRepository`
+- repository deve possuir:
+  `find_all(): Promise<Lead[]>`
+- exportar função async:
+  `list_leads(lead_repository: LeadRepository): Promise<Lead[]>`
+
+Regras:
+- buscar leads via repository
+- ordenar usando `rank_leads`
+- retornar lista ordenada
+- manter desacoplamento da camada de infra
+- não acessar Prisma diretamente
+- sem any
+- TypeScript estrito
+- código limpo e minimalista
+
+Resultado esperado:
+Serviço de listagem desacoplado da infraestrutura, preparado para integração futura com repository Prisma.
+```
