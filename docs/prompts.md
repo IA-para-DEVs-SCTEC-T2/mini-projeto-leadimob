@@ -694,3 +694,38 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+## Prompt 44 — Task #15 Lead Score Rule
+
+Contexto:
+Implementação da regra de domínio responsável pelo cálculo do índice de qualificação financeira dos leads.
+
+Objetivo:
+Criar `src/domain/rules/calculate_lead_score.ts` contendo função pura de cálculo e classificação de leads.
+
+Requisitos implementados:
+
+* `calculate_lead_score`
+* tratamento de entradas inválidas
+* score arredondado para 2 casas
+* classificação:
+
+  * Alto
+  * Medio
+  * Baixo
+  * NaoClassificado
+
+Regras:
+
+* domínio desacoplado de frameworks
+* sem Prisma
+* sem Zod
+* sem Next.js
+* TypeScript estrito
+* sem `any`
+* função pura e determinística
+
+Resultado:
+Camada de regras de domínio preparada para integração futura com `services/create_lead.ts`.
