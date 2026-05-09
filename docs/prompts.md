@@ -694,3 +694,35 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+## Prompt 43 — Task #16 Lead Domain Invariants
+
+Contexto:
+Implementação das invariantes da entidade Lead na camada de domínio.
+
+Objetivo:
+Criar `src/domain/entities/lead.ts` contendo funções puras de domínio para normalização, arredondamento e validação de invariantes.
+
+Requisitos implementados:
+
+* `normalize_email`
+* `round_score`
+* `get_priority_from_score`
+* `validate_lead_invariants`
+
+Regras:
+
+* email normalizado em lowercase
+* score arredondado para 2 casas
+* consistência entre score e priority
+* domínio desacoplado de frameworks
+* sem Prisma
+* sem Zod
+* sem Next.js
+* TypeScript estrito
+* sem `any`
+
+Resultado:
+Camada de domínio preparada para futuras regras de negócio e integração com services/create_lead.ts.
