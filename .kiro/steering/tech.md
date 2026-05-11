@@ -41,13 +41,34 @@ Motivos:
 
 ---
 
-### Prisma ORM
+### Prisma ORM (v7)
 
 Motivos:
 - Tipagem forte com TypeScript
 - Produtividade alta
 - Migrations simples
 - Boa DX (Developer Experience)
+
+#### Driver Adapter (Prisma 7)
+
+O Prisma 7 removeu o query engine binário e migrou para **driver adapters**. O projeto utiliza `@prisma/adapter-pg` com o driver `pg` para conexão com PostgreSQL.
+
+O `PrismaClient` **sempre** deve ser instanciado com um adapter:
+
+```ts
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '../generated/prisma/client'
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const prisma = new PrismaClient({ adapter })
+```
+
+O singleton está em `src/infra/db/prisma.ts` — **nunca instanciar `PrismaClient` diretamente fora desse arquivo**.
+
+Dependências necessárias:
+- `@prisma/adapter-pg` — adapter oficial Prisma 7 para PostgreSQL
+- `pg` — driver Node.js do PostgreSQL
+- `@types/pg` (devDependency) — tipos TypeScript para o `pg`
 
 ---
 
