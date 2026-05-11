@@ -694,3 +694,75 @@ e registre os prompts em docs/prompts.md
 | Diretórios criados | 13 (9 de aplicação + 4 de testes) |
 | Arquivos criados | `.gitkeep` em cada diretório |
 | Status da Task 1 | ✅ Concluída (todas as sub-tasks 1.1 a 1.4 completas) |
+
+---
+
+# Sessão — Correção do Setup do Prisma 7 e Atualização de Dependências
+
+---
+
+## Problema Identificado — Bloqueio da Task #17
+
+Durante a implementação da task #17 (singleton Prisma Client), foi identificada uma incompatibilidade arquitetural no setup base do projeto com o Prisma 7.
+
+O client gerado em `src/generated/prisma` utiliza o novo padrão do Prisma 7, onde o `PrismaClient` exige obrigatoriamente um adapter no construtor. A tentativa de instanciar `new PrismaClient()` sem argumentos gerava erro de TypeScript: `Expected 1 arguments, but got 0`.
+
+O problema não estava na implementação do singleton em si, mas no setup do Prisma — o projeto não possuía nenhum adapter configurado (`@prisma/adapter-pg` ou equivalente). A decisão foi não aplicar workaround local para não introduzir inconsistência arquitetural na base compartilhada.
+
+---
+
+## O que foi executado
+
+### 1. Diagnóstico
+
+- Leitura do `prisma/schema.prisma`, `package.json`, `prisma.config.ts` e do client gerado em `src/generated/prisma/internal/class.ts`
+- Confirmado que o Prisma 7 removeu o query engine binário e migrou para **driver adapters** — o `PrismaClient` sempre exige um adapter explícito no construtor
+- Identificado que `@prisma/adapter-pg` e `pg` não estavam instalados
+
+### 2. Instalação das dependências
+
+- `@prisma/adapter-pg@^7.8.0` adicionado às dependências de produção — adapter oficial do Prisma 7 para PostgreSQL
+- `pg@^8.20.0` adicionado às dependências de produção — driver Node.js do PostgreSQL
+- `@types/pg@^8.20.0` já estava presente nas devDependencies
+
+### 3. Atualização do schema (tentativa e reversão)
+
+- Adicionado `previewFeatures = ["driverAdapters"]` ao `generator client` do `prisma/schema.prisma`
+- Executado `prisma generate` — o Prisma 7 avisou que `driverAdapters` não precisa mais ser declarado como preview feature (já é estável na v7)
+- `previewFeatures` removido do schema — mantido limpo sem configuração desnecessária
+
+### 4. Implementação do singleton — Task #17
+
+Criado `src/infra/db/prisma.ts` com o padrão correto para Prisma 7:
+
+- `PrismaPg` instanciado com `connectionString` via `process.env.DATABASE_URL`
+- `PrismaClient` instanciado com o adapter
+- Singleton via `globalThis` para evitar múltiplas conexões no hot reload do Next.js em desenvolvimento
+- Zero erros de TypeScript confirmados via diagnóstico
+
+### 5. Correção de vulnerabilidade de segurança no Next.js
+
+Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
+
+- **CVE**: `GHSA-26hh-7cqf-hhc6` — Middleware/Proxy bypass no App Router (Next.js 16.0.0–16.2.5)
+- **Solução**: atualização do Next.js de `16.2.5` para `16.2.6`
+- **Resultado**: `found 0 vulnerabilities`
+
+### 6. Atualização dos steering files
+
+- **`nextjs16.md`**: versão atualizada de `Next.js 16` para `Next.js 16.2.6`
+- **`tech.md`**: seção do Prisma ORM expandida com documentação do driver adapter, exemplo de uso correto do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
+
+---
+
+## Contexto da Sessão
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Tasks desbloqueadas | #17 (concluída), #18, parte da #21 |
+| Dependências adicionadas | `@prisma/adapter-pg@^7.8.0`, `pg@^8.20.0` |
+| Next.js atualizado | `16.2.5` → `16.2.6` (CVE `GHSA-26hh-7cqf-hhc6`) |
+| Arquivo criado | `src/infra/db/prisma.ts` |
+| Steering files atualizados | `nextjs16.md`, `tech.md` |
+| Vulnerabilidades | 0 (após atualização do Next.js) |
