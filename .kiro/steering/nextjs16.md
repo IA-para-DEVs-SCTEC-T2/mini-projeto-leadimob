@@ -1,7 +1,7 @@
 # Next.js 16 — Regras e Mudanças Importantes
 
 ## Versão atual do projeto
-**Next.js 16** (estável) — versão mínima exigida neste projeto.
+**Next.js 16.2.6** (estável) — versão mínima exigida neste projeto.
 
 ---
 
