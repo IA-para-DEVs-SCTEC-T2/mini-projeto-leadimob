@@ -697,38 +697,6 @@ e registre os prompts em docs/prompts.md
 
 ---
 
-## Prompt 43 — Task #16 Lead Domain Invariants
-
-Contexto:
-Implementação das invariantes da entidade Lead na camada de domínio.
-
-Objetivo:
-Criar `src/domain/entities/lead.ts` contendo funções puras de domínio para normalização, arredondamento e validação de invariantes.
-
-Requisitos implementados:
-
-* `normalize_email`
-* `round_score`
-* `get_priority_from_score`
-* `validate_lead_invariants`
-
-Regras:
-
-* email normalizado em lowercase
-* score arredondado para 2 casas
-* consistência entre score e priority
-* domínio desacoplado de frameworks
-* sem Prisma
-* sem Zod
-* sem Next.js
-* TypeScript estrito
-* sem `any`
-
-Resultado:
-Camada de domínio preparada para futuras regras de negócio e integração com services/create_lead.ts.
-
----
-
 ## Prompt 39 — Task #13 Shared Lead Domain Types
 
 Contexto:
@@ -809,6 +777,73 @@ Regras:
 
 Resultado:
 Serviço de listagem desacoplado da infraestrutura e preparado para futura integração com repositories Prisma.
+
+---
+
+## Prompt 43 — Task #16 Lead Domain Invariants
+
+Contexto:
+Implementação das invariantes da entidade Lead na camada de domínio.
+
+Objetivo:
+Criar `src/domain/entities/lead.ts` contendo funções puras de domínio para normalização, arredondamento e validação de invariantes.
+
+Requisitos implementados:
+
+* `normalize_email`
+* `round_score`
+* `get_priority_from_score`
+* `validate_lead_invariants`
+
+Regras:
+
+* email normalizado em lowercase
+* score arredondado para 2 casas
+* consistência entre score e priority
+* domínio desacoplado de frameworks
+* sem Prisma
+* sem Zod
+* sem Next.js
+* TypeScript estrito
+* sem `any`
+
+Resultado:
+Camada de domínio preparada para futuras regras de negócio e integração com services/create_lead.ts.
+
+---
+
+## Prompt 44 — Task #15 Lead Score Rule
+
+Contexto:
+Implementação da regra de domínio responsável pelo cálculo do índice de qualificação financeira dos leads.
+
+Objetivo:
+Criar `src/domain/rules/calculate_lead_score.ts` contendo função pura de cálculo e classificação de leads.
+
+Requisitos implementados:
+
+* `calculate_lead_score`
+* tratamento de entradas inválidas
+* score arredondado para 2 casas
+* classificação:
+
+  * Alto
+  * Medio
+  * Baixo
+  * NaoClassificado
+
+Regras:
+
+* domínio desacoplado de frameworks
+* sem Prisma
+* sem Zod
+* sem Next.js
+* TypeScript estrito
+* sem `any`
+* função pura e determinística
+
+Resultado:
+Camada de regras de domínio preparada para integração futura com `services/create_lead.ts`.
 
 ---
 
