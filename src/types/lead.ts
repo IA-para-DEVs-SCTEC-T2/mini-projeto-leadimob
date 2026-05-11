@@ -30,3 +30,17 @@ export type LeadScoreResult =
       valid: false;
       priority: "NaoClassificado";
     };
+
+export interface CreateLeadData {
+  nome: string;
+  email: string;
+  telefone: string;
+  valor_imovel: number;
+  renda_mensal: number;
+  score: number | null;
+  priority: LeadPriority;
+}
+
+export interface LeadRepository {
+  create(data: CreateLeadData): Promise<Lead>;
+}

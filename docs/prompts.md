@@ -847,6 +847,43 @@ Camada de regras de domínio preparada para integração futura com `services/cr
 
 ---
 
+## Prompt 45 — Task #20 Create Lead Service
+
+Contexto:
+Implementação do serviço responsável pela criação de leads e orquestração do fluxo de domínio.
+
+Objetivo:
+Criar `src/services/create_lead.ts` utilizando regras de domínio e abstração de repositório.
+
+Requisitos implementados:
+
+* `create_lead`
+* normalização de email
+* cálculo de score e priority
+* montagem de `CreateLeadData`
+* persistência via `LeadRepository`
+
+Regras:
+
+* service desacoplado de Prisma
+* sem dependência de frameworks
+* uso de funções puras de domínio
+* TypeScript estrito
+* sem `any`
+* sem side effects desnecessários
+
+Arquivos envolvidos:
+
+* `src/services/create_lead.ts`
+* `src/types/lead.ts`
+* `src/domain/entities/lead.ts`
+* `src/domain/rules/calculate_lead_score.ts`
+
+Resultado:
+Camada de aplicação preparada para integração futura com repositórios reais e API/routes.
+
+---
+
 # Sessão — Correção do Setup do Prisma 7 e Atualização de Dependências
 
 ---
