@@ -1420,3 +1420,38 @@ e o prompt deve estar em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\pro
 | Funções implementadas | `format_currency`, `format_score`, `format_date` |
 | Dependências externas | Nenhuma — apenas APIs nativas (`Intl`) |
 | Requisitos cobertos | LI-4.2.1, LI-4.2.2, LI-4.2.3, LI-4.1.3 |
+## Prompt 50 — Task #24 Lead Card Component
+
+Objetivo:
+Criar componente reutilizável `LeadCard` para renderização de leads na UI.
+
+Implementações:
+- criação de `src/components/lead_card.tsx`
+- renderização de:
+  - nome
+  - email
+  - telefone
+  - prioridade
+  - score
+  - valor do imóvel
+  - data de criação
+- integração com:
+  - `format_currency`
+  - `format_score`
+  - `format_date`
+
+Decisões arquiteturais:
+- componente puro e sem estado
+- sem hooks
+- sem lógica de domínio
+- sem dependência de banco
+- sem CSS externo
+- `PriorityBadge` ainda não integrado porque a #23 estava em andamento
+
+Validações:
+- `npx tsc --noEmit`
+- `npm run lint`
+- `npm run build`
+
+Resultado:
+PR #47 mergeada com sucesso na `develop`.
