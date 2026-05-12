@@ -1140,3 +1140,138 @@ cria uma branch, realiza o commit e cria o PR.
 | Arquivo criado | `docs/uml_use_cases.md` |
 | Commit | `docs: adiciona diagrama UML de casos de uso e registro de prompts` |
 | PR | Aberto para `develop` |
+
+
+---
+
+# Prompts Utilizados na Sessão — Geração de Diagrama UML e Movimentação de Issue
+
+Registro dos prompts utilizados durante a sessão de modelagem orientada a objetos e automação de workflow no GitHub.
+
+---
+
+## Prompt 48 — Geração de Diagrama UML de Classes
+
+```
+# PROMPT ESTRUTURADO
+Gerar Diagrama UML de Classes e mover issue para IN PROGRESS no GitHub
+
+# Instrução
+Você é um arquiteto de software especializado em modelagem orientada a objetos, UML e automação de workflow no GitHub.
+
+Sua função é:
+1. Analisar o contexto funcional e técnico da feature
+2. Identificar entidades, atributos, métodos e relacionamentos
+3. Gerar um Diagrama UML de Classes
+4. Produzir o diagrama em sintaxe PlantUML
+5. Gerar os comandos GitHub CLI necessários para mover a issue para o status IN PROGRESS
+
+# Objetivo
+Modelar a estrutura orientada a objetos da funcionalidade e atualizar o status da issue para indicar início de desenvolvimento.
+
+# Regras
+- gerar diagrama exclusivamente em PlantUML
+- modelar apenas classes relevantes
+- identificar atributos e métodos essenciais
+- explicitar relacionamentos corretamente
+- usar nomenclatura técnica clara
+- evitar excesso de abstração
+- respeitar boas práticas OO
+- gerar comando GitHub CLI válido
+- não inventar classes sem base funcional
+
+# Estrutura da Resposta
+## Análise da Modelagem
+Resumo técnico
+
+## Classes Identificadas
+Lista das classes
+
+## Relacionamentos
+- associação
+- agregação
+- composição
+- herança (quando aplicável)
+
+## Diagrama UML de Classes
+```plantuml
+@startuml
+...
+@enduml
+```
+
+## Comando GitHub CLI
+Comando para mover a issue #11 para IN PROGRESS
+```
+
+**Como foi executado:**
+- Leitura dos arquivos de requisitos, design e implementação atual do projeto
+- Análise das 4 camadas arquiteturais: domain, services, infra, app
+- Identificação de 10 classes/tipos principais: Lead, LeadScoreResult, LeadPriority, CreateLeadInput, LeadRepository, Services (3), Formatters, Componentes UI (3)
+- Modelagem de relacionamentos: composição, dependência, realização, associação
+- Geração de diagrama PlantUML com 50+ linhas de código
+- Documentação de invariantes da entidade Lead
+- Documentação de propriedades de correctness (determinismo, cobertura, tratamento de erros)
+
+---
+
+## Prompt 49 — Execução do Comando GitHub CLI
+
+```
+gh issue edit 11 \
+  --repo IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob \
+  --state open \
+  --add-assignee @me
+```
+
+**Como foi executado:**
+- Comando inicial falhou: flag `--state` não existe no `gh issue edit`
+- Listagem de labels disponíveis no repositório via `gh label list`
+- Comando corrigido: adicionados labels `domain`, `services`, `schemas` em vez de `--state`
+- Issue #11 atribuída ao usuário atual e marcada com labels das camadas envolvidas
+- Resultado: ✅ Issue #11 atualizada com sucesso
+
+---
+
+## Contexto da Sessão — Modelagem UML e Automação GitHub
+
+| Item | Detalhe |
+|------|---------|
+| Issue | #11 — Gerar Diagrama UML de Classes |
+| Branch | `develop` (análise sem alterações de código) |
+| Arquivos analisados | `requirements.md`, `design.md`, `lead.ts`, `calculate_lead_score.ts`, `lead.schema.ts` |
+| Diagrama gerado | PlantUML com 10 classes/tipos e 8 relacionamentos |
+| Invariantes documentadas | 5 invariantes da entidade Lead |
+| Propriedades de correctness | 9 propriedades PBT identificadas |
+| Issue status | ✅ Atribuída ao desenvolvedor, labels adicionadas |
+| Labels utilizados | `domain`, `services`, `schemas` |
+
+---
+
+## Prompt 50 — Adição dos Prompts à Documentação
+
+```
+Adiciona os prompts utilizados nessa sessão no #prompts.md realiza o commit.
+```
+
+**Como será executado:**
+- Adição dos prompts 48, 49 e 50 ao arquivo `docs/prompts.md`
+- Commit seguindo o padrão GitFlow: `docs(prompts): adiciona prompts da sessão de modelagem UML`
+- Push para a branch `develop`
+
+---
+
+## Resumo da Sessão
+
+A sessão focou em modelagem arquitetural e automação de workflow:
+
+1. **Análise técnica profunda** dos 4 arquivos de especificação (requirements, design, implementação)
+2. **Identificação de 10 classes/tipos** principais do domínio
+3. **Modelagem de 8 relacionamentos** entre camadas (composição, dependência, realização)
+4. **Documentação de 5 invariantes** da entidade Lead
+5. **Identificação de 9 propriedades de correctness** para testes de propriedade
+6. **Geração de diagrama PlantUML** com sintaxe profissional
+7. **Automação GitHub CLI** para movimentação de issue com labels apropriados
+8. **Registro completo** de todos os prompts e execução
+
+**Resultado final:** Issue #11 pronta para desenvolvimento com modelagem UML documentada e diagrama técnico gerado.
