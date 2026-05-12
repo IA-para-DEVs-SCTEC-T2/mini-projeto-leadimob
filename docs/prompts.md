@@ -953,3 +953,38 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
+
+---
+
+## Prompt 48 — Task #18 Lead Prisma Repository
+
+Contexto:
+Implementação do repository real de leads usando Prisma 7 com adapter pg, mantendo isolamento da infraestrutura.
+
+Objetivo:
+Criar `src/infra/repositories/lead_repository.ts` implementando o contrato LeadRepository com create, find_all e find_by_id.
+
+Requisitos implementados:
+
+* mapper `map_prisma_to_lead`
+* conversão Decimal para number
+* tratamento de score nullable
+* validação de priority
+* tratamento de erro P2002 como EMAIL_ALREADY_EXISTS
+* tratamento dos demais erros como DATABASE_UNAVAILABLE
+* isolamento do Prisma na camada infra
+* compatibilidade com services/create_lead e services/list_leads
+
+Regras:
+
+* sem Prisma em domain/services
+* sem Zod no repository
+* sem Next.js
+* sem lógica de score/ranking
+* sem repository base
+* sem paginação/filtros/update/delete
+* TypeScript strict
+* sem `any`
+
+Resultado:
+Repository Prisma real implementado como fronteira entre persistência e domínio, mantendo Clean Architecture e preparando o projeto para Server Actions, páginas e API.
