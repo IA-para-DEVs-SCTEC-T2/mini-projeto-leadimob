@@ -1014,7 +1014,6 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
-do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
 
 ---
 
@@ -1364,3 +1363,58 @@ A sessão focou em documentação e rastreabilidade:
 6. **Registro de prompts** — documentação de todas as ações executadas
 
 **Resultado final:** PR #43 com descrição completa e profissional, documentando toda a modelagem arquitetural do LeadImobi Core.
+
+# Prompts Utilizados na Sessão — Task #22 Funções de Formatação
+
+Registro dos prompts utilizados durante a sessão de implementação das funções de formatação em `lib/formatters.ts`.
+
+---
+
+## Prompt 51 — Verificação da Task #17 (Singleton Prisma)
+
+```
+Vamos começar a desenvolver uma task: Criar singleton do Prisma Client em infra/db/prisma.ts #17
+[...] Mas para isso, precisamos criar uma nova branch
+```
+
+*(Verificação do arquivo `src/infra/db/prisma.ts` — constatado que o singleton já estava
+implementado corretamente com `PrismaPg`, `globalThis` e proteção contra hot-reload.
+Nenhuma ação necessária — task já concluída.)*
+
+---
+
+## Prompt 52 — Implementação da Task #22 (Funções de Formatação)
+
+```
+Ok, então vamos para a proxima task: Criar funções de formatação em lib/formatters.ts #22
+[...] Comece criando uma branch
+```
+
+*(Criação da branch `feature/lib-formatters` a partir de `develop`.
+Implementação de `src/lib/formatters.ts` com três funções puras:
+`format_currency`, `format_score` e `format_date`.
+Sem dependências externas — uso exclusivo de `Intl.NumberFormat` e `Intl.DateTimeFormat`.)*
+
+---
+
+## Prompt 53 — Commit e Registro de Prompts
+
+```
+Os padrões de commit devem seguir o mini-projeto-leadimob/gitflow.md
+e o prompt deve estar em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md
+```
+
+*(Solicitação de commit das alterações seguindo Conventional Commits e registro dos prompts.)*
+
+---
+
+## Contexto da Sessão — Task #22 Funções de Formatação
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/lib-formatters` |
+| Issue | #22 — Criar funções de formatação em lib/formatters.ts |
+| Arquivo criado | `src/lib/formatters.ts` |
+| Funções implementadas | `format_currency`, `format_score`, `format_date` |
+| Dependências externas | Nenhuma — apenas APIs nativas (`Intl`) |
+| Requisitos cobertos | LI-4.2.1, LI-4.2.2, LI-4.2.3, LI-4.1.3 |
