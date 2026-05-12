@@ -884,6 +884,67 @@ Camada de aplicação preparada para integração futura com repositórios reais
 
 ---
 
+## Prompt 46 — Task #19 Lead Ranking Service Clean
+
+Contexto:
+Reimplementação limpa do serviço de ranking de leads a partir do `develop` atual, substituindo a PR antiga desatualizada.
+
+Objetivo:
+Criar `src/services/rank_leads.ts` contendo função pura de ordenação de leads.
+
+Requisitos implementados:
+
+* `rank_leads`
+* ordenação por score válido desc
+* desempate por `created_at` desc
+* leads com `score === null` ao final
+* preservação de imutabilidade
+
+Regras:
+
+* sem Prisma
+* sem Zod
+* sem Next.js
+* sem infra
+* TypeScript estrito
+* sem `any`
+* função pura e determinística
+
+Resultado:
+Serviço de ranking compatível com os tipos atuais do domínio e preparado para uso pelo serviço de listagem.
+
+---
+
+## Prompt 47 — Task #21 List Leads Service Clean
+
+Contexto:
+Reimplementação limpa do serviço de listagem de leads a partir do `develop` atual, evitando conflitos herdados da PR antiga.
+
+Objetivo:
+Criar `src/services/list_leads.ts` usando abstração de repositório e o serviço `rank_leads`.
+
+Requisitos implementados:
+
+* `list_leads`
+* uso de `LeadRepository`
+* busca via `find_all`
+* ordenação via `rank_leads`
+* retorno de lista ordenada
+
+Regras:
+
+* service desacoplado de Prisma
+* sem dependência de frameworks
+* sem imports de infra
+* TypeScript estrito
+* sem `any`
+* sem sobrescrever arquivos consolidados
+
+Resultado:
+Serviço de listagem compatível com o core atual e preparado para integração futura com repositórios reais.
+
+---
+
 # Sessão — Correção do Setup do Prisma 7 e Atualização de Dependências
 
 ---
