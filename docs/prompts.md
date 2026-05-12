@@ -1275,3 +1275,93 @@ A sessão focou em modelagem arquitetural e automação de workflow:
 8. **Registro completo** de todos os prompts e execução
 
 **Resultado final:** Issue #11 pronta para desenvolvimento com modelagem UML documentada e diagrama técnico gerado.
+
+
+---
+
+# Prompts Utilizados na Sessão — Atualização de Descrição do PR #43
+
+Registro dos prompts utilizados durante a sessão de atualização da descrição do Pull Request #43 com informações completas sobre os diagramas UML gerados.
+
+---
+
+## Prompt 51 — Verificação do PR #43
+
+```
+Atualize a descrição do PR https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/43
+```
+
+**Como foi executado:**
+- Verificação inicial do PR #43 via `gh pr view` para entender seu conteúdo
+- Identificação de que o PR continha apenas diagrama UML de casos de uso
+- Listagem de PRs abertos para confirmar que #43 era o PR da sessão atual
+- Atualização da descrição via `gh pr edit` com conteúdo expandido
+
+---
+
+## Prompt 52 — Atualização da Descrição do PR
+
+**Descrição anterior (resumida):**
+```
+Adiciona documentação visual do sistema LeadImobi através de diagrama UML de casos de uso 
+e registra os prompts utilizados na sessão.
+```
+
+**Descrição atualizada (expandida):**
+```
+Adiciona documentação visual e arquitetural do sistema LeadImobi através de diagramas UML 
+(casos de uso e classes) e registra os prompts utilizados nas sessões de modelagem.
+```
+
+**Seções adicionadas:**
+- Diagrama UML de Classes (Sessão Atual) com 10 classes/tipos, 8 relacionamentos, 5 invariantes, 9 propriedades
+- Notas Técnicas sobre arquitetura em camadas
+- Referência à Issue #11 (Geração de Diagrama UML de Classes)
+- Detalhes técnicos de invariantes e propriedades de correctness
+
+**Resultado:**
+- ✅ PR #43 atualizado com sucesso
+- ✅ Descrição agora documenta ambos os diagramas UML
+- ✅ Rastreabilidade completa para requisitos LI-1 a LI-6
+- ✅ Referência a ambas as issues (#10 e #11)
+
+---
+
+## Contexto da Sessão — Atualização de PR
+
+| Item | Detalhe |
+|------|---------|
+| PR | #43 — `feature/docs-uml-prompts` → `develop` |
+| Comando utilizado | `gh pr edit 43 --repo ... --body "..."` |
+| Seções adicionadas | 3 (Diagrama UML de Classes, Requisitos Relacionados expandido, Notas Técnicas) |
+| Linhas adicionadas | ~40 linhas de documentação |
+| Status | ✅ Atualizado com sucesso |
+| URL | [PR #43](https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/pull/43) |
+
+---
+
+## Prompt 53 — Adição dos Prompts e Commit
+
+```
+Adiciona os prompts utilizados nessa sessão no #prompts.md e realiza o commit.
+```
+
+**Como será executado:**
+- Adição dos prompts 51, 52 e 53 ao arquivo `docs/prompts.md`
+- Commit seguindo o padrão GitFlow: `docs(prompts): adiciona prompts da sessão de atualização do PR #43`
+- Push para a branch `feature/docs-uml-prompts`
+
+---
+
+## Resumo da Sessão
+
+A sessão focou em documentação e rastreabilidade:
+
+1. **Verificação do PR #43** via GitHub CLI
+2. **Identificação de conteúdo** — diagrama UML de casos de uso + prompts
+3. **Expansão da descrição** com diagrama UML de Classes gerado na sessão anterior
+4. **Adição de contexto técnico** — invariantes, propriedades, relacionamentos
+5. **Rastreabilidade completa** — mapeamento para requisitos e issues
+6. **Registro de prompts** — documentação de todas as ações executadas
+
+**Resultado final:** PR #43 com descrição completa e profissional, documentando toda a modelagem arquitetural do LeadImobi Core.
