@@ -1014,7 +1014,8 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
-
+<<<<<<< feature/lib-formatters
+do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
 ---
 
 ## Contexto da Sessão
