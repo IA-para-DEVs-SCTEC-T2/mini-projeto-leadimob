@@ -1014,6 +1014,7 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
+<<<<<<< feature/lib-formatters
 do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
 
 ---
@@ -1197,3 +1198,5 @@ e o prompt deve estar em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\pro
 | Funções implementadas | `format_currency`, `format_score`, `format_date` |
 | Dependências externas | Nenhuma — apenas APIs nativas (`Intl`) |
 | Requisitos cobertos | LI-4.2.1, LI-4.2.2, LI-4.2.3, LI-4.1.3 |
+=======
+>>>>>>> develop

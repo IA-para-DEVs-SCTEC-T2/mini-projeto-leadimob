@@ -44,4 +44,5 @@ export interface CreateLeadData {
 export interface LeadRepository {
   create(data: CreateLeadData): Promise<Lead>;
   find_all(): Promise<Lead[]>;
+  find_by_id(id: string): Promise<Lead | null>;
 }
