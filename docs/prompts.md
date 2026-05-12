@@ -1014,3 +1014,129 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
+do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
+
+---
+
+## Contexto da Sessão
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/setup-base` |
+| Tasks desbloqueadas | #17 (concluída), #18, parte da #21 |
+| Dependências adicionadas | `@prisma/adapter-pg@^7.8.0`, `pg@^8.20.0` |
+| Next.js atualizado | `16.2.5` → `16.2.6` (CVE `GHSA-26hh-7cqf-hhc6`) |
+| Arquivo criado | `src/infra/db/prisma.ts` |
+| Steering files atualizados | `nextjs16.md`, `tech.md` |
+| Vulnerabilidades | 0 (após atualização do Next.js) |
+
+---
+
+# Prompts Utilizados na Sessão — Geração de Diagrama UML e Documentação
+
+Registro dos prompts utilizados durante a sessão de geração do diagrama UML de casos de uso e documentação do projeto.
+
+---
+
+## Prompt 48 — Geração de Diagrama UML de Casos de Uso
+
+```
+## Included Rules (/Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/steering/tech.md) [Workspace]
+## Included Rules (/Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/steering/structure.md) [Workspace]
+## Included Rules (/Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/steering/product.md) [Workspace]
+## Included Rules (/Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/steering/nextjs16.md) [Workspace]
+## Included Rules (/Users/gabrieldasilva/Desktop/mini-projeto-leadimob/.kiro/steering/gitflow.md) [Workspace]
+
+# PROMPT ESTRUTURADO
+Gerar Diagrama UML de Casos de Uso e mover issue para IN PROGRESS no GitHub
+
+# Instrução
+Você é um analista de sistemas especializado em modelagem UML e automação de fluxo de trabalho no GitHub.
+Sua função é:
+1. Analisar o contexto funcional do projeto
+2. Gerar um Diagrama UML de Casos de Uso
+3. Identificar atores, casos de uso e relacionamentos
+4. Produzir o diagrama em sintaxe compatível com PlantUML
+5. Gerar os comandos necessários para mover a issue
+
+# Objetivo
+Documentar visualmente os casos de uso do sistema e atualizar o fluxo de execução da tarefa no GitHub Project.
+
+# Regras
+- gerar diagrama em PlantUML
+- identificar apenas atores relevantes
+- evitar casos de uso redundantes
+- refletir corretamente regras de negócio
+- manter nomenclatura clara
+- organizar visualmente o diagrama
+- gerar comando GitHub CLI válido
+- não inventar funcionalidades fora do contexto fornecido
+
+# Estrutura da Resposta
+## Análise Funcional
+Resumo do entendimento do sistema
+
+## Atores Identificados
+Lista de atores
+
+## Casos de Uso
+Lista dos casos de uso
+
+## Diagrama UML (PlantUML)
+```plantuml
+@startuml
+...
+@enduml
+```
+```
+
+*(Análise completa do projeto LeadImobi com 1 ator (Corretor) e 6 casos de uso principais)*
+
+---
+
+## Prompt 49 — Criação do Arquivo UML na Pasta docs
+
+```
+Cria o arquivo com Diagrama UML no pasta docs
+```
+
+*(Arquivo `docs/uml_use_cases.md` criado com diagrama PlantUML, especificações de casos de uso,
+fluxos principais e mapeamento para requisitos)*
+
+---
+
+## Contexto da Sessão — Geração de Diagrama UML
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo criado | `docs/uml_use_cases.md` |
+| Atores identificados | 1 (Corretor) |
+| Casos de uso | 6 (UC-1 a UC-6) |
+| Relacionamentos | 5 inclusões (<<include>>) |
+| Diagrama | PlantUML com 6 use cases e notas explicativas |
+| Fluxos documentados | 3 fluxos principais (Cadastro, Listagem, Detalhe) |
+| Especificações | Detalhadas para cada caso de uso com pré/pós-condições |
+
+---
+
+## Prompt 50 — Adição de Prompts e Criação de PR
+
+```
+Adiciona os promts utilizados nessa sessão no /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md,
+cria uma branch, realiza o commit e cria o PR.
+```
+
+*(Solicitação de atualização do prompts.md, criação de branch feature, commit e abertura de PR)*
+
+---
+
+## Contexto da Sessão — Adição de Prompts e PR
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/docs-uml-prompts` |
+| Arquivo atualizado | `docs/prompts.md` |
+| Prompts adicionados | 3 (Prompts 48, 49, 50) |
+| Arquivo criado | `docs/uml_use_cases.md` |
+| Commit | `docs: adiciona diagrama UML de casos de uso e registro de prompts` |
+| PR | Aberto para `develop` |
