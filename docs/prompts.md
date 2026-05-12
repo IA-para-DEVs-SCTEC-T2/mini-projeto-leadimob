@@ -1141,7 +1141,6 @@ cria uma branch, realiza o commit e cria o PR.
 | Commit | `docs: adiciona diagrama UML de casos de uso e registro de prompts` |
 | PR | Aberto para `develop` |
 
-
 ---
 
 # Prompts Utilizados na Sessão — Geração de Diagrama UML e Movimentação de Issue
