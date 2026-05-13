@@ -1455,3 +1455,244 @@ Validações:
 
 Resultado:
 PR #47 mergeada com sucesso na `develop`.
+
+
+---
+
+# Prompts Utilizados na Sessão — Geração do PRD (Product Requirements Document)
+
+Registro dos prompts utilizados durante a sessão de criação do documento de requisitos do produto LeadImobi.
+
+---
+
+## Prompt 54 — Geração do PRD Completo
+
+```
+# PROMPT ESTRUTURADO
+Criar o arquivo /docs/PRD.md com a documentação completa de requisitos do produto
+
+# Instrução
+Você é um Product Manager técnico especializado em documentação de produto e definição funcional de sistemas.
+Sua função é criar o arquivo:/docs/PRD.mdcontendo a especificação completa do produto, estruturada de forma técnica, clara e organizada.
+
+# Objetivo
+Gerar um Product Requirements Document (PRD) completo que sirva como referência funcional para desenvolvimento, 
+arquitetura, planejamento e validação do produto.
+
+# Regras
+- criar exclusivamente o arquivo /docs/PRD.md
+- utilizar markdown
+- manter estrutura padronizada
+- escrever com linguagem técnica e objetiva
+- detalhar requisitos funcionais e não funcionais
+- evitar ambiguidades
+- garantir rastreabilidade funcional
+- não incluir código
+- não gerar implementação
+- considerar visão de negócio e visão técnica
+
+# Estrutura Obrigatória do PRD
+1. Visão do Produto
+2. Problema Resolvido
+3. Objetivos do Produto
+4. Funcionalidades
+5. Regras de Negócio
+6. Fluxos Funcionais
+7. Requisitos Funcionais
+8. Requisitos Não Funcionais
+9. Arquitetura Funcional
+10. Critérios de Sucesso
+11. Restrições
+12. Premissas
+13. Riscos
+```
+
+*(Geração completa do PRD com 13 seções, 50+ requisitos funcionais, 8 regras de negócio,
+6 fluxos funcionais, 7 critérios de sucesso, 5 riscos identificados e 6 premissas documentadas)*
+
+---
+
+## Contexto da Sessão — Geração do PRD
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo criado | `docs/PRD.md` |
+| Seções | 13 (Visão, Problema, Objetivos, Funcionalidades, Regras, Fluxos, RF, RNF, Arquitetura, Critérios, Restrições, Premissas, Riscos) |
+| Requisitos Funcionais | 10 (RF01–RF10) |
+| Requisitos Não Funcionais | 8 (RNF01–RNF08) |
+| Regras de Negócio | 8 (RN01–RN08) |
+| Fluxos Funcionais | 5 (Principal + 3 Alternativos + Exceções) |
+| Funcionalidades | 5 (Cadastro, Cálculo, Classificação, Listagem, Detalhes) |
+| Critérios de Sucesso | 7 métricas objetivas |
+| Riscos Identificados | 5 (2 Funcionais, 2 Técnicos, 1 Operacional) |
+| Premissas | 6 |
+| Restrições | 5 (3 Técnicas, 2 Operacionais) |
+| Módulos Arquiteturais | 5 (Apresentação, Domínio, Serviços, Infraestrutura, Validação) |
+| Glossário | 6 termos técnicos |
+| Referências | Steering files (tech.md, structure.md, product.md, nextjs16.md, gitflow.md) |
+
+---
+
+## Prompt 55 — Adição dos Prompts à Documentação
+
+```
+Adiciona os prompts utilizados nessa sessão no /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md
+```
+
+*(Solicitação de atualização do prompts.md com os prompts 54 e 55 da sessão de geração do PRD)*
+
+---
+
+## Resumo da Sessão — Geração do PRD
+
+A sessão focou em documentação de requisitos de produto:
+
+1. **Análise técnica profunda** dos steering files (tech.md, structure.md, product.md, nextjs16.md, gitflow.md)
+2. **Estruturação de 13 seções** do PRD seguindo padrão de Product Management
+3. **Documentação de 10 requisitos funcionais** (RF01–RF10) com rastreabilidade
+4. **Definição de 8 requisitos não funcionais** (RNF01–RNF08) cobrindo performance, segurança, usabilidade, observabilidade
+5. **Especificação de 8 regras de negócio** (RN01–RN08) com condições e resultados esperados
+6. **Modelagem de 5 fluxos funcionais** (principal + 3 alternativos + exceções)
+7. **Identificação de 5 riscos** com probabilidade, impacto e mitigação
+8. **Definição de 7 critérios de sucesso** com métricas objetivas
+9. **Documentação de 5 restrições** (técnicas e operacionais)
+10. **Registro de 6 premissas** do projeto
+11. **Descrição de 5 funcionalidades** principais com valor gerado e dependências
+12. **Modelagem de arquitetura funcional** com 5 módulos e fluxo de dados
+13. **Criação de glossário** com 6 termos técnicos
+
+**Resultado final:** PRD completo e profissional pronto para servir como referência para desenvolvimento, arquitetura, planejamento e validação do produto LeadImobi.
+
+---
+
+# Prompts Utilizados na Sessão — Task #22 Funções de Formatação
+
+Registro dos prompts utilizados durante a sessão de implementação das funções de formatação em `lib/formatters.ts`.
+
+---
+
+## Prompt 56 — Verificação da Task #17 (Singleton Prisma)
+
+```
+Vamos começar a desenvolver uma task: Criar singleton do Prisma Client em infra/db/prisma.ts #17
+[...] Mas para isso, precisamos criar uma nova branch
+```
+
+*(Verificação do arquivo `src/infra/db/prisma.ts` — constatado que o singleton já estava
+implementado corretamente com `PrismaPg`, `globalThis` e proteção contra hot-reload.
+Nenhuma ação necessária — task já concluída.)*
+
+---
+
+## Prompt 57 — Implementação da Task #22 (Funções de Formatação)
+
+```
+Ok, então vamos para a proxima task: Criar funções de formatação em lib/formatters.ts #22
+[...] Comece criando uma branch
+```
+
+*(Criação da branch `feature/lib-formatters` a partir de `develop`.
+Implementação de `src/lib/formatters.ts` com três funções puras:
+`format_currency`, `format_score` e `format_date`.
+Sem dependências externas — uso exclusivo de `Intl.NumberFormat` e `Intl.DateTimeFormat`.)*
+
+---
+
+## Prompt 58 — Commit e Registro de Prompts
+
+```
+Os padrões de commit devem seguir o mini-projeto-leadimob/gitflow.md
+e o prompt deve estar em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md
+```
+
+*(Solicitação de commit das alterações seguindo Conventional Commits e registro dos prompts.)*
+
+---
+
+## Contexto da Sessão — Task #22 Funções de Formatação
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/lib-formatters` |
+| Issue | #22 — Criar funções de formatação em lib/formatters.ts |
+| Arquivo criado | `src/lib/formatters.ts` |
+| Funções implementadas | `format_currency`, `format_score`, `format_date` |
+| Dependências externas | Nenhuma — apenas APIs nativas (`Intl`) |
+| Requisitos cobertos | LI-4.2.1, LI-4.2.2, LI-4.2.3, LI-4.1.3 |
+| Testes | Validação manual com `npm run build` e `npm run lint` |
+| Status | ✅ Concluída |
+
+---
+
+## Prompt 59 — Task #24 Lead Card Component
+
+```
+Objetivo:
+Criar componente reutilizável `LeadCard` para renderização de leads na UI.
+
+Implementações:
+- criação de `src/components/lead_card.tsx`
+- renderização de:
+  - nome
+  - email
+  - telefone
+  - prioridade
+  - score
+  - valor do imóvel
+  - data de criação
+- integração com:
+  - `format_currency`
+  - `format_score`
+  - `format_date`
+
+Decisões arquiteturais:
+- componente puro e sem estado
+- sem hooks
+- sem lógica de domínio
+- sem dependência de banco
+- sem CSS externo
+- `PriorityBadge` ainda não integrado porque a #23 estava em andamento
+
+Validações:
+- `npx tsc --noEmit`
+- `npm run lint`
+- `npm run build`
+
+Resultado:
+PR #47 mergeada com sucesso na `develop`.
+```
+
+*(Implementação do componente LeadCard com integração de formatadores e validação de tipos)*
+
+---
+
+## Contexto da Sessão — Task #24 Lead Card Component
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/lead-card` |
+| Issue | #24 — Criar componente LeadCard em components/lead_card.tsx |
+| Arquivo criado | `src/components/lead_card.tsx` |
+| Componente | React functional component puro (sem estado) |
+| Props | `lead: Lead` |
+| Integração | `format_currency`, `format_score`, `format_date` |
+| Dependências | Nenhuma (apenas React e tipos) |
+| Requisitos cobertos | LI-5.1.1, LI-5.1.2, LI-5.1.3 |
+| Validações | TypeScript strict, ESLint, build |
+| Status | ✅ Concluída (PR #47 mergeada) |
+
+---
+
+## Resumo da Sessão — Implementação de Componentes e Formatadores
+
+A sessão focou em implementação de camada de apresentação:
+
+1. **Verificação da Task #17** — Singleton Prisma já implementado corretamente
+2. **Implementação da Task #22** — Funções de formatação puras sem dependências externas
+3. **Implementação da Task #24** — Componente LeadCard reutilizável com integração de formatadores
+4. **Validação de tipos** — TypeScript strict em todos os arquivos
+5. **Linting e build** — Verificação de qualidade de código
+6. **Commits seguindo GitFlow** — Conventional Commits com prefixos apropriados
+7. **Registro de prompts** — Documentação completa de todas as ações
+
+**Resultado final:** Camada de apresentação com componentes reutilizáveis e funções de formatação prontas para integração com a camada de serviços.
