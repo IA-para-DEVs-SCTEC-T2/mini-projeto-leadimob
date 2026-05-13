@@ -1014,22 +1014,6 @@ Durante o `npm install`, foi identificada 1 vulnerabilidade `high` no Next.js:
 | Arquivo criado | `src/infra/db/prisma.ts` |
 | Steering files atualizados | `nextjs16.md`, `tech.md` |
 | Vulnerabilidades | 0 (após atualização do Next.js) |
-<<<<<<< feature/lib-formatters
-do `PrismaClient`, referência ao singleton como ponto único de instanciação e lista das dependências necessárias
-
----
-
-## Contexto da Sessão
-
-| Item | Detalhe |
-|------|---------|
-| Branch | `feature/setup-base` |
-| Tasks desbloqueadas | #17 (concluída), #18, parte da #21 |
-| Dependências adicionadas | `@prisma/adapter-pg@^7.8.0`, `pg@^8.20.0` |
-| Next.js atualizado | `16.2.5` → `16.2.6` (CVE `GHSA-26hh-7cqf-hhc6`) |
-| Arquivo criado | `src/infra/db/prisma.ts` |
-| Steering files atualizados | `nextjs16.md`, `tech.md` |
-| Vulnerabilidades | 0 (após atualização do Next.js) |
 
 ---
 
@@ -1144,6 +1128,87 @@ cria uma branch, realiza o commit e cria o PR.
 
 ---
 
+# Prompts Utilizados na Sessão — Implementação do Componente PriorityBadge
+
+Registro dos prompts utilizados durante a sessão de implementação da issue #23 na branch `feature/priority-badge`.
+
+---
+
+## Prompt 51 — Início da Task #23 (PriorityBadge) e Criação de Branch
+
+```
+Vamos desenvolver essa task do https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1:
+Criar componente PriorityBadge em components/priority_badge.tsx #23
+
+Contexto
+Implementar Server Component para exibir visualmente a classificação de prioridade do lead com cores distintas.
+
+Requisito Relacionado
+LI-3.2.1 — Badge verde para Alto
+LI-3.2.2 — Badge amarelo para Medio
+LI-3.2.3 — Badge vermelho para Baixo
+LI-3.2.4 — Badge cinza para NaoClassificado
+LI-2.2.4 — Exibir "Não classificado" para leads sem índice
+
+Objetivo
+Ter um componente reutilizável que renderiza badges coloridos conforme a prioridade.
+
+Critérios de Aceite
+Server Component com prop priority: LeadPriority
+Alto → badge verde (bg-green-100 text-green-800)
+Medio → badge amarelo (bg-yellow-100 text-yellow-800)
+Baixo → badge vermelho (bg-red-100 text-red-800)
+NaoClassificado → badge cinza (bg-gray-100 text-gray-600)
+Texto: "Alto", "Médio", "Baixo", "Não classificado"
+
+Observações Técnicas
+Arquivo: src/components/priority_badge.tsx
+Server Component (sem 'use client')
+
+mas antes precisamos criar uma nova branch
+```
+
+*(Branch `feature/priority-badge` criada a partir de `develop` — componente implementado em `src/components/priority_badge.tsx` como Server Component com `BADGE_CONFIG` estático para cobertura exaustiva de tipos)*
+
+---
+
+## Prompt 52 — Validação dos Critérios de Aceite
+
+```
+Esta tudo de acordo?
+Critérios de Aceite
+Server Component com prop priority: LeadPriority
+Alto → badge verde (bg-green-100 text-green-800)
+Medio → badge amarelo (bg-yellow-100 text-yellow-800)
+Baixo → badge vermelho (bg-red-100 text-red-800)
+NaoClassificado → badge cinza (bg-gray-100 text-gray-600)
+Texto: "Alto", "Médio", "Baixo", "Não classificado"
+```
+
+*(Verificação confirmada — todos os 7 critérios atendidos)*
+
+---
+
+## Prompt 53 — Adição de Prompts, Commit e PR
+
+```
+Adicione os prompts da Session em docs/prompts.md, faça o commit e abra o PR
+```
+
+*(Atualização do prompts.md, commit e abertura de PR para `develop`)*
+
+---
+
+## Contexto da Sessão — PriorityBadge
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/priority-badge` |
+| Issue | #23 — Criar componente PriorityBadge em components/priority_badge.tsx |
+| Arquivo criado | `src/components/priority_badge.tsx` |
+| Padrão | Server Component (sem `'use client'`) |
+| Implementação | `BADGE_CONFIG` como `Record<LeadPriority, ...>` — cobertura exaustiva garantida pelo TypeScript |
+| Critérios atendidos | 7/7 (100%) |
 # Prompts Utilizados na Sessão — Geração de Diagrama UML e Movimentação de Issue
 
 Registro dos prompts utilizados durante a sessão de modelagem orientada a objetos e automação de workflow no GitHub.
