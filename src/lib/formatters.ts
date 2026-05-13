@@ -37,3 +37,21 @@ export const format_date = (date: Date): string => {
     hour12: false,
   }).format(date)
 }
+
+/**
+ * Formata um CPF no padrão brasileiro XXX.XXX.XXX-XX.
+ * Aceita CPF com ou sem formatação e retorna sempre formatado.
+ * Exemplo: "12345678901" → "123.456.789-01" | "123.456.789-01" → "123.456.789-01"
+ */
+export const format_cpf = (cpf: string): string => {
+  // Remove caracteres não numéricos
+  const clean_cpf = cpf.replace(/\D/g, '')
+
+  // Valida se tem 11 dígitos
+  if (clean_cpf.length !== 11) {
+    return cpf // Retorna original se inválido
+  }
+
+  // Formata como XXX.XXX.XXX-XX
+  return clean_cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+}

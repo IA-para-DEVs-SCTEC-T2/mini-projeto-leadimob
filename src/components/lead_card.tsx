@@ -4,6 +4,7 @@ import {
   format_currency,
   format_date,
   format_score,
+  format_cpf,
 } from "@/lib/formatters";
 
 interface LeadCardProps {
@@ -51,6 +52,11 @@ export default function LeadCard({ lead }: LeadCardProps) {
         <div style={row_style}>
           <dt style={label_style}>Email</dt>
           <dd style={value_style}>{lead.email}</dd>
+        </div>
+
+        <div style={row_style}>
+          <dt style={label_style}>CPF</dt>
+          <dd style={value_style}>{format_cpf(lead.cpf)}</dd>
         </div>
 
         <div style={row_style}>
