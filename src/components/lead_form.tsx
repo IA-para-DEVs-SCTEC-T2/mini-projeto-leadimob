@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { CSSProperties, ChangeEvent, FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useState, useTransition } from "react";
 import {
   CreateLeadSchema,
@@ -32,60 +32,6 @@ const empty_values: LeadFormValues = {
   telefone: "",
   valor_imovel: "",
   renda_mensal: "",
-};
-
-const form_style: CSSProperties = {
-  display: "grid",
-  gap: "16px",
-  maxWidth: "520px",
-};
-
-const field_style: CSSProperties = {
-  display: "grid",
-  gap: "6px",
-};
-
-const label_style: CSSProperties = {
-  color: "#111827",
-  fontWeight: 600,
-};
-
-const input_style: CSSProperties = {
-  border: "1px solid #d1d5db",
-  borderRadius: "6px",
-  font: "inherit",
-  padding: "10px 12px",
-};
-
-const error_style: CSSProperties = {
-  color: "#b91c1c",
-  fontSize: "14px",
-  margin: 0,
-};
-
-const actions_style: CSSProperties = {
-  display: "flex",
-  gap: "12px",
-};
-
-const button_style: CSSProperties = {
-  border: "1px solid #111827",
-  borderRadius: "6px",
-  cursor: "pointer",
-  font: "inherit",
-  padding: "10px 14px",
-};
-
-const submit_button_style: CSSProperties = {
-  ...button_style,
-  background: "#111827",
-  color: "#ffffff",
-};
-
-const cancel_button_style: CSSProperties = {
-  ...button_style,
-  background: "#ffffff",
-  color: "#111827",
 };
 
 function validate_form(values: LeadFormValues): {
@@ -208,47 +154,49 @@ export default function LeadForm({
   }
 
   return (
-    <form noValidate onSubmit={handle_submit} style={form_style}>
+    <form noValidate onSubmit={handle_submit} className="space-y-4">
       {server_error !== null && (
-        <div style={{ ...error_style, marginBottom: "8px" }}>
+        <div className="rounded bg-red-600 px-4 py-2 text-sm text-red-100">
           {server_error}
         </div>
       )}
 
-      <div style={field_style}>
-        <label htmlFor="nome" style={label_style}>
+      <div className="space-y-2">
+        <label htmlFor="nome" className="block font-semibold text-slate-100">
           Nome
         </label>
         <input
           id="nome"
           name="nome"
           onChange={handle_change}
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="text"
           value={values.nome}
         />
-        {errors.nome !== undefined && <p style={error_style}>{errors.nome}</p>}
+        {errors.nome !== undefined && (
+          <p className="text-sm text-red-400">{errors.nome}</p>
+        )}
       </div>
 
-      <div style={field_style}>
-        <label htmlFor="email" style={label_style}>
+      <div className="space-y-2">
+        <label htmlFor="email" className="block font-semibold text-slate-100">
           Email
         </label>
         <input
           id="email"
           name="email"
           onChange={handle_change}
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="email"
           value={values.email}
         />
         {errors.email !== undefined && (
-          <p style={error_style}>{errors.email}</p>
+          <p className="text-sm text-red-400">{errors.email}</p>
         )}
       </div>
 
-      <div style={field_style}>
-        <label htmlFor="cpf" style={label_style}>
+      <div className="space-y-2">
+        <label htmlFor="cpf" className="block font-semibold text-slate-100">
           CPF
         </label>
         <input
@@ -256,35 +204,35 @@ export default function LeadForm({
           name="cpf"
           onChange={handle_change}
           placeholder="000.000.000-00"
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="text"
           value={values.cpf}
         />
         {errors.cpf !== undefined && (
-          <p style={error_style}>{errors.cpf}</p>
+          <p className="text-sm text-red-400">{errors.cpf}</p>
         )}
       </div>
 
-      <div style={field_style}>
-        <label htmlFor="telefone" style={label_style}>
+      <div className="space-y-2">
+        <label htmlFor="telefone" className="block font-semibold text-slate-100">
           Telefone
         </label>
         <input
           id="telefone"
           name="telefone"
           onChange={handle_change}
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="tel"
           value={values.telefone}
         />
         {errors.telefone !== undefined && (
-          <p style={error_style}>{errors.telefone}</p>
+          <p className="text-sm text-red-400">{errors.telefone}</p>
         )}
       </div>
 
-      <div style={field_style}>
-        <label htmlFor="valor_imovel" style={label_style}>
-          Valor do imovel
+      <div className="space-y-2">
+        <label htmlFor="valor_imovel" className="block font-semibold text-slate-100">
+          Valor do imóvel
         </label>
         <input
           id="valor_imovel"
@@ -292,17 +240,17 @@ export default function LeadForm({
           name="valor_imovel"
           onChange={handle_change}
           step="0.01"
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="number"
           value={values.valor_imovel}
         />
         {errors.valor_imovel !== undefined && (
-          <p style={error_style}>{errors.valor_imovel}</p>
+          <p className="text-sm text-red-400">{errors.valor_imovel}</p>
         )}
       </div>
 
-      <div style={field_style}>
-        <label htmlFor="renda_mensal" style={label_style}>
+      <div className="space-y-2">
+        <label htmlFor="renda_mensal" className="block font-semibold text-slate-100">
           Renda mensal
         </label>
         <input
@@ -311,22 +259,26 @@ export default function LeadForm({
           name="renda_mensal"
           onChange={handle_change}
           step="0.01"
-          style={input_style}
+          className="w-full rounded border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
           type="number"
           value={values.renda_mensal}
         />
         {errors.renda_mensal !== undefined && (
-          <p style={error_style}>{errors.renda_mensal}</p>
+          <p className="text-sm text-red-400">{errors.renda_mensal}</p>
         )}
       </div>
 
-      <div style={actions_style}>
-        <button disabled={isPending} style={submit_button_style} type="submit">
+      <div className="flex gap-3 pt-4">
+        <button
+          disabled={isPending}
+          className="flex-1 rounded bg-yellow-400 px-4 py-2 font-semibold text-slate-900 transition-colors hover:bg-yellow-500 disabled:opacity-50"
+          type="submit"
+        >
           {isPending ? "Salvando..." : "Salvar"}
         </button>
         <button
           onClick={handle_cancel}
-          style={cancel_button_style}
+          className="flex-1 rounded border border-slate-600 bg-slate-700 px-4 py-2 font-semibold text-slate-100 transition-colors hover:bg-slate-600"
           type="button"
         >
           Cancelar
