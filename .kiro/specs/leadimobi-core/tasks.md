@@ -87,7 +87,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Importar apenas de `@/types/lead` — sem dependências de Zod, Prisma ou Next.js
     - _Requirements: LI-2.1.1, LI-2.1.2, LI-2.1.3, LI-2.1.4, LI-2.2.1, LI-2.2.2, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3, LI-5.2.1, LI-5.2.2, LI-5.2.3_
 
-  - [ ]* 5.2 Escrever testes de propriedade para `calculate_lead_score` (Properties 1, 2, 3 e 4)
+  - [x]* 5.2 Escrever testes de propriedade para `calculate_lead_score` (Properties 1, 2, 3 e 4)
     - **Property 1: Determinismo do cálculo**
     - Usar `fc.tuple(fc.float({ min: 0.01 }), fc.float({ min: 0.01 }))` e verificar que duas chamadas com os mesmos argumentos retornam resultado idêntico
     - Anotar com `// Feature: leadimobi-core, Property 1: Determinismo do cálculo`
@@ -102,7 +102,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Anotar com `// Feature: leadimobi-core, Property 4: Consistência da fórmula`
     - **Validates: Requirements LI-2.1.1, LI-2.1.2, LI-2.1.4, LI-2.2.1, LI-2.2.2, LI-2.2.5, LI-2.3.4, LI-2.3.5**
 
-  - [ ]* 5.3 Escrever testes unitários para `calculate_lead_score`
+  - [x]* 5.3 Escrever testes unitários para `calculate_lead_score`
     - Testar casos concretos: Renda R$ 12.000 + Imóvel R$ 400.000 → score 90,00, priority `Alto`; Renda R$ 6.000 + Imóvel R$ 380.000 → score 94,74, priority `Alto`; Renda R$ 3.000 + Imóvel R$ 450.000 → score 24,00, priority `Baixo`; `valor_imovel = 0` → `{ valid: false, priority: 'NaoClassificado' }`; `renda_mensal = 0` → `{ valid: false, priority: 'NaoClassificado' }`
     - Testar fronteiras: score exatamente 80 → `Alto`; score exatamente 40 → `Medio`; score 39,99 → `Baixo`
     - _Requirements: LI-2.1.5, LI-2.1.6, LI-2.2.1, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3_
@@ -155,11 +155,11 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Anotar com `// Feature: leadimobi-core, Property 5: Ordenação estável da lista priorizada`
     - **Validates: Requirements LI-3.1.1, LI-3.1.2, LI-3.1.4**
 
-  - [ ]* 8.3 Escrever testes unitários para `rank_leads`
+  - [x]* 8.3 Escrever testes unitários para `rank_leads`
     - Testar: lista com Alto, Baixo, Médio → retorna Alto, Médio, Baixo; `NaoClassificado` misturado → vai ao final; lista vazia → retorna array vazio; dois leads com mesmo score → desempate por `created_at` mais antigo primeiro
     - _Requirements: LI-3.1.1, LI-3.1.2, LI-3.1.4_
 
-  - [ ] 8.4 Criar `src/services/create_lead.ts`
+  - [x] 8.4 Criar `src/services/create_lead.ts`
     - Implementar `async function create_lead(input: CreateLeadInput): Promise<Lead>`
     - Normalizar o email com `normalize_email(input.email)` antes de qualquer operação (invariante da entidade)
     - Chamar `calculate_lead_score(input.renda_mensal, input.valor_imovel)` para obter `{ score, priority }`
@@ -168,59 +168,59 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Propagar erros tipados do repositório (`EMAIL_ALREADY_EXISTS`, `DATABASE_UNAVAILABLE`) sem transformação
     - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.2, LI-1.3.5, LI-2.2.3, LI-6.1.3_
 
-  - [ ]* 8.5 Escrever testes de integração para `create_lead` com mock do repositório
+  - [x]* 8.5 Escrever testes de integração para `create_lead` com mock do repositório
     - Mockar `lead_repository` com Jest (`jest.mock`)
     - Testar: input válido com renda/imóvel → score calculado e persistido com priority correta; input com `valor_imovel = 0` → lead criado com `priority: 'NaoClassificado'` e `score: null`; repositório lança `EMAIL_ALREADY_EXISTS` → service propaga o erro
     - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.5, LI-2.2.3_
 
-  - [ ] 8.6 Criar `src/services/list_leads.ts`
+  - [x] 8.6 Criar `src/services/list_leads.ts`
     - Implementar `async function list_leads(): Promise<Lead[]>`
     - Chamar `lead_repository.find_all()` para obter todos os leads
     - Passar o array para `rank_leads(leads)` e retornar o resultado ordenado
     - _Requirements: LI-3.1.1, LI-3.1.5_
 
-  - [ ]* 8.7 Escrever teste de integração para consistência da lista após criação (Property 9)
+  - [x]* 8.7 Escrever teste de integração para consistência da lista após criação (Property 9)
     - **Property 9: Consistência da lista após criação de lead**
     - Mockar `lead_repository` para simular `create` seguido de `find_all` retornando o lead criado
     - Verificar que o resultado de `list_leads()` após `create_lead(input)` contém o novo lead e que `rank_leads` o posiciona corretamente (score desc, created_at asc, NaoClassificado ao final)
     - Anotar com `// Feature: leadimobi-core, Property 9: Consistência da lista após criação de lead`
     - **Validates: Requirements LI-3.1.3**
 
-- [ ] 9. Checkpoint — serviços e domínio integrados
+- [x] 9. Checkpoint — serviços e domínio integrados
   - Garantir que todos os testes das tarefas 8.2, 8.3 e 8.5 passam. Verificar que `services/` é a única camada que acessa `infra/`. Perguntar ao usuário se há dúvidas antes de prosseguir.
 
-- [ ] 10. Camada `lib/` — formatadores
-  - [ ] 10.1 Criar `src/lib/formatters.ts` com funções puras de formatação
+- [x] 10. Camada `lib/` — formatadores
+  - [x] 10.1 Criar `src/lib/formatters.ts` com funções puras de formatação
     - Implementar `function format_currency(value: number): string` — formata para `"R$ X.XXX,XX"` usando `Intl.NumberFormat` com locale `'pt-BR'` e style `'currency'` currency `'BRL'`
     - Implementar `function format_score(value: number | null): string` — retorna valor com 2 casas decimais usando `toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })` ou `"—"` se null
     - Implementar `function format_date(date: Date): string` — formata para `"DD/MM/AAAA HH:MM"` usando `Intl.DateTimeFormat` com locale `'pt-BR'`
     - Sem dependências de estado, framework ou banco de dados
     - _Requirements: LI-4.2.1, LI-4.2.2, LI-4.2.3, LI-4.1.3_
 
-  - [ ]* 10.2 Escrever testes de propriedade para `format_currency` (Property 6)
+  - [x]* 10.2 Escrever testes de propriedade para `format_currency` (Property 6)
     - **Property 6: Round-trip de formatação monetária**
     - Usar `fc.float({ min: 0.01, max: 1_000_000 })` e verificar que o resultado começa com `"R$ "` e contém exatamente uma vírgula com exatamente dois dígitos após ela
     - Anotar com `// Feature: leadimobi-core, Property 6: Round-trip de formatação monetária`
     - **Validates: Requirements LI-4.2.1, LI-4.2.4**
 
-  - [ ]* 10.3 Escrever testes unitários para `formatters.ts`
+  - [x]* 10.3 Escrever testes unitários para `formatters.ts`
     - Testar: `format_currency(12000)` → `"R$ 12.000,00"`; `format_currency(400000)` → `"R$ 400.000,00"`; `format_score(90)` → `"90,00"`; `format_score(null)` → `"—"`; `format_date(new Date('2024-01-15T10:30:00'))` → `"15/01/2024 10:30"`
     - _Requirements: LI-4.2.1, LI-4.2.2, LI-4.1.3_
 
-- [ ] 11. Camada `components/` — componentes de UI reutilizáveis
-  - [ ] 11.1 Criar `src/components/priority_badge.tsx`
+- [x] 11. Camada `components/` — componentes de UI reutilizáveis
+  - [x] 11.1 Criar `src/components/priority_badge.tsx`
     - Implementar Server Component `PriorityBadge` com prop `priority: LeadPriority`
     - Mapear prioridade para classes Tailwind: `Alto` → badge verde (`bg-green-100 text-green-800`); `Medio` → badge amarelo (`bg-yellow-100 text-yellow-800`); `Baixo` → badge vermelho (`bg-red-100 text-red-800`); `NaoClassificado` → badge cinza (`bg-gray-100 text-gray-600`)
     - Renderizar texto: `Alto` → "Alto"; `Medio` → "Médio"; `Baixo` → "Baixo"; `NaoClassificado` → "Não classificado"
     - _Requirements: LI-3.2.1, LI-3.2.2, LI-3.2.3, LI-3.2.4, LI-2.2.4_
 
-  - [ ] 11.2 Criar `src/components/lead_card.tsx`
+  - [x] 11.2 Criar `src/components/lead_card.tsx`
     - Implementar Server Component `LeadCard` com prop `lead: Lead`
     - Exibir: Nome, E-mail, Telefone, Índice formatado com `format_score(lead.score)` e `PriorityBadge`
     - Envolver o card em link `<a href={/leads/${lead.id}>` para navegação ao detalhe
     - _Requirements: LI-3.2.5, LI-4.1.1_
 
-  - [ ] 11.3 Criar `src/components/lead_form.tsx`
+  - [x] 11.3 Criar `src/components/lead_form.tsx`
     - Implementar Client Component `LeadForm` com `'use client'`
     - Campos: Nome, E-mail, CPF, Telefone, Valor do Imóvel, Renda Mensal
     - Gerenciar estado de submissão com `useTransition` ou `useFormStatus`
@@ -230,8 +230,8 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Chamar Server Action `create_lead_action` ao submeter
     - _Requirements: LI-1.1.1, LI-1.1.4, LI-1.1.5, LI-1.2.6_
 
-- [ ] 12. Camada `app/` — rotas e Server Actions
-  - [ ] 12.1 Criar `src/app/leads/actions.ts` com Server Actions
+- [x] 12. Camada `app/` — rotas e Server Actions
+  - [x] 12.1 Criar `src/app/leads/actions.ts` com Server Actions
     - Adicionar diretiva `'use server'` no topo do arquivo
     - Implementar `create_lead_action(formData: FormData)`:
       - Extrair campos do `FormData` e converter tipos (strings para numbers onde necessário)
