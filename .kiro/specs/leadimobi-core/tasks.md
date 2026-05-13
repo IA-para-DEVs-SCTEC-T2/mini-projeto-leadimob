@@ -39,18 +39,18 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Criar diretório de testes: `src/__tests__/domain/`, `src/__tests__/services/`, `src/__tests__/lib/`, `src/__tests__/schemas/`
     - _Requirements: LI-6.1.1_
 
-- [ ] 2. Camada `types/` — tipos compartilhados
-  - [ ] 2.1 Criar `src/types/lead.ts` com todos os tipos compartilhados
+- [x] 2. Camada `types/` — tipos compartilhados
+  - [x] 2.1 Criar `src/types/lead.ts` com todos os tipos compartilhados
     - Definir `type LeadPriority = 'Alto' | 'Medio' | 'Baixo' | 'NaoClassificado'`
-    - Definir `interface Lead` com campos: `id`, `nome`, `email`, `telefone`, `valor_imovel`, `renda_mensal`, `score` (number | null), `priority`, `created_at`
-    - Definir `interface CreateLeadInput` com campos: `nome`, `email`, `telefone`, `valor_imovel`, `renda_mensal`
+    - Definir `interface Lead` com campos: `id`, `nome`, `email`, `cpf`, `telefone`, `valor_imovel`, `renda_mensal`, `score` (number | null), `priority`, `created_at`
+    - Definir `interface CreateLeadInput` com campos: `nome`, `email`, `cpf`, `telefone`, `valor_imovel`, `renda_mensal`
     - Definir `type LeadScoreResult` como union discriminada: `{ valid: true; score: number; priority: LeadPriority } | { valid: false; priority: 'NaoClassificado' }`
     - Usar union discriminada (não interface plana) para habilitar type narrowing seguro: ao verificar `result.valid === true`, TypeScript infere `result.score` como `number` sem asserções de tipo
     - Garantir que nenhum tipo importa de `infra/`, `schemas/` ou libs externas
     - _Requirements: LI-6.1.2, LI-6.2.2, LI-5.2.1_
 
-- [ ] 3. Camada `schemas/` — contratos Zod
-  - [ ] 3.1 Criar `src/schemas/lead.schema.ts` com `CreateLeadSchema`
+- [x] 3. Camada `schemas/` — contratos Zod
+  - [x] 3.1 Criar `src/schemas/lead.schema.ts` com `CreateLeadSchema`
     - Definir `CreateLeadSchema` com `z.object()` contendo:
       - `nome`: `z.string().min(2).max(100)` com mensagem descritiva
       - `email`: `z.string().email()` com mensagem descritiva
@@ -74,11 +74,11 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Testar: nome com 1 caractere → erro; email sem `@` → erro; cpf com 10 dígitos → erro; cpf com 11 dígitos → sucesso; telefone com 9 dígitos → erro; `valor_imovel` negativo → erro; todos os campos válidos → sucesso com objeto tipado
     - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.2A, LI-1.2.3, LI-1.2.4, LI-1.2.5_
 
-- [ ] 4. Checkpoint — tipos e schemas
+- [x] 4. Checkpoint — tipos e schemas
   - Garantir que todos os testes das tarefas 2 e 3 passam. Verificar que `types/lead.ts` e `schemas/lead.schema.ts` compilam sem erros TypeScript. Perguntar ao usuário se há dúvidas antes de prosseguir.
 
-- [ ] 5. Camada `domain/` — regras de negócio puras
-  - [ ] 5.1 Criar `src/domain/rules/calculate_lead_score.ts`
+- [x] 5. Camada `domain/` — regras de negócio puras
+  - [x] 5.1 Criar `src/domain/rules/calculate_lead_score.ts`
     - Implementar `function calculate_lead_score(renda_mensal: number, valor_imovel: number): LeadScoreResult`
     - Retornar `{ valid: false, priority: 'NaoClassificado' }` se `valor_imovel <= 0` ou `renda_mensal <= 0` (sem lançar exceção)
     - Calcular `score = Math.round(((renda_mensal * 12 * 5) / valor_imovel) * 100 * 100) / 100`
@@ -107,7 +107,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Testar fronteiras: score exatamente 80 → `Alto`; score exatamente 40 → `Medio`; score 39,99 → `Baixo`
     - _Requirements: LI-2.1.5, LI-2.1.6, LI-2.2.1, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3_
 
-  - [ ] 5.4 Criar `src/domain/entities/lead.ts`
+  - [x] 5.4 Criar `src/domain/entities/lead.ts`
     - Importar o tipo `Lead` e `LeadPriority` de `@/types/lead` — sem dependências de Prisma, Zod ou Next.js
     - Implementar `function normalize_email(email: string): string` que retorna o email em lowercase (invariante 1)
     - Implementar `function validate_lead_invariants(lead: Lead): boolean` que verifica:
@@ -121,16 +121,16 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Exportar `normalize_email` e `validate_lead_invariants` para uso em `services/create_lead.ts` e testes
     - _Requirements: LI-1.3.5, LI-2.1.2, LI-2.3.1, LI-2.3.2, LI-2.3.3, LI-5.2.2, LI-6.1.2_
 
-- [ ] 6. Checkpoint — domínio
+- [x] 6. Checkpoint — domínio
   - Garantir que todos os testes das tarefas 5.2 e 5.3 passam. Verificar que nenhum arquivo em `domain/` importa de `infra/`, `app/` ou `schemas/`. Perguntar ao usuário se há dúvidas antes de prosseguir.
 
-- [ ] 7. Camada `infra/` — acesso a dados
-  - [ ] 7.1 Criar `src/infra/db/prisma.ts` com singleton do Prisma Client
+- [x] 7. Camada `infra/` — acesso a dados
+  - [x] 7.1 Criar `src/infra/db/prisma.ts` com singleton do Prisma Client
     - Implementar padrão singleton usando `global` para evitar múltiplas instâncias em hot-reload do Next.js
     - Exportar instância única `prisma` do `PrismaClient`
     - _Requirements: LI-1.3.1, LI-6.1.3_
 
-  - [ ] 7.2 Criar `src/infra/repositories/lead_repository.ts`
+  - [x] 7.2 Criar `src/infra/repositories/lead_repository.ts`
     - Implementar `lead_repository` com os métodos:
       - `create(data: CreateLeadData): Promise<Lead>` — persiste lead via Prisma e retorna `Lead` mapeado
       - `find_all(): Promise<Lead[]>` — busca todos os leads e retorna array mapeado
