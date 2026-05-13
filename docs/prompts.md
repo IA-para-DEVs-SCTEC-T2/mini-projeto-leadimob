@@ -1874,3 +1874,145 @@ Adicione os prompts utilizados nessa sessão no arquivo /Users/gabrieldasilva/De
 | Prompts adicionados | 2 (Prompts 60 e 61) |
 | Arquivo atualizado | `docs/prompts.md` |
 | Status | ✅ Concluído |
+
+
+---
+
+# Prompts Utilizados na Sessão — Implementação da Página Principal de Leads (Issue #27)
+
+Registro dos prompts utilizados durante a sessão de implementação da página principal com lista priorizada de leads.
+
+---
+
+## Prompt 62 — Criação de Branch para Issue #27
+
+```
+Crie um nova branch a partir da atual, para a tarefa https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/27.
+```
+
+**Como foi executado:**
+- Verificação do status atual da branch: `feature/add-cpf-field`
+- Criação de nova branch `feature/issue-27` a partir de `feature/add-cpf-field`
+- Comando: `git checkout -b feature/issue-27`
+- Resultado: ✅ Branch criada com sucesso
+
+---
+
+## Prompt 63 — Implementação da Página Principal de Leads
+
+```
+Implementar a página principal que exibe a lista priorizada de leads com contagens por classificação 
+e estados de vazio/erro utilizando o design presente na Listagem em anexo.
+
+Requisito Relacionado
+LI-3.1.1 — Exibir leads ordenados por índice decrescente
+LI-3.1.3 — Refletir novo lead após criação
+LI-3.2.5 — Renderizar cada lead com LeadCard e PriorityBadge
+LI-3.2.6 — Exibir contagem total e por classificação
+LI-3.3.1 — Estado vazio com mensagem e botão de cadastro
+LI-3.3.2 — Estado de erro com mensagem descritiva
+
+Objetivo
+Ter a página principal do produto com lista priorizada, contagens e estados de feedback.
+
+Critérios de Aceite
+Server Component que chama list_leads()
+Exibir contagem total e por classificação no topo
+Renderizar cada lead com LeadCard
+Estado vazio: mensagem + botão "Cadastrar primeiro lead"
+Estado de erro: mensagem descritiva + opção de tentar novamente
+
+Observações Técnicas
+Arquivo: src/app/leads/page.tsx
+Server Component - dados carregados no servidor.
+```
+
+**Como foi executado:**
+- Análise da estrutura atual do projeto (tipos, serviços, componentes)
+- Leitura de `list_leads.ts`, `rank_leads.ts`, `lead_card.tsx`, `priority_badge.tsx`
+- Criação de `src/app/leads/page.tsx` com:
+  - Server Component que chama `list_leads(lead_repository)`
+  - Cálculo de estatísticas (total, alto, médio, baixo, não classificado)
+  - Renderização em tabela com colunas: Lead, Contato, Score, Prioridade, Renda, Valor Imóvel, Ações
+  - Estado vazio com mensagem e botão "Cadastrar primeiro lead"
+  - Estado de erro com mensagem descritiva e link para tentar novamente
+  - Header com logo LeadImobi e barra de ação
+  - Estilos Tailwind CSS com tema dark (slate-900, slate-800)
+- Criação de `src/app/leads/novo/page.tsx` — página de cadastro com `LeadForm`
+- Criação de `src/app/leads/[id]/page.tsx` — página de detalhes do lead
+- Atualização de `src/app/page.tsx` — redirecionamento automático para `/leads`
+- Atualização de `src/components/lead_form.tsx` — migração de estilos inline para Tailwind CSS
+
+**Validações:**
+- `npm run build` ✅ (sucesso em 1112ms)
+- `npm test` ✅ (45 testes passando)
+- TypeScript strict ✅ (sem erros)
+
+**Resultado:**
+- ✅ Página principal implementada com todos os requisitos
+- ✅ Componentes reutilizáveis integrados
+- ✅ Estados de feedback (vazio, erro) implementados
+- ✅ Navegação entre páginas funcional
+- ✅ Build e testes validados
+
+---
+
+## Prompt 64 — Remoção da Label 'Corretor Premium'
+
+```
+Remover a label 'Corretor Premium'
+```
+
+**Como foi executado:**
+- Identificação da label em 3 arquivos: `src/app/leads/page.tsx`, `src/app/leads/novo/page.tsx`, `src/app/leads/[id]/page.tsx`
+- Remoção do elemento `<div>` contendo "Corretor Premium" do header
+- Simplificação do header para exibir apenas logo e nome "LeadImobi"
+- Validação: `npm run build` ✅ (sucesso)
+- Commit: `refactor(ui): remove 'Corretor Premium' label from header`
+
+**Resultado:**
+- ✅ Label removida de todas as páginas
+- ✅ Header simplificado e mais limpo
+- ✅ Build validado
+
+---
+
+## Contexto da Sessão — Implementação da Página Principal de Leads
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/issue-27` (criada a partir de `feature/add-cpf-field`) |
+| Issue | #27 — Implementar página principal com lista priorizada de leads |
+| Arquivos criados | `src/app/leads/page.tsx`, `src/app/leads/novo/page.tsx`, `src/app/leads/[id]/page.tsx` |
+| Arquivos modificados | `src/app/page.tsx`, `src/components/lead_form.tsx` |
+| Componentes utilizados | `LeadCard`, `PriorityBadge`, `LeadForm` |
+| Serviços utilizados | `list_leads`, `rank_leads` |
+| Requisitos cobertos | LI-3.1.1, LI-3.1.3, LI-3.2.5, LI-3.2.6, LI-3.3.1, LI-3.3.2 |
+| Build status | ✅ Sucesso (1112ms) |
+| Testes | ✅ 45/45 passando |
+| Commits | 2 (feat + refactor) |
+| Commits na branch | 2 |
+
+---
+
+## Resumo da Sessão — Implementação da Página Principal
+
+A sessão focou na implementação da interface principal do LeadImobi:
+
+1. **Criação de branch** `feature/issue-27` a partir de `feature/add-cpf-field`
+2. **Implementação de 3 páginas** (leads, novo, detalhes)
+3. **Integração de componentes** (LeadCard, PriorityBadge, LeadForm)
+4. **Integração de serviços** (list_leads, rank_leads)
+5. **Implementação de estados** (vazio, erro, sucesso)
+6. **Cálculo de estatísticas** (total, por classificação)
+7. **Navegação entre páginas** (lista → novo → detalhes)
+8. **Estilos Tailwind CSS** com tema dark
+9. **Validação de build e testes** (100% sucesso)
+10. **Remoção de label** 'Corretor Premium'
+11. **Commits seguindo GitFlow** (Conventional Commits)
+
+**Resultado final:** 
+- ✅ Página principal funcional com lista priorizada de leads
+- ✅ Todos os requisitos da issue #27 implementados
+- ✅ Build e testes validados
+- ✅ Pronto para merge em `feature/add-cpf-field`
