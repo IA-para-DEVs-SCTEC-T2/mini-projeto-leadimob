@@ -28,7 +28,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
   - [x] 1.3 Configurar Prisma e schema do banco de dados
     - Executar `npx prisma init` para criar `prisma/schema.prisma` e `.env`
     - Definir o model `Lead` no schema Prisma conforme especificado no design:
-      - Campos: `id` (cuid), `nome`, `email` (unique), `telefone`, `valor_imovel` (Decimal 15,2), `renda_mensal` (Decimal 15,2), `score` (Decimal? 8,2), `priority` (String), `created_at` (DateTime now)
+      - Campos: `id` (cuid), `nome`, `email`, `cpf` (unique), `telefone`, `valor_imovel` (Decimal 15,2), `renda_mensal` (Decimal 15,2), `score` (Decimal? 8,2), `priority` (String), `created_at` (DateTime now)
       - Mapear tabela para `"leads"` com `@@map`
     - Configurar `DATABASE_URL` no `.env` para PostgreSQL local
     - Executar `npx prisma migrate dev --name init` para criar a migration inicial
@@ -54,12 +54,13 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Definir `CreateLeadSchema` com `z.object()` contendo:
       - `nome`: `z.string().min(2).max(100)` com mensagem descritiva
       - `email`: `z.string().email()` com mensagem descritiva
+      - `cpf`: `z.string().regex(/^\d{11}$/)` aceitando formatação com pontos e hífens (usar `.transform` para extrair apenas dígitos antes da regex)
       - `telefone`: `z.string().regex(/^\d{10,15}$/)` aceitando formatação com parênteses, espaços e hífens (usar `.transform` para extrair apenas dígitos antes da regex, ou usar regex que aceite formatação)
       - `valor_imovel`: `z.number().positive()` com mensagem descritiva
       - `renda_mensal`: `z.number().positive()` com mensagem descritiva
     - Exportar `CreateLeadInput` derivado via `z.infer<typeof CreateLeadSchema>`
     - Não importar nada de `domain/` ou `infra/`
-    - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.3, LI-1.2.4, LI-1.2.5, LI-1.2.7, LI-1.2.8, LI-5.1.1, LI-5.1.4_
+    - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.2A, LI-1.2.3, LI-1.2.4, LI-1.2.5, LI-1.2.7, LI-1.2.8, LI-5.1.1, LI-5.1.4_
 
   - [ ]* 3.2 Escrever testes de propriedade para `CreateLeadSchema` (Property 7 e 8)
     - **Property 7: Rejeição de entradas inválidas pelo schema Zod**
@@ -70,8 +71,8 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - **Validates: Requirements LI-1.2.1, LI-1.2.2, LI-1.2.3, LI-1.2.4, LI-1.2.5, LI-1.2.8, LI-5.1.1**
 
   - [ ]* 3.3 Escrever testes unitários para `CreateLeadSchema`
-    - Testar: nome com 1 caractere → erro; email sem `@` → erro; telefone com 9 dígitos → erro; `valor_imovel` negativo → erro; todos os campos válidos → sucesso com objeto tipado
-    - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.3, LI-1.2.4, LI-1.2.5_
+    - Testar: nome com 1 caractere → erro; email sem `@` → erro; cpf com 10 dígitos → erro; cpf com 11 dígitos → sucesso; telefone com 9 dígitos → erro; `valor_imovel` negativo → erro; todos os campos válidos → sucesso com objeto tipado
+    - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.2A, LI-1.2.3, LI-1.2.4, LI-1.2.5_
 
 - [ ] 4. Checkpoint — tipos e schemas
   - Garantir que todos os testes das tarefas 2 e 3 passam. Verificar que `types/lead.ts` e `schemas/lead.schema.ts` compilam sem erros TypeScript. Perguntar ao usuário se há dúvidas antes de prosseguir.
@@ -135,7 +136,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
       - `find_all(): Promise<Lead[]>` — busca todos os leads e retorna array mapeado
       - `find_by_id(id: string): Promise<Lead | null>` — busca lead por ID e retorna mapeado ou null
     - Implementar `map_prisma_to_lead(prisma_lead)` para converter `Decimal` → `number` e `priority` → `LeadPriority`
-    - Capturar erro Prisma `P2002` (email duplicado) e lançar erro tipado `{ error: 'EMAIL_ALREADY_EXISTS' }`
+    - Capturar erro Prisma `P2002` (CPF duplicado) e lançar erro tipado `{ error: 'CPF_ALREADY_EXISTS' }`
     - Capturar erros de conexão e lançar erro tipado `{ error: 'DATABASE_UNAVAILABLE' }`
     - Nunca expor detalhes internos do Prisma para camadas superiores
     - _Requirements: LI-1.3.1, LI-1.3.2, LI-1.3.3, LI-1.3.4, LI-1.3.5, LI-6.1.3_
@@ -221,7 +222,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
 
   - [ ] 11.3 Criar `src/components/lead_form.tsx`
     - Implementar Client Component `LeadForm` com `'use client'`
-    - Campos: Nome, E-mail, Telefone, Valor do Imóvel, Renda Mensal
+    - Campos: Nome, E-mail, CPF, Telefone, Valor do Imóvel, Renda Mensal
     - Gerenciar estado de submissão com `useTransition` ou `useFormStatus`
     - Desabilitar botão de submissão enquanto `isPending === true`
     - Exibir erros de validação por campo (recebidos da Server Action) adjacentes ao campo, sem limpar o valor digitado
@@ -237,7 +238,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
       - Validar com `CreateLeadSchema.safeParse(data)`
       - Se inválido: retornar `{ success: false, errors: zodError.flatten().fieldErrors }`
       - Se válido: chamar `create_lead(input)` do service dentro de bloco `try/catch`
-      - Se `EMAIL_ALREADY_EXISTS`: retornar `{ success: false, errors: { email: ['Este e-mail já está cadastrado'] } }`
+      - Se `CPF_ALREADY_EXISTS`: retornar `{ success: false, errors: { cpf: ['Este CPF já está cadastrado'] } }`
       - Se sucesso: chamar `redirect('/leads')` do Next.js
       - Em caso de erro não mapeado (bloco `catch` genérico): retornar `{ success: false, errors: { _form: ['Erro interno. Tente novamente.'] } }` e logar o erro no servidor com `console.error`
     - O redirect para `/leads` após cadastro bem-sucedido satisfaz LI-3.1.3: a lista recarregada pelo Server Component refletirá automaticamente o novo lead na posição correta da ordenação

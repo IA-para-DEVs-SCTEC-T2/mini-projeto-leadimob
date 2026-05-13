@@ -12,6 +12,3 @@ CREATE TABLE "leads" (
 
     CONSTRAINT "leads_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "leads_email_key" ON "leads"("email");

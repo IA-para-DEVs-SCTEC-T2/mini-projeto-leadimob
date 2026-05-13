@@ -6,6 +6,13 @@ export const CreateLeadSchema = z.object({
     .min(2, "Nome deve ter pelo menos 2 caracteres.")
     .max(100, "Nome deve ter no maximo 100 caracteres."),
   email: z.string().email("Informe um email valido."),
+  cpf: z
+    .string()
+    .transform((cpf) => cpf.replace(/\D/g, ""))
+    .refine(
+      (cpf) => cpf.length === 11,
+      "CPF deve conter 11 digitos.",
+    ),
   telefone: z
     .string()
     .transform((telefone) => telefone.replace(/\D/g, ""))

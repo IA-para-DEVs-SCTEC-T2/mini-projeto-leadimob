@@ -7,10 +7,12 @@ import {
   CreateLeadSchema,
   type CreateLeadInput,
 } from "@/schemas/lead.schema";
+import { create_lead_action } from "@/app/leads/actions";
 
 type LeadFormField =
   | "nome"
   | "email"
+  | "cpf"
   | "telefone"
   | "valor_imovel"
   | "renda_mensal";
@@ -23,14 +25,10 @@ interface LeadFormProps {
   onSubmit?: (data: CreateLeadInput) => Promise<void> | void;
 }
 
-interface ValidationResult {
-  data: CreateLeadInput | null;
-  errors: LeadFormErrors;
-}
-
 const empty_values: LeadFormValues = {
   nome: "",
   email: "",
+  cpf: "",
   telefone: "",
   valor_imovel: "",
   renda_mensal: "",
@@ -90,7 +88,10 @@ const cancel_button_style: CSSProperties = {
   color: "#111827",
 };
 
-function validate_form(values: LeadFormValues): ValidationResult {
+function validate_form(values: LeadFormValues): {
+  data: CreateLeadInput | null;
+  errors: LeadFormErrors;
+} {
   const result = CreateLeadSchema.safeParse({
     nome: values.nome,
     email: values.email,
@@ -139,6 +140,7 @@ export default function LeadForm({
     ...initial_values,
   });
   const [errors, set_errors] = useState<LeadFormErrors>({});
+  const [server_error, set_server_error] = useState<string | null>(null);
 
   function handle_change(event: ChangeEvent<HTMLInputElement>) {
     const field = event.target.name as LeadFormField;
@@ -153,6 +155,8 @@ export default function LeadForm({
       ...current_errors,
       [field]: undefined,
     }));
+
+    set_server_error(null);
   }
 
   function handle_submit(event: FormEvent<HTMLFormElement>) {
@@ -165,10 +169,37 @@ export default function LeadForm({
       return;
     }
 
-    const lead_data = validation.data;
+    const form_data = new FormData();
+    form_data.append("nome", values.nome);
+    form_data.append("email", values.email);
+    form_data.append("cpf", values.cpf);
+    form_data.append("telefone", values.telefone);
+    form_data.append("valor_imovel", values.valor_imovel);
+    form_data.append("renda_mensal", values.renda_mensal);
 
     startTransition(async () => {
-      await onSubmit?.(lead_data);
+      const result = await create_lead_action(form_data);
+
+      if (result.success) {
+        // Redirect is handled by the Server Action
+        return;
+      }
+
+      if ("errors" in result) {
+        // Handle validation errors from server
+        set_errors(
+          Object.entries(result.errors).reduce(
+            (acc, [field, messages]) => {
+              acc[field as LeadFormField] = messages[0];
+              return acc;
+            },
+            {} as LeadFormErrors,
+          ),
+        );
+      } else if ("error" in result) {
+        // Handle general server error
+        set_server_error(result.error);
+      }
     });
   }
 
@@ -178,6 +209,12 @@ export default function LeadForm({
 
   return (
     <form noValidate onSubmit={handle_submit} style={form_style}>
+      {server_error !== null && (
+        <div style={{ ...error_style, marginBottom: "8px" }}>
+          {server_error}
+        </div>
+      )}
+
       <div style={field_style}>
         <label htmlFor="nome" style={label_style}>
           Nome
@@ -207,6 +244,24 @@ export default function LeadForm({
         />
         {errors.email !== undefined && (
           <p style={error_style}>{errors.email}</p>
+        )}
+      </div>
+
+      <div style={field_style}>
+        <label htmlFor="cpf" style={label_style}>
+          CPF
+        </label>
+        <input
+          id="cpf"
+          name="cpf"
+          onChange={handle_change}
+          placeholder="000.000.000-00"
+          style={input_style}
+          type="text"
+          value={values.cpf}
+        />
+        {errors.cpf !== undefined && (
+          <p style={error_style}>{errors.cpf}</p>
         )}
       </div>
 
