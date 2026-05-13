@@ -62,7 +62,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Não importar nada de `domain/` ou `infra/`
     - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.2A, LI-1.2.3, LI-1.2.4, LI-1.2.5, LI-1.2.7, LI-1.2.8, LI-5.1.1, LI-5.1.4_
 
-  - [ ]* 3.2 Escrever testes de propriedade para `CreateLeadSchema` (Property 7 e 8)
+  - [x] 3.2 Escrever testes de propriedade para `CreateLeadSchema` (Property 7 e 8)
     - **Property 7: Rejeição de entradas inválidas pelo schema Zod**
     - Usar `fc.record` com campos fora dos limites (nome vazio, email sem @, telefone com 9 dígitos, valor_imovel negativo, renda_mensal zero) e verificar que `safeParse` retorna `{ success: false }` com pelo menos um erro
     - **Property 8: Aceitação de entradas válidas pelo schema Zod**
@@ -70,7 +70,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Anotar com `// Feature: leadimobi-core, Property 7: Rejeição de entradas inválidas` e `// Feature: leadimobi-core, Property 8: Aceitação de entradas válidas`
     - **Validates: Requirements LI-1.2.1, LI-1.2.2, LI-1.2.3, LI-1.2.4, LI-1.2.5, LI-1.2.8, LI-5.1.1**
 
-  - [ ]* 3.3 Escrever testes unitários para `CreateLeadSchema`
+  - [x] 3.3 Escrever testes unitários para `CreateLeadSchema`
     - Testar: nome com 1 caractere → erro; email sem `@` → erro; cpf com 10 dígitos → erro; cpf com 11 dígitos → sucesso; telefone com 9 dígitos → erro; `valor_imovel` negativo → erro; todos os campos válidos → sucesso com objeto tipado
     - _Requirements: LI-1.2.1, LI-1.2.2, LI-1.2.2A, LI-1.2.3, LI-1.2.4, LI-1.2.5_
 
@@ -141,15 +141,15 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Nunca expor detalhes internos do Prisma para camadas superiores
     - _Requirements: LI-1.3.1, LI-1.3.2, LI-1.3.3, LI-1.3.4, LI-1.3.5, LI-6.1.3_
 
-- [ ] 8. Camada `services/` — orquestração de casos de uso
-  - [ ] 8.1 Criar `src/services/rank_leads.ts`
+- [x] 8. Camada `services/` — orquestração de casos de uso
+  - [x] 8.1 Criar `src/services/rank_leads.ts`
     - Implementar `function rank_leads(leads: Lead[]): Lead[]` como função pura
     - Ordenar: leads com score válido por score decrescente; desempate por `created_at` crescente; leads `NaoClassificado` (score null) ao final
     - Não modificar o array original (retornar novo array)
     - Importar apenas de `@/types/lead` — sem dependências de infra ou frameworks
     - _Requirements: LI-3.1.1, LI-3.1.2, LI-3.1.4, LI-3.1.5_
 
-  - [ ]* 8.2 Escrever testes de propriedade para `rank_leads` (Property 5)
+  - [x] 8.2 Escrever testes de propriedade para `rank_leads` (Property 5)
     - **Property 5: Ordenação estável da lista priorizada**
     - Usar `fc.array(fc.record({ id: fc.string(), score: fc.option(fc.float({ min: 0 })), priority: fc.constantFrom('Alto', 'Medio', 'Baixo', 'NaoClassificado'), created_at: fc.date(), ... }))` e verificar as três invariantes: (a) nenhum lead com score válido aparece após `NaoClassificado`; (b) para dois leads com score válido, o de maior score aparece primeiro; (c) para dois leads com mesmo score, o de `created_at` mais antigo aparece primeiro
     - Anotar com `// Feature: leadimobi-core, Property 5: Ordenação estável da lista priorizada`
