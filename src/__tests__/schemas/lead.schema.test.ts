@@ -10,7 +10,7 @@ describe("CreateLeadSchema", () => {
           const result = CreateLeadSchema.safeParse({
             nome,
             email: "test@example.com",
-            cpf: "12345678901",
+            cpf: "11144477735", // Valid CPF
             telefone: "1234567890",
             valor_imovel: 100000,
             renda_mensal: 5000,
@@ -27,7 +27,7 @@ describe("CreateLeadSchema", () => {
           const result = CreateLeadSchema.safeParse({
             nome: "John Doe",
             email,
-            cpf: "12345678901",
+            cpf: "11144477735", // Valid CPF
             telefone: "1234567890",
             valor_imovel: 100000,
             renda_mensal: 5000,
@@ -85,6 +85,32 @@ describe("CreateLeadSchema", () => {
       );
     });
 
+    it("should reject invalid CPF (all same digits)", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11111111111", // Invalid CPF (all same digits)
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject invalid CPF (wrong check digits)", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "12345678901", // Invalid CPF (wrong check digits)
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
     it("should reject telefone with less than 10 digits", () => {
       fc.assert(
         fc.property(
@@ -93,7 +119,7 @@ describe("CreateLeadSchema", () => {
             const result = CreateLeadSchema.safeParse({
               nome: "John Doe",
               email: "test@example.com",
-              cpf: "12345678901",
+              cpf: "11144477735", // Valid CPF
               telefone,
               valor_imovel: 100000,
               renda_mensal: 5000,
@@ -113,7 +139,7 @@ describe("CreateLeadSchema", () => {
             const result = CreateLeadSchema.safeParse({
               nome: "John Doe",
               email: "test@example.com",
-              cpf: "12345678901",
+              cpf: "11144477735", // Valid CPF
               telefone: "1234567890",
               valor_imovel,
               renda_mensal: 5000,
@@ -133,7 +159,7 @@ describe("CreateLeadSchema", () => {
             const result = CreateLeadSchema.safeParse({
               nome: "John Doe",
               email: "test@example.com",
-              cpf: "12345678901",
+              cpf: "11144477735", // Valid CPF
               telefone: "1234567890",
               valor_imovel: 100000,
               renda_mensal,
@@ -152,7 +178,7 @@ describe("CreateLeadSchema", () => {
       const validData = {
         nome: "John Doe",
         email: "john@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 400000,
         renda_mensal: 12000,
@@ -164,54 +190,40 @@ describe("CreateLeadSchema", () => {
       if (result.success) {
         expect(result.data.nome).toBe("John Doe");
         expect(result.data.email).toBe("john@example.com");
-        expect(result.data.cpf).toBe("12345678901");
+        expect(result.data.cpf).toBe("11144477735");
       }
     });
 
-    it("should accept CPF with formatting and extract digits", () => {
-      fc.assert(
-        fc.property(
-          fc.stringMatching(/^\d{11}$/),
-          (cpf_digits) => {
-            // Format CPF: 000.000.000-00
-            const formatted_cpf = `${cpf_digits.slice(0, 3)}.${cpf_digits.slice(3, 6)}.${cpf_digits.slice(6, 9)}-${cpf_digits.slice(9)}`;
+    it("should accept valid CPF with formatting", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "111.444.777-35", // Valid formatted CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
 
-            const result = CreateLeadSchema.safeParse({
-              nome: "John Doe",
-              email: "test@example.com",
-              cpf: formatted_cpf,
-              telefone: "1234567890",
-              valor_imovel: 100000,
-              renda_mensal: 5000,
-            });
-
-            return result.success;
-          }
-        )
-      );
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.cpf).toBe("11144477735"); // Should be cleaned
+      }
     });
 
     it("should accept telefone with formatting and extract digits", () => {
-      fc.assert(
-        fc.property(
-          fc.stringMatching(/^\d{10,15}$/),
-          (telefone_digits) => {
-            // Format telefone: (XX) XXXXX-XXXX
-            const formatted_telefone = `(${telefone_digits.slice(0, 2)}) ${telefone_digits.slice(2, 7)}-${telefone_digits.slice(7)}`;
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "(11) 98765-4321",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
 
-            const result = CreateLeadSchema.safeParse({
-              nome: "John Doe",
-              email: "test@example.com",
-              cpf: "12345678901",
-              telefone: formatted_telefone,
-              valor_imovel: 100000,
-              renda_mensal: 5000,
-            });
-
-            return result.success;
-          }
-        )
-      );
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.telefone).toBe("11987654321"); // Should be cleaned
+      }
     });
   });
 
@@ -221,7 +233,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "A",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 100000,
         renda_mensal: 5000,
@@ -234,7 +246,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "AB",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 100000,
         renda_mensal: 5000,
@@ -247,7 +259,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "John Doe",
         email: "testexample.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 100000,
         renda_mensal: 5000,
@@ -269,11 +281,11 @@ describe("CreateLeadSchema", () => {
       expect(result.success).toBe(false);
     });
 
-    it("should accept CPF with 11 digits", () => {
+    it("should accept valid CPF with 11 digits", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "John Doe",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 100000,
         renda_mensal: 5000,
@@ -286,7 +298,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "John Doe",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "123456789",
         valor_imovel: 100000,
         renda_mensal: 5000,
@@ -299,7 +311,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "John Doe",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: -100000,
         renda_mensal: 5000,
@@ -312,7 +324,7 @@ describe("CreateLeadSchema", () => {
       const result = CreateLeadSchema.safeParse({
         nome: "John Doe",
         email: "test@example.com",
-        cpf: "12345678901",
+        cpf: "11144477735", // Valid CPF
         telefone: "1234567890",
         valor_imovel: 100000,
         renda_mensal: 0,

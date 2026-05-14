@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validate_cpf } from "@/lib/formatters";
 
 export const CreateLeadSchema = z.object({
   nome: z
@@ -12,6 +13,10 @@ export const CreateLeadSchema = z.object({
     .refine(
       (cpf) => cpf.length === 11,
       "CPF deve conter 11 digitos.",
+    )
+    .refine(
+      (cpf) => validate_cpf(cpf),
+      "CPF inválido. Verifique os dígitos informados.",
     ),
   telefone: z
     .string()
@@ -22,10 +27,10 @@ export const CreateLeadSchema = z.object({
     ),
   valor_imovel: z
     .number()
-    .positive("Valor do imovel deve ser maior que zero."),
+    .min(0.01, "Valor do imovel deve ser maior que zero."),
   renda_mensal: z
     .number()
-    .positive("Renda mensal deve ser maior que zero."),
+    .min(0.01, "Renda mensal deve ser maior que zero."),
 });
 
 export type CreateLeadInput = z.infer<typeof CreateLeadSchema>;

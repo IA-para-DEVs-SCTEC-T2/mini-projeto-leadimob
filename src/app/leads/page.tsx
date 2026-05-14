@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { list_leads } from "@/services/list_leads";
 import { lead_repository } from "@/infra/repositories/lead_repository";
-import type { Lead, LeadPriority } from "@/types/lead";
+import type { Lead } from "@/types/lead";
 import type { SortOption } from "@/services/rank_leads";
-import LeadCard from "@/components/lead_card";
 import PriorityBadge from "@/components/priority_badge";
 import SortSelector from "@/components/sort_selector";
 import SearchFilter from "@/components/search_filter";
@@ -14,7 +13,6 @@ interface LeadStats {
   alto: number;
   medio: number;
   baixo: number;
-  nao_classificado: number;
 }
 
 function calculate_stats(leads: Lead[]): LeadStats {
@@ -24,7 +22,6 @@ function calculate_stats(leads: Lead[]): LeadStats {
       if (lead.priority === "Alto") stats.alto += 1;
       else if (lead.priority === "Medio") stats.medio += 1;
       else if (lead.priority === "Baixo") stats.baixo += 1;
-      else if (lead.priority === "NaoClassificado") stats.nao_classificado += 1;
       return stats;
     },
     {
@@ -32,7 +29,6 @@ function calculate_stats(leads: Lead[]): LeadStats {
       alto: 0,
       medio: 0,
       baixo: 0,
-      nao_classificado: 0,
     },
   );
 }
@@ -127,7 +123,7 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
         {/* Stats Section */}
         {!error && leads.length > 0 && (
           <>
-            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
               <div className="rounded-lg border border-slate-600 bg-slate-800 p-3 sm:p-4">
                 <div className="text-xs text-slate-400 sm:text-sm">Total</div>
                 <div className="mt-2 text-2xl font-bold text-slate-100 sm:text-3xl">
@@ -153,13 +149,6 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
                 <div className="text-xs text-red-300 sm:text-sm">Baixo</div>
                 <div className="mt-2 text-2xl font-bold text-red-400 sm:text-3xl">
                   {stats.baixo}
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-slate-600 bg-slate-800 p-3 sm:p-4 sm:col-span-3 lg:col-span-1">
-                <div className="text-xs text-slate-400 sm:text-sm">Não classificado</div>
-                <div className="mt-2 text-2xl font-bold text-slate-100 sm:text-3xl">
-                  {stats.nao_classificado}
                 </div>
               </div>
             </div>
