@@ -9,19 +9,19 @@ const BADGE_CONFIG: Record<
   { className: string; label: string }
 > = {
   Alto: {
-    className: "bg-green-600 text-green-100 border border-green-500",
+    className: "bg-green-500 text-white",
     label: "Alto",
   },
   Medio: {
-    className: "bg-yellow-600 text-yellow-100 border border-yellow-500",
+    className: "bg-yellow-500 text-white",
     label: "Médio",
   },
   Baixo: {
-    className: "bg-red-600 text-red-100 border border-red-500",
+    className: "bg-red-500 text-white",
     label: "Baixo",
   },
   NaoClassificado: {
-    className: "bg-gray-600 text-gray-100 border border-gray-500",
+    className: "bg-gray-500 text-white",
     label: "Não classificado",
   },
 };
@@ -31,7 +31,7 @@ export default function PriorityBadge({ priority }: PriorityBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${className}`}
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${className}`}
     >
       {label}
     </span>

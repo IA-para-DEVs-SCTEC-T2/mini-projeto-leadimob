@@ -32,11 +32,11 @@ export default function LeadNotFound() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-2xl px-6 py-8">
+      <main className="mx-auto max-w-2xl px-6 py-16">
         <div className="text-center">
           <div className="mb-8">
             <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h2 className="text-2xl font-bold text-white mb-2">
               Lead não encontrado
             </h2>
             <p className="text-slate-400">
@@ -68,7 +68,7 @@ export default function LeadNotFound() {
             <div className="text-sm text-slate-500">
               ou{" "}
               <Link
-                href="/leads/new"
+                href="/leads/novo"
                 className="text-yellow-400 hover:text-yellow-300"
               >
                 cadastre um novo lead
