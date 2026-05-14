@@ -75,6 +75,7 @@ Formulário estruturado para registro de novo lead com dados financeiros essenci
 **Campos Obrigatórios**
 - Nome completo
 - E-mail
+- CPF
 - Telefone
 - Valor do imóvel desejado (R$)
 - Renda mensal (R$)
@@ -153,6 +154,7 @@ Visualização centralizada de todos os leads ordenados por índice de qualifica
 **Informações Exibidas**
 - Nome do lead
 - E-mail
+- CPF
 - Telefone
 - Valor do imóvel
 - Renda mensal
@@ -235,8 +237,13 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - **Resultado Esperado**: Lead com maior índice aparece primeiro
 
 ### RN06 — Validação de E-mail
-- **Regra**: E-mail deve ser válido e único por lead
+- **Regra**: E-mail deve ser válido
 - **Condição**: Campo "E-mail" na entrada
+- **Resultado Esperado**: Se inválido, rejeitar com mensagem
+
+### RN06A — Validação de CPF
+- **Regra**: CPF deve ser válido (11 dígitos) e único por lead
+- **Condição**: Campo "CPF" na entrada
 - **Resultado Esperado**: Se inválido ou duplicado, rejeitar com mensagem
 
 ### RN07 — Validação de Telefone
@@ -326,9 +333,9 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - Ação: Sistema exibe erro "Valor do imóvel deve ser maior que zero"
 - Resultado: Cadastro não é persistido
 
-**Exceção E02 — E-mail Duplicado**
-- Condição: E-mail já existe no banco
-- Ação: Sistema exibe aviso "Este e-mail já está cadastrado"
+**Exceção E02 — CPF Duplicado**
+- Condição: CPF já existe no banco
+- Ação: Sistema exibe aviso "Este CPF já está cadastrado"
 - Resultado: Cadastro não é persistido
 
 **Exceção E03 — Erro de Persistência**
@@ -345,6 +352,9 @@ O sistema deve permitir que o usuário cadastre um novo lead com os campos: Nome
 
 ### RF02 — Validação de Entrada
 O sistema deve validar todos os campos de entrada antes de persistir, rejeitando dados inválidos com mensagens claras.
+
+### RF02A — Validação de CPF
+O sistema deve validar o CPF (11 dígitos) e rejeitar duplicatas com mensagem clara.
 
 ### RF03 — Cálculo de Índice
 O sistema deve calcular automaticamente o índice de qualificação usando a fórmula: (Renda × 12 × 5) ÷ Valor do Imóvel × 100.

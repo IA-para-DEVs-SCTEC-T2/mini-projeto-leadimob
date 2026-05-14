@@ -9,7 +9,7 @@ import type {
 } from "@/types/lead";
 
 type RepositoryError = {
-  error: "EMAIL_ALREADY_EXISTS" | "DATABASE_UNAVAILABLE";
+  error: "CPF_ALREADY_EXISTS" | "DATABASE_UNAVAILABLE";
 };
 
 function map_priority(priority: string): LeadPriority {
@@ -29,6 +29,7 @@ function map_prisma_to_lead(prisma_lead: PrismaLead): Lead {
     id: prisma_lead.id,
     nome: prisma_lead.nome,
     email: prisma_lead.email,
+    cpf: prisma_lead.cpf,
     telefone: prisma_lead.telefone,
     valor_imovel: prisma_lead.valor_imovel.toNumber(),
     renda_mensal: prisma_lead.renda_mensal.toNumber(),
@@ -43,7 +44,7 @@ function is_repository_error(error: unknown): error is RepositoryError {
     typeof error === "object" &&
     error !== null &&
     "error" in error &&
-    (error.error === "EMAIL_ALREADY_EXISTS" ||
+    (error.error === "CPF_ALREADY_EXISTS" ||
       error.error === "DATABASE_UNAVAILABLE")
   );
 }
@@ -57,7 +58,13 @@ function handle_repository_error(error: unknown): never {
     error instanceof Prisma.PrismaClientKnownRequestError &&
     error.code === "P2002"
   ) {
-    throw { error: "EMAIL_ALREADY_EXISTS" } satisfies RepositoryError;
+    // P2002 is unique constraint violation
+    // Check which field caused the violation
+    const target = error.meta?.target as string[] | undefined;
+    
+    if (target?.includes("cpf")) {
+      throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
+    }
   }
 
   throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;

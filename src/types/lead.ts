@@ -4,6 +4,7 @@ export interface Lead {
   id: string;
   nome: string;
   email: string;
+  cpf: string;
   telefone: string;
   valor_imovel: number;
   renda_mensal: number;
@@ -15,6 +16,7 @@ export interface Lead {
 export interface CreateLeadInput {
   nome: string;
   email: string;
+  cpf: string;
   telefone: string;
   valor_imovel: number;
   renda_mensal: number;
@@ -34,6 +36,7 @@ export type LeadScoreResult =
 export interface CreateLeadData {
   nome: string;
   email: string;
+  cpf: string;
   telefone: string;
   valor_imovel: number;
   renda_mensal: number;

@@ -19,6 +19,7 @@ export async function create_lead(
   const data: CreateLeadData = {
     nome: input.nome,
     email: normalize_email(input.email),
+    cpf: input.cpf,
     telefone: input.telefone,
     valor_imovel: input.valor_imovel,
     renda_mensal: input.renda_mensal,

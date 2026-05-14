@@ -278,6 +278,7 @@ interface Lead {
   id: string
   nome: string
   email: string
+  cpf: string
   telefone: string
   valor_imovel: number
   renda_mensal: number
@@ -289,6 +290,7 @@ interface Lead {
 interface CreateLeadInput {
   nome: string
   email: string
+  cpf: string
   telefone: string
   valor_imovel: number
   renda_mensal: number
@@ -376,6 +378,7 @@ model Lead {
   id           String   @id @default(cuid())
   nome         String
   email        String   @unique
+  cpf          String   @unique
   telefone     String
   valor_imovel Decimal  @db.Decimal(15, 2)
   renda_mensal Decimal  @db.Decimal(15, 2)
@@ -391,7 +394,7 @@ model Lead {
 - `Decimal` para valores monetários evita erros de ponto flutuante em armazenamento
 - `score` é nullable para representar leads `NaoClassificado`
 - `priority` como `String` no banco (não enum) para flexibilidade de evolução sem migrations
-- `email` com `@unique` garante unicidade no nível do banco de dados
+- `cpf` com `@unique` garante unicidade no nível do banco de dados (única UK)
 - `cuid()` como ID para IDs seguros e não sequenciais
 
 ### Mapeamento Prisma → Tipo TypeScript

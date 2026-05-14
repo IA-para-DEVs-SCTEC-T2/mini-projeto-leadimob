@@ -55,7 +55,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 
 ##### Critérios de Aceitação
 
-- **LI-1.1.1** THE Lead_Form SHALL exibir campos de entrada para os seguintes dados do lead: Nome, E-mail, Telefone, Valor do Imóvel e Renda Mensal.
+- **LI-1.1.1** THE Lead_Form SHALL exibir campos de entrada para os seguintes dados do lead: Nome, E-mail, CPF, Telefone, Valor do Imóvel e Renda Mensal.
 - **LI-1.1.2** WHEN o corretor submete o formulário com todos os campos obrigatórios preenchidos corretamente, THE Lead_Service SHALL criar o lead e persistir os dados no banco de dados.
 - **LI-1.1.3** WHEN o lead é criado com sucesso, THE Sistema SHALL exibir uma mensagem de confirmação ao corretor e redirecionar para a lista de leads.
 - **LI-1.1.4** WHEN o corretor submete o formulário, THE Lead_Form SHALL desabilitar o botão de submissão até que a operação seja concluída, prevenindo submissões duplicadas.
@@ -71,6 +71,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 
 - **LI-1.2.1** THE Validator SHALL validar o campo Nome como string não vazia com no mínimo 2 caracteres e no máximo 100 caracteres.
 - **LI-1.2.2** THE Validator SHALL validar o campo E-mail como endereço de e-mail no formato RFC 5322.
+- **LI-1.2.2A** THE Validator SHALL validar o campo CPF como string contendo exatamente 11 dígitos numéricos, permitindo formatação com pontos e hífens (ex: 000.000.000-00).
 - **LI-1.2.3** THE Validator SHALL validar o campo Telefone como string contendo entre 10 e 15 dígitos numéricos, permitindo formatação com parênteses, espaços e hífens.
 - **LI-1.2.4** THE Validator SHALL validar o campo Valor_Imovel como número positivo maior que zero, representado em reais.
 - **LI-1.2.5** THE Validator SHALL validar o campo Renda_Mensal como número positivo maior que zero, representado em reais.
@@ -90,7 +91,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 - **LI-1.3.2** THE Lead_Repository SHALL armazenar junto ao lead o valor calculado do Índice e a classificação de prioridade no momento do cadastro.
 - **LI-1.3.3** THE Lead_Repository SHALL armazenar a data e hora de criação do lead com precisão de segundos.
 - **LI-1.3.4** IF ocorre um erro de conexão com o banco de dados durante a persistência, THEN THE Lead_Service SHALL retornar um erro estruturado ao chamador sem expor detalhes internos de infraestrutura.
-- **LI-1.3.5** THE Sistema SHALL garantir que dois leads com o mesmo e-mail não sejam cadastrados, retornando erro descritivo ao corretor em caso de duplicidade.
+- **LI-1.3.5** THE Sistema SHALL garantir que dois leads com o mesmo CPF não sejam cadastrados, retornando erro descritivo ao corretor em caso de duplicidade.
 
 ---
 
@@ -175,7 +176,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 - **LI-3.2.2** WHEN um lead com Prioridade_Medio é exibido na Lead_List, THE Priority_Badge SHALL renderizar um badge amarelo com o texto "Médio".
 - **LI-3.2.3** WHEN um lead com Prioridade_Baixo é exibido na Lead_List, THE Priority_Badge SHALL renderizar um badge vermelho com o texto "Baixo".
 - **LI-3.2.4** WHEN um lead Lead_Nao_Classificado é exibido na Lead_List, THE Priority_Badge SHALL renderizar um badge cinza com o texto "Não classificado".
-- **LI-3.2.5** THE Lead_Card SHALL exibir para cada lead: Nome, E-mail, Telefone, valor do Índice formatado com duas casas decimais e o Priority_Badge correspondente.
+- **LI-3.2.5** THE Lead_Card SHALL exibir para cada lead: Nome, E-mail, CPF, Telefone, valor do Índice formatado com duas casas decimais e o Priority_Badge correspondente.
 - **LI-3.2.6** THE Lead_List SHALL exibir o número total de leads cadastrados e a contagem por classificação (Alto, Médio, Baixo, Não classificado).
 
 ---
@@ -204,7 +205,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 ##### Critérios de Aceitação
 
 - **LI-4.1.1** WHEN o corretor clica em um lead na Lead_List, THE Sistema SHALL navegar para a página de detalhe do lead correspondente.
-- **LI-4.1.2** THE Lead_Detail SHALL exibir todos os dados do lead: Nome, E-mail, Telefone, Valor_Imovel formatado em reais, Renda_Mensal formatada em reais, Índice formatado com duas casas decimais e classificação de prioridade com Priority_Badge.
+- **LI-4.1.2** THE Lead_Detail SHALL exibir todos os dados do lead: Nome, E-mail, CPF, Telefone, Valor_Imovel formatado em reais, Renda_Mensal formatada em reais, Índice formatado com duas casas decimais e classificação de prioridade com Priority_Badge.
 - **LI-4.1.3** THE Lead_Detail SHALL exibir a data de cadastro do lead formatada no padrão brasileiro (DD/MM/AAAA HH:MM).
 - **LI-4.1.4** THE Lead_Detail SHALL disponibilizar um link de retorno para a Lead_List.
 - **LI-4.1.5** IF o identificador do lead na URL não corresponde a nenhum lead cadastrado, THEN THE Sistema SHALL exibir uma página de erro 404 com mensagem descritiva e link de retorno para a Lead_List.
@@ -236,7 +237,7 @@ Este documento cobre os requisitos funcionais e de qualidade da versão 1 (v1) d
 
 ##### Critérios de Aceitação
 
-- **LI-5.1.1** THE Validator SHALL definir um schema Zod para o objeto de criação de lead contendo os campos: nome (string), email (string), telefone (string), valor_imovel (number) e renda_mensal (number).
+- **LI-5.1.1** THE Validator SHALL definir um schema Zod para o objeto de criação de lead contendo os campos: nome (string), email (string), cpf (string), telefone (string), valor_imovel (number) e renda_mensal (number).
 - **LI-5.1.2** WHEN dados de entrada são recebidos pela camada `app/`, THE Validator SHALL executar a validação Zod antes de invocar qualquer função da camada `services/` ou `domain/`.
 - **LI-5.1.3** IF a validação Zod falha, THEN THE Sistema SHALL retornar os erros de validação ao corretor sem invocar a camada de domínio.
 - **LI-5.1.4** THE Sistema SHALL manter os schemas Zod na camada `schemas/`, sem importá-los diretamente na camada `domain/`.
