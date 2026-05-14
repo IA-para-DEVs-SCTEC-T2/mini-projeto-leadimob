@@ -87,7 +87,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Importar apenas de `@/types/lead` — sem dependências de Zod, Prisma ou Next.js
     - _Requirements: LI-2.1.1, LI-2.1.2, LI-2.1.3, LI-2.1.4, LI-2.2.1, LI-2.2.2, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3, LI-5.2.1, LI-5.2.2, LI-5.2.3_
 
-  - [x]* 5.2 Escrever testes de propriedade para `calculate_lead_score` (Properties 1, 2, 3 e 4)
+  - [ ]* 5.2 Escrever testes de propriedade para `calculate_lead_score` (Properties 1, 2, 3 e 4)
     - **Property 1: Determinismo do cálculo**
     - Usar `fc.tuple(fc.float({ min: 0.01 }), fc.float({ min: 0.01 }))` e verificar que duas chamadas com os mesmos argumentos retornam resultado idêntico
     - Anotar com `// Feature: leadimobi-core, Property 1: Determinismo do cálculo`
@@ -102,7 +102,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Anotar com `// Feature: leadimobi-core, Property 4: Consistência da fórmula`
     - **Validates: Requirements LI-2.1.1, LI-2.1.2, LI-2.1.4, LI-2.2.1, LI-2.2.2, LI-2.2.5, LI-2.3.4, LI-2.3.5**
 
-  - [x]* 5.3 Escrever testes unitários para `calculate_lead_score`
+  - [ ]* 5.3 Escrever testes unitários para `calculate_lead_score`
     - Testar casos concretos: Renda R$ 12.000 + Imóvel R$ 400.000 → score 90,00, priority `Alto`; Renda R$ 6.000 + Imóvel R$ 380.000 → score 94,74, priority `Alto`; Renda R$ 3.000 + Imóvel R$ 450.000 → score 24,00, priority `Baixo`; `valor_imovel = 0` → `{ valid: false, priority: 'NaoClassificado' }`; `renda_mensal = 0` → `{ valid: false, priority: 'NaoClassificado' }`
     - Testar fronteiras: score exatamente 80 → `Alto`; score exatamente 40 → `Medio`; score 39,99 → `Baixo`
     - _Requirements: LI-2.1.5, LI-2.1.6, LI-2.2.1, LI-2.2.5, LI-2.3.1, LI-2.3.2, LI-2.3.3_
@@ -155,7 +155,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Anotar com `// Feature: leadimobi-core, Property 5: Ordenação estável da lista priorizada`
     - **Validates: Requirements LI-3.1.1, LI-3.1.2, LI-3.1.4**
 
-  - [x]* 8.3 Escrever testes unitários para `rank_leads`
+  - [ ]* 8.3 Escrever testes unitários para `rank_leads`
     - Testar: lista com Alto, Baixo, Médio → retorna Alto, Médio, Baixo; `NaoClassificado` misturado → vai ao final; lista vazia → retorna array vazio; dois leads com mesmo score → desempate por `created_at` mais antigo primeiro
     - _Requirements: LI-3.1.1, LI-3.1.2, LI-3.1.4_
 
@@ -168,7 +168,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Propagar erros tipados do repositório (`EMAIL_ALREADY_EXISTS`, `DATABASE_UNAVAILABLE`) sem transformação
     - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.2, LI-1.3.5, LI-2.2.3, LI-6.1.3_
 
-  - [x]* 8.5 Escrever testes de integração para `create_lead` com mock do repositório
+  - [ ]* 8.5 Escrever testes de integração para `create_lead` com mock do repositório
     - Mockar `lead_repository` com Jest (`jest.mock`)
     - Testar: input válido com renda/imóvel → score calculado e persistido com priority correta; input com `valor_imovel = 0` → lead criado com `priority: 'NaoClassificado'` e `score: null`; repositório lança `EMAIL_ALREADY_EXISTS` → service propaga o erro
     - _Requirements: LI-1.1.2, LI-1.3.1, LI-1.3.5, LI-2.2.3_
@@ -179,7 +179,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Passar o array para `rank_leads(leads)` e retornar o resultado ordenado
     - _Requirements: LI-3.1.1, LI-3.1.5_
 
-  - [x]* 8.7 Escrever teste de integração para consistência da lista após criação (Property 9)
+  - [ ]* 8.7 Escrever teste de integração para consistência da lista após criação (Property 9)
     - **Property 9: Consistência da lista após criação de lead**
     - Mockar `lead_repository` para simular `create` seguido de `find_all` retornando o lead criado
     - Verificar que o resultado de `list_leads()` após `create_lead(input)` contém o novo lead e que `rank_leads` o posiciona corretamente (score desc, created_at asc, NaoClassificado ao final)

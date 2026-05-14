@@ -3,9 +3,9 @@ import LeadForm from "@/components/lead_form";
 
 export default function NovoLeadPage() {
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-800 px-6 py-4">
+      <header className="border-b border-slate-700 bg-slate-800/80 backdrop-blur-sm px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🏠</span>
@@ -25,7 +25,7 @@ export default function NovoLeadPage() {
           </Link>
         </div>
 
-        <div className="rounded-lg border border-slate-600 bg-slate-800 p-8">
+        <div className="rounded-lg border border-slate-600/50 bg-slate-800/60 backdrop-blur-sm p-8">
           <h1 className="mb-2 text-2xl font-bold text-slate-100">
             Cadastrar novo lead
           </h1>
