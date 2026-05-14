@@ -51,22 +51,22 @@ export default async function LeadsPage() {
   return (
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-800 px-6 py-4">
+      <header className="border-b border-slate-700 bg-slate-800 px-4 py-3 sm:px-6 sm:py-4">
         <div className="mx-auto flex max-w-7xl items-center">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🏠</span>
-            <h1 className="text-2xl font-bold text-yellow-400">LeadImobi</h1>
+            <span className="text-xl sm:text-2xl">🏠</span>
+            <h1 className="text-xl font-bold text-yellow-400 sm:text-2xl">LeadImobi</h1>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Top Bar */}
-        <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/leads/novo"
-            className="inline-flex items-center gap-2 rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-slate-900 transition-colors hover:bg-yellow-500"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-slate-900 transition-colors hover:bg-yellow-500 sm:justify-start"
           >
             <span>+</span>
             <span>Novo Lead</span>
@@ -75,7 +75,7 @@ export default async function LeadsPage() {
           <input
             type="text"
             placeholder="Buscar por nome, email ou telefone..."
-            className="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none sm:flex-1"
             disabled
           />
         </div>
@@ -122,52 +122,52 @@ export default async function LeadsPage() {
         {/* Stats Section */}
         {!error && leads.length > 0 && (
           <>
-            <div className="mb-8 grid grid-cols-5 gap-4">
-              <div className="rounded-lg border border-slate-600 bg-slate-800 p-4">
-                <div className="text-sm text-slate-400">Total</div>
-                <div className="mt-2 text-3xl font-bold text-slate-100">
+            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+              <div className="rounded-lg border border-slate-600 bg-slate-800 p-3 sm:p-4">
+                <div className="text-xs text-slate-400 sm:text-sm">Total</div>
+                <div className="mt-2 text-2xl font-bold text-slate-100 sm:text-3xl">
                   {stats.total}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-green-600 bg-green-900/20 p-4">
-                <div className="text-sm text-green-300">Alto</div>
-                <div className="mt-2 text-3xl font-bold text-green-400">
+              <div className="rounded-lg border border-green-600 bg-green-900/20 p-3 sm:p-4">
+                <div className="text-xs text-green-300 sm:text-sm">Alto</div>
+                <div className="mt-2 text-2xl font-bold text-green-400 sm:text-3xl">
                   {stats.alto}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-yellow-600 bg-yellow-900/20 p-4">
-                <div className="text-sm text-yellow-300">Médio</div>
-                <div className="mt-2 text-3xl font-bold text-yellow-400">
+              <div className="rounded-lg border border-yellow-600 bg-yellow-900/20 p-3 sm:p-4">
+                <div className="text-xs text-yellow-300 sm:text-sm">Médio</div>
+                <div className="mt-2 text-2xl font-bold text-yellow-400 sm:text-3xl">
                   {stats.medio}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-red-600 bg-red-900/20 p-4">
-                <div className="text-sm text-red-300">Baixo</div>
-                <div className="mt-2 text-3xl font-bold text-red-400">
+              <div className="rounded-lg border border-red-600 bg-red-900/20 p-3 sm:p-4">
+                <div className="text-xs text-red-300 sm:text-sm">Baixo</div>
+                <div className="mt-2 text-2xl font-bold text-red-400 sm:text-3xl">
                   {stats.baixo}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-slate-600 bg-slate-800 p-4">
-                <div className="text-sm text-slate-400">Não classificado</div>
-                <div className="mt-2 text-3xl font-bold text-slate-100">
+              <div className="rounded-lg border border-slate-600 bg-slate-800 p-3 sm:p-4 sm:col-span-3 lg:col-span-1">
+                <div className="text-xs text-slate-400 sm:text-sm">Não classificado</div>
+                <div className="mt-2 text-2xl font-bold text-slate-100 sm:text-3xl">
                   {stats.nao_classificado}
                 </div>
               </div>
             </div>
 
             {/* Table Header */}
-            <div className="mb-4 rounded-t-lg border border-b-0 border-slate-600 bg-slate-800 px-6 py-4">
-              <h2 className="text-lg font-semibold text-slate-100">
+            <div className="mb-4 rounded-t-lg border border-b-0 border-slate-600 bg-slate-800 px-4 py-3 sm:px-6 sm:py-4">
+              <h2 className="text-base font-semibold text-slate-100 sm:text-lg">
                 Lista Priorizada de Leads
               </h2>
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto rounded-b-lg border border-slate-600 bg-slate-800">
+            {/* Table - Desktop View */}
+            <div className="hidden overflow-x-auto rounded-b-lg border border-slate-600 bg-slate-800 lg:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-700 bg-slate-700/50">
@@ -203,16 +203,8 @@ export default async function LeadsPage() {
                       }`}
                     >
                       <td className="px-6 py-4">
-                        <div>
-                          <div className="font-medium text-slate-100">
-                            {lead.nome}
-                          </div>
-                          <div className="text-xs text-slate-400">
-                            {lead.email}
-                          </div>
-                          <div className="text-xs text-slate-500">
-                            ({lead.telefone})
-                          </div>
+                        <div className="font-medium text-slate-100">
+                          {lead.nome}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -249,6 +241,58 @@ export default async function LeadsPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Card View - Mobile */}
+            <div className="space-y-3 rounded-b-lg border border-t-0 border-slate-600 bg-slate-800 p-4 lg:hidden">
+              {leads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="rounded-lg border border-slate-700 bg-slate-700/50 p-4"
+                >
+                  {/* Lead Name and Priority */}
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-slate-100">
+                        {lead.nome}
+                      </h3>
+                      <p className="text-xs text-slate-400">{lead.email}</p>
+                      <p className="text-xs text-slate-500">{lead.telefone}</p>
+                    </div>
+                    <PriorityBadge priority={lead.priority} />
+                  </div>
+
+                  {/* Score and Financial Info */}
+                  <div className="mb-3 grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-xs text-slate-400">Score</span>
+                      <p className="font-bold text-yellow-400">
+                        {lead.score !== null ? format_score(lead.score) : "—"}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-400">Renda</span>
+                      <p className="font-medium text-slate-300">
+                        {format_currency(lead.renda_mensal)}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-400">Valor Imóvel</span>
+                      <p className="font-medium text-slate-300">
+                        {format_currency(lead.valor_imovel)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action Button */}
+                  <Link
+                    href={`/leads/${lead.id}`}
+                    className="block w-full rounded bg-yellow-400 px-3 py-2 text-center text-sm font-medium text-slate-900 transition-colors hover:bg-yellow-500"
+                  >
+                    Ver Detalhes
+                  </Link>
+                </div>
+              ))}
             </div>
           </>
         )}
