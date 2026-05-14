@@ -2807,3 +2807,131 @@ A sessão focou na implementação completa do formulário de cadastro de leads:
 - ✅ Algoritmo oficial de CPF implementado
 - ✅ Tratamento robusto de erros
 - ✅ Experiência do usuário otimizada
+
+---
+
+# Prompts Utilizados na Sessão — Implementação da Página de Detalhes do Lead (Issue #29)
+
+Registro dos prompts utilizados durante a sessão de implementação da página de detalhes de um lead específico.
+
+---
+
+## Prompt 71 — Criação de Branch para Issue #29
+
+```
+A parti da branch feature/issiues-28 crie uma nova branch para a https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/29
+```
+
+*(Criação da branch `feature/issue-29` a partir de `feature/issue-28` seguindo o padrão GitFlow)*
+
+---
+
+## Prompt 72 — Implementação da Página de Detalhes
+
+```
+Implementar a página de detalhes de um lead específico com todos os dados formatados seguindo o layout da imagem em anexo
+
+Requisito Relacionado
+LI-4.1.1 — Navegar para detalhe ao clicar no lead
+LI-4.1.2 — Exibir todos os dados: Nome, Email, Telefone, Valor Imóvel, Renda, Índice, Prioridade
+LI-4.1.3 — Exibir data de cadastro formatada DD/MM/AAAA HH:MM
+LI-4.1.4 — Link de retorno para lista
+LI-4.1.5 — Página 404 para lead não encontrado
+LI-4.2.1 — Formatar valores monetários em R$ X.XXX,XX
+LI-4.2.2 — Formatar índice com 2 casas decimais
+
+Objetivo
+Ter uma página de detalhes completa com formatação adequada e tratamento de 404.
+
+Critérios de Aceite
+Server Component com params: { id: string }
+Buscar lead via lead_repository.find_by_id(id)
+Se não encontrado: chamar notFound() do Next.js
+Se encontrado: renderizar dados completos
+Formatar valores com format_currency() e format_score()
+Exibir PriorityBadge
+Incluir link de retorno para /leads
+
+Observações Técnicas
+Arquivo: src/app/leads/[id]/page.tsx
+Server Component com rota dinâmica. Usar notFound() do Next.js para 404.
+```
+
+*(Implementação completa da página de detalhes com layout dark theme, formatação de dados e tratamento de 404)*
+
+---
+
+## Prompt 73 — Correção de Fundo e Layout
+
+```
+Ficou muito pouco fiel ao design e amigavél para o usuário.
+```
+
+*(Tentativa de correção do layout que não atendeu aos requisitos)*
+
+---
+
+## Prompt 74 — Identificação do Design Correto
+
+```
+Não, essa em anexo é a com erro.
+```
+
+*(Esclarecimento de que a imagem em anexo mostrava o design com erro)*
+
+---
+
+## Prompt 75 — Referência às Imagens Corretas
+
+```
+As imagens corretas estão no pasta docs.
+```
+
+*(Direcionamento para usar as imagens de referência na pasta docs/)*
+
+---
+
+## Prompt 76 — Correção do Fundo da Página
+
+```
+A página de detalhes continua com fundo branco, utiliza a tela de cadastro para corrigir o fundo.
+```
+
+*(Correção do fundo da página de detalhes para usar o mesmo padrão dark theme da página de cadastro)*
+
+---
+
+## Contexto da Sessão — Implementação da Página de Detalhes
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/issue-29` (criada a partir de `feature/issue-28`) |
+| Issue | #29 — Criar página de detalhe do lead em app/leads/[id]/page.tsx |
+| Arquivos criados | `src/app/leads/[id]/page.tsx`, `src/app/leads/[id]/not-found.tsx` |
+| Arquivos modificados | `src/components/priority_badge.tsx` |
+| Funcionalidades implementadas | Página de detalhes, tratamento 404, formatação de dados, navegação |
+| Requisitos cobertos | LI-4.1.1, LI-4.1.2, LI-4.1.3, LI-4.1.4, LI-4.1.5, LI-4.2.1, LI-4.2.2 |
+| Build status | ✅ Sucesso |
+| Commits | 3 (feat: implementação + fix: correções de layout) |
+
+---
+
+## Resumo da Sessão — Implementação da Página de Detalhes
+
+A sessão focou na implementação da página de detalhes de leads:
+
+1. **Criação de branch** `feature/issue-29` seguindo GitFlow
+2. **Implementação da página de detalhes** com Server Component e rota dinâmica
+3. **Tratamento de 404** com `notFound()` e página customizada
+4. **Formatação de dados** usando formatters existentes
+5. **Layout responsivo** com tema dark consistente
+6. **Navegação** com link de retorno para lista
+7. **Correções de design** para fidelidade ao layout de referência
+8. **Validação completa** com build e testes
+
+**Resultado final:**
+- ✅ Página de detalhes funcional e completa
+- ✅ Tratamento robusto de casos de erro (404)
+- ✅ Design consistente com o resto da aplicação
+- ✅ Todos os requisitos da issue #29 implementados
+- ✅ Pronto para merge

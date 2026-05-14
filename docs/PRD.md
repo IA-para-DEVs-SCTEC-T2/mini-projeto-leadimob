@@ -43,6 +43,17 @@ Aplicar critério bancário consolidado (comprometimento máximo de 30% da renda
 
 ---
 
+## Exemplo de Uso
+
+| Lead | Renda Mensal | Valor do Imóvel | Índice | Prioridade |
+|------|-------------|----------------|--------|------------|
+| Ana Costa | R$ 12.000 | R$ 400.000 | 90,00 | 🟢 Alto |
+| Bruno Lima | R$ 6.000 | R$ 380.000 | 57,89 | 🟡 Médio |
+| Carla Melo | R$ 3.000 | R$ 450.000 | 24,00 | 🔴 Baixo |
+| João Silva | R$ 0 | R$ 300.000 | — | ⚪ Não Classificado |
+
+---
+
 ## 3. Objetivos do Produto
 
 ### Objetivos Principais
@@ -75,7 +86,7 @@ Formulário estruturado para registro de novo lead com dados financeiros essenci
 **Campos Obrigatórios**
 - Nome completo
 - E-mail
-- CPF
+- CPF (validado com algoritmo oficial)
 - Telefone
 - Valor do imóvel desejado (R$)
 - Renda mensal (R$)
@@ -102,14 +113,17 @@ Algoritmo automático que calcula índice de qualificação financeira baseado e
 Índice = (Renda Mensal × 12 × 5) ÷ Valor do Imóvel × 100
 ```
 
+**Precisão**
+O índice é calculado com precisão de 2 casas decimais para maior exatidão na classificação.
+
 **Lógica**
 - Renda anual × 5 anos = capacidade de financiamento
 - Dividido pelo valor do imóvel = percentual de comprometimento
 - Multiplicado por 100 = índice em escala 0-100+
 
 **Tratamento de Exceções**
-- Se `Valor do Imóvel` = 0 ou nulo → índice inválido, lead não classificado
-- Se `Renda Mensal` = 0 → índice = 0 (baixo)
+- Se `Valor do Imóvel` ≤ 0 ou nulo → índice inválido, lead classificado como "NaoClassificado"
+- Se `Renda Mensal` ≤ 0 ou nula → índice inválido, lead classificado como "NaoClassificado"
 - Valores negativos → rejeitar no schema de validação
 
 **Valor Gerado**
@@ -134,6 +148,7 @@ Categorização visual do lead em três níveis de prioridade baseado no índice
 | Alto | ≥ 80 | 🟢 Verde | Alta capacidade de financiamento |
 | Médio | 40–79 | 🟡 Amarelo | Capacidade moderada |
 | Baixo | < 40 | 🔴 Vermelho | Capacidade limitada |
+| Não Classificado | — | ⚪ Cinza | Dados insuficientes ou inválidos |
 
 **Valor Gerado**
 - Identificação visual imediata de prioridade
@@ -214,9 +229,9 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - **Resultado Esperado**: Se ≤ 0, rejeitar cadastro com mensagem de erro
 
 ### RN02 — Validação de Renda Mensal
-- **Regra**: Renda mensal deve ser não-negativa
+- **Regra**: Renda mensal deve ser maior que zero
 - **Condição**: Campo "Renda Mensal" na entrada
-- **Resultado Esperado**: Se < 0, rejeitar cadastro; se = 0, aceitar com índice = 0
+- **Resultado Esperado**: Se ≤ 0, rejeitar cadastro com mensagem de erro; lead não classificado
 
 ### RN03 — Cálculo de Índice
 - **Regra**: Índice = (Renda × 12 × 5) ÷ Valor do Imóvel × 100
@@ -230,6 +245,7 @@ Visualização completa dos dados de um lead individual com histórico e ações
   - Índice ≥ 80 → Alto
   - Índice 40–79 → Médio
   - Índice < 40 → Baixo
+  - Dados inválidos → Não Classificado
 
 ### RN05 — Ordenação Padrão
 - **Regra**: Leads exibidos em ordem decrescente de índice
@@ -242,9 +258,9 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - **Resultado Esperado**: Se inválido, rejeitar com mensagem
 
 ### RN06A — Validação de CPF
-- **Regra**: CPF deve ser válido (11 dígitos) e único por lead
+- **Regra**: CPF deve ser válido (algoritmo oficial dos dígitos verificadores) e único por lead
 - **Condição**: Campo "CPF" na entrada
-- **Resultado Esperado**: Se inválido ou duplicado, rejeitar com mensagem
+- **Resultado Esperado**: Se inválido ou duplicado, rejeitar com mensagem de erro específica
 
 ### RN07 — Validação de Telefone
 - **Regra**: Telefone deve estar em formato válido
@@ -335,7 +351,12 @@ Visualização completa dos dados de um lead individual com histórico e ações
 
 **Exceção E02 — CPF Duplicado**
 - Condição: CPF já existe no banco
-- Ação: Sistema exibe aviso "Este CPF já está cadastrado"
+- Ação: Sistema exibe erro "Este CPF já está cadastrado"
+- Resultado: Cadastro não é persistido
+
+**Exceção E02A — CPF Inválido**
+- Condição: CPF não passa na validação dos dígitos verificadores
+- Ação: Sistema exibe erro "CPF inválido. Verifique os dígitos informados"
 - Resultado: Cadastro não é persistido
 
 **Exceção E03 — Erro de Persistência**
@@ -348,13 +369,13 @@ Visualização completa dos dados de um lead individual com histórico e ações
 ## 7. Requisitos Funcionais
 
 ### RF01 — Cadastro de Lead
-O sistema deve permitir que o usuário cadastre um novo lead com os campos: Nome, E-mail, Telefone, Valor do Imóvel e Renda Mensal.
+O sistema deve permitir que o usuário cadastre um novo lead com os campos: Nome, E-mail, CPF, Telefone, Valor do Imóvel e Renda Mensal.
 
 ### RF02 — Validação de Entrada
 O sistema deve validar todos os campos de entrada antes de persistir, rejeitando dados inválidos com mensagens claras.
 
 ### RF02A — Validação de CPF
-O sistema deve validar o CPF (11 dígitos) e rejeitar duplicatas com mensagem clara.
+O sistema deve validar o CPF usando o algoritmo oficial dos dígitos verificadores e rejeitar duplicatas com mensagem clara.
 
 ### RF03 — Cálculo de Índice
 O sistema deve calcular automaticamente o índice de qualificação usando a fórmula: (Renda × 12 × 5) ÷ Valor do Imóvel × 100.
@@ -379,6 +400,9 @@ O sistema deve persistir todos os leads em banco de dados relacional (PostgreSQL
 
 ### RF10 — Tratamento de Exceções
 O sistema deve tratar erros de validação, persistência e negócio com mensagens claras ao usuário.
+
+### RF11 — Formatação e Máscaras
+O sistema deve aplicar máscaras automáticas durante a digitação para CPF, telefone e valores monetários, melhorando a experiência do usuário.
 
 ---
 
