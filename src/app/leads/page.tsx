@@ -2,8 +2,11 @@ import Link from "next/link";
 import { list_leads } from "@/services/list_leads";
 import { lead_repository } from "@/infra/repositories/lead_repository";
 import type { Lead, LeadPriority } from "@/types/lead";
+import type { SortOption } from "@/services/rank_leads";
 import LeadCard from "@/components/lead_card";
 import PriorityBadge from "@/components/priority_badge";
+import SortSelector from "@/components/sort_selector";
+import SearchFilter from "@/components/search_filter";
 import { format_currency, format_score } from "@/lib/formatters";
 
 interface LeadStats {
@@ -34,12 +37,19 @@ function calculate_stats(leads: Lead[]): LeadStats {
   );
 }
 
-export default async function LeadsPage() {
+interface LeadsPageProps {
+  searchParams: Promise<{ sort?: string }>;
+}
+
+export default async function LeadsPage({ searchParams }: LeadsPageProps) {
+  const params = await searchParams;
+  const sort_by = (params.sort as SortOption) || "score";
+
   let leads: Lead[] = [];
   let error: string | null = null;
 
   try {
-    leads = await list_leads(lead_repository);
+    leads = await list_leads(lead_repository, sort_by);
   } catch (err) {
     console.error("Erro ao carregar leads:", err);
     error =
@@ -72,12 +82,7 @@ export default async function LeadsPage() {
             <span>Novo Lead</span>
           </Link>
 
-          <input
-            type="text"
-            placeholder="Buscar por nome, email ou telefone..."
-            className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-slate-100 placeholder-slate-400 focus:border-yellow-400 focus:outline-none sm:flex-1"
-            disabled
-          />
+          <SearchFilter />
         </div>
 
         {/* Error State */}
@@ -159,11 +164,14 @@ export default async function LeadsPage() {
               </div>
             </div>
 
-            {/* Table Header */}
-            <div className="mb-4 rounded-t-lg border border-b-0 border-slate-600 bg-slate-800 px-4 py-3 sm:px-6 sm:py-4">
-              <h2 className="text-base font-semibold text-slate-100 sm:text-lg">
-                Lista Priorizada de Leads
-              </h2>
+            {/* Table Header with Sort */}
+            <div className="mb-4 rounded-t-lg border border-b-0 border-slate-600 bg-slate-800">
+              <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
+                <h2 className="text-base font-semibold text-slate-100 sm:text-lg">
+                  Lista Priorizada de Leads
+                </h2>
+                <SortSelector current_sort={sort_by} />
+              </div>
             </div>
 
             {/* Table - Desktop View */}
@@ -194,13 +202,14 @@ export default async function LeadsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="leads-table-body">
                   {leads.map((lead, index) => (
                     <tr
                       key={lead.id}
-                      className={`border-b border-slate-700 transition-colors hover:bg-slate-700/50 ${
+                      className={`lead-row border-b border-slate-700 transition-colors hover:bg-slate-700/50 ${
                         index % 2 === 0 ? "bg-slate-800" : "bg-slate-800/50"
                       }`}
+                      data-search-text={`${lead.nome} ${lead.email} ${lead.telefone}`.toLowerCase()}
                     >
                       <td className="px-6 py-4">
                         <div className="font-medium text-slate-100">
@@ -244,11 +253,12 @@ export default async function LeadsPage() {
             </div>
 
             {/* Card View - Mobile */}
-            <div className="space-y-3 rounded-b-lg border border-t-0 border-slate-600 bg-slate-800 p-4 lg:hidden">
+            <div className="space-y-3 rounded-b-lg border border-t-0 border-slate-600 bg-slate-800 p-4 lg:hidden" id="leads-cards-container">
               {leads.map((lead) => (
                 <div
                   key={lead.id}
-                  className="rounded-lg border border-slate-700 bg-slate-700/50 p-4"
+                  className="lead-card rounded-lg border border-slate-700 bg-slate-700/50 p-4"
+                  data-search-text={`${lead.nome} ${lead.email} ${lead.telefone}`.toLowerCase()}
                 >
                   {/* Lead Name and Priority */}
                   <div className="mb-3 flex items-start justify-between gap-2">
