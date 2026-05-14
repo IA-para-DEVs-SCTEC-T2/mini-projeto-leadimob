@@ -2935,3 +2935,85 @@ A sessão focou na implementação da página de detalhes de leads:
 - ✅ Design consistente com o resto da aplicação
 - ✅ Todos os requisitos da issue #29 implementados
 - ✅ Pronto para merge
+
+---
+
+# Prompts Utilizados na Sessão — Atualização do README.md
+
+Registro dos prompts utilizados durante a sessão de atualização da documentação completa do projeto.
+
+---
+
+## Prompt 77 — Atualização do README.md
+
+```
+Atualizar o arquivo `README.md` com documentação completa do projeto# InstruçãoVocê é um engenheiro de software especializado em documentação técnica e padronização de repositórios.Sua função é atualizar o arquivo:`README.md`com uma documentação clara, organizada e alinhada às boas práticas de projetos de software.# ObjetivoGerar uma documentação completa e objetiva que facilite entendimento, execução, manutenção e contribuição no projeto.# Regras- atualizar exclusivamente o arquivo `README.md`- utilizar markdown- manter estrutura clara- usar linguagem técnica e objetiva- garantir legibilidade- organizar seções hierarquicamente- não incluir conteúdo genérico- considerar contexto real do projeto- incluir instruções práticas- manter padrão profissional# Estrutura Obrigatória# Nome do ProjetoTítulo principalDeve conter:- nome oficial- breve descrição---# ObjetivoExplicar:- propósito do sistema- problema resolvido- proposta principal---# Visão GeralApresentar resumo funcional do projetoDeve incluir:- contexto- público-alvo- cenário de uso---# FuncionalidadesListar principais funcionalidadesFormato:- funcionalidade 1- funcionalidade 2- funcionalidade 3---# Estrutura de PastasDocumentar organização do projetoExemplo:```text id="w2m5zq"src/docs/tests/config/
+```
+
+**Como foi executado:**
+- Análise completa da estrutura atual do projeto LeadImobi
+- Leitura dos arquivos de configuração (package.json, prisma/schema.prisma)
+- Consulta aos steering files para entender as regras técnicas e arquiteturais
+- Análise do PRD (Product Requirements Document) para contexto funcional
+- Criação de documentação estruturada seguindo as melhores práticas
+- Atualização completa do README.md com:
+  - Título e descrição do projeto
+  - Objetivo e problema resolvido
+  - Visão geral com contexto e público-alvo
+  - Funcionalidades principais detalhadas
+  - Estrutura de pastas completa
+  - Stack tecnológica atualizada
+  - Instruções de configuração e instalação
+  - Scripts disponíveis
+  - Arquitetura em camadas
+  - Modelo de dados
+  - Estratégia de testes
+  - Informações de deployment
+  - Roadmap do produto
+  - Guias de contribuição
+
+**Resultado:**
+- ✅ README.md completamente atualizado
+- ✅ Documentação profissional e técnica
+- ✅ Estrutura clara e organizada
+- ✅ Instruções práticas de uso
+- ✅ Informações arquiteturais detalhadas
+- ✅ Guias de configuração e desenvolvimento
+- ✅ Roadmap e informações de contribuição
+
+---
+
+## Contexto da Sessão — Atualização do README.md
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo atualizado | `README.md` |
+| Seções criadas | 15 (Título, Objetivo, Visão Geral, Funcionalidades, Estrutura, Stack, Configuração, Scripts, Arquitetura, Modelo, Testes, Deployment, Roadmap, Contribuição, Suporte) |
+| Linhas adicionadas | ~400 linhas de documentação |
+| Estrutura de pastas | Documentada completamente (9 camadas + testes) |
+| Stack documentada | Next.js 16, React 19, Prisma 7, PostgreSQL, TypeScript, Tailwind CSS |
+| Scripts documentados | 12 scripts (dev, build, test, db:*) |
+| Arquitetura | 4 camadas documentadas (app, domain, services, infra) |
+| Roadmap | 3 versões (v1.0, v1.1, v2.0) |
+| Status | ✅ Concluído |
+
+---
+
+## Resumo da Sessão — Atualização do README.md
+
+A sessão focou na criação de documentação técnica completa:
+
+1. **Análise do projeto** — estrutura, dependências, configurações
+2. **Consulta aos steering files** — regras técnicas e arquiteturais
+3. **Estruturação da documentação** — 15 seções organizadas hierarquicamente
+4. **Documentação técnica** — stack, arquitetura, modelo de dados
+5. **Instruções práticas** — instalação, configuração, desenvolvimento
+6. **Informações de projeto** — roadmap, contribuição, suporte
+7. **Padrão profissional** — linguagem técnica, estrutura clara
+
+**Resultado final:**
+- ✅ README.md profissional e completo
+- ✅ Facilita entendimento do projeto
+- ✅ Instruções claras de execução
+- ✅ Informações de manutenção e contribuição
+- ✅ Padrão de mercado para repositórios de software
