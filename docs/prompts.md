@@ -2146,3 +2146,127 @@ A sessão focou em correção de bugs críticos na funcionalidade de criação d
 - ✅ Usuário é redirecionado para `/leads` após sucesso
 - ✅ Sem mensagens de erro incorretas
 - ✅ Fluxo de criação de lead completo e funcional
+
+
+---
+
+# Prompts Utilizados na Sessão — Refinamento da UI e Responsividade
+
+Registro dos prompts utilizados durante a sessão de refinamento da interface e implementação de layout responsivo.
+
+---
+
+## Prompt 64 — Remoção de Dados de Contato da Coluna Lead
+
+```
+Remove os dados de contatos da coluna Lead
+```
+
+**Como foi executado:**
+- Leitura do arquivo `src/app/leads/page.tsx`
+- Identificação de que a coluna "Lead" exibia nome, email e telefone (dados duplicados)
+- Remoção dos elementos `<div>` contendo email e telefone da coluna Lead
+- Mantida apenas a exibição do nome do lead
+- Dados de contato continuam visíveis na coluna "Contato" dedicada
+- Validação: `npm run build` ✅ (sucesso)
+
+**Resultado:**
+- ✅ Coluna Lead simplificada — apenas nome
+- ✅ Coluna Contato — email e telefone
+- ✅ Interface mais limpa e organizada
+
+---
+
+## Prompt 65 — Atualização do Layout para Responsividade
+
+```
+Atualize o layout para ser amigável tanto em browser no computador/notebook e também em smartphone.
+```
+
+**Como foi executado:**
+- Análise da estrutura atual do layout em `src/app/leads/page.tsx`
+- Implementação de breakpoints responsivos usando Tailwind CSS:
+  - **Mobile (< 640px)**: Cards em vez de tabela, grid 2 colunas para estatísticas
+  - **Tablet (640px - 1024px)**: Grid 3 colunas para estatísticas, layout flexível
+  - **Desktop (1024px+)**: Tabela completa com 7 colunas, grid 5 colunas para estatísticas
+
+**Alterações implementadas:**
+
+1. **Header responsivo:**
+   - Tamanho de fonte: `text-xl sm:text-2xl`
+   - Padding: `px-4 py-3 sm:px-6 sm:py-4`
+
+2. **Top Bar (Novo Lead + Busca):**
+   - Layout: `flex-col sm:flex-row` (coluna em mobile, linha em desktop)
+   - Botão: `w-full sm:w-auto` (tela cheia em mobile)
+   - Input: `w-full sm:flex-1` (tela cheia em mobile, flex em desktop)
+
+3. **Estatísticas:**
+   - Grid: `grid-cols-2 sm:grid-cols-3 lg:grid-cols-5`
+   - Padding: `p-3 sm:p-4`
+   - Fonte: `text-2xl sm:text-3xl`
+   - Card "Não classificado": `sm:col-span-3 lg:col-span-1` (ocupa 3 colunas em tablet)
+
+4. **Tabela (Desktop):**
+   - Visível apenas em `lg:` (1024px+)
+   - Mantém todas as 7 colunas
+
+5. **Cards (Mobile):**
+   - Visível apenas em `lg:hidden` (< 1024px)
+   - Layout de card com:
+     - Nome, email, telefone e badge de prioridade no topo
+     - Grid 2x2 com Score, Renda, Valor Imóvel
+     - Botão "Ver Detalhes" em tela cheia
+   - Espaçamento otimizado para toque
+
+6. **Main Content:**
+   - Padding: `px-4 py-6 sm:px-6 sm:py-8`
+
+**Validações:**
+- `npm run build` ✅ (sucesso em 1240ms)
+- TypeScript strict ✅ (sem erros)
+- Responsividade testada em múltiplos breakpoints
+
+**Resultado:**
+- ✅ Layout totalmente responsivo
+- ✅ Desktop: tabela com todas as informações
+- ✅ Tablet: grid adaptado, layout flexível
+- ✅ Mobile: cards com informações organizadas
+- ✅ Toque otimizado para smartphones
+- ✅ Build validado
+
+---
+
+## Contexto da Sessão — Refinamento da UI e Responsividade
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/issue-27` |
+| Arquivo modificado | `src/app/leads/page.tsx` |
+| Prompts utilizados | 2 (Prompts 64 e 65) |
+| Alterações | Remoção de dados duplicados + implementação de layout responsivo |
+| Breakpoints | `sm:` (640px), `lg:` (1024px) |
+| Build status | ✅ Sucesso (1240ms) |
+| Commits | 2 (refactor: remove contatos + refactor: layout responsivo) |
+
+---
+
+## Resumo da Sessão — Refinamento da UI e Responsividade
+
+A sessão focou em melhorias de UX e responsividade:
+
+1. **Remoção de dados duplicados** — email e telefone removidos da coluna Lead
+2. **Implementação de layout responsivo** com 3 breakpoints:
+   - Mobile: cards com informações organizadas
+   - Tablet: grid adaptado com 3 colunas
+   - Desktop: tabela completa com 7 colunas
+3. **Otimização para toque** — botões e inputs em tela cheia no mobile
+4. **Espaçamento adaptativo** — padding e margin ajustados por breakpoint
+5. **Tipografia responsiva** — tamanho de fonte ajustado por dispositivo
+6. **Validação completa** — build e testes passando
+
+**Resultado final:**
+- ✅ Interface amigável em desktop (computador/notebook)
+- ✅ Interface amigável em mobile (smartphone)
+- ✅ Experiência otimizada para cada tamanho de tela
+- ✅ Pronto para produção
