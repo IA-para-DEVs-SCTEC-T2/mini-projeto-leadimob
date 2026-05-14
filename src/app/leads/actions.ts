@@ -74,9 +74,6 @@ export async function create_lead_action(
 
   try {
     await create_lead(lead_repository, validated_input);
-
-    // Redirect on success
-    redirect("/leads");
   } catch (error) {
     // Handle CPF_ALREADY_EXISTS error
     if (
@@ -114,4 +111,7 @@ export async function create_lead_action(
       error: "Erro ao criar lead. Tente novamente.",
     };
   }
+
+  // Redirect on success (after try/catch to avoid capturing NEXT_REDIRECT)
+  redirect("/leads");
 }

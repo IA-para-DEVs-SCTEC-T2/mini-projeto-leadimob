@@ -41,6 +41,7 @@ function validate_form(values: LeadFormValues): {
   const result = CreateLeadSchema.safeParse({
     nome: values.nome,
     email: values.email,
+    cpf: values.cpf,
     telefone: values.telefone,
     valor_imovel:
       values.valor_imovel.trim() === "" ? NaN : Number(values.valor_imovel),

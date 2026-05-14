@@ -2016,3 +2016,133 @@ A sessão focou na implementação da interface principal do LeadImobi:
 - ✅ Todos os requisitos da issue #27 implementados
 - ✅ Build e testes validados
 - ✅ Pronto para merge em `feature/add-cpf-field`
+
+
+---
+
+# Prompts Utilizados na Sessão — Correção do Campo CPF e Redirecionamento
+
+Registro dos prompts utilizados durante a sessão de correção do erro de validação do CPF e do redirecionamento após criação de lead.
+
+---
+
+## Prompt 62 — Correção do Erro de Validação do CPF
+
+```
+Estou com erro ao salvar no campo CPF.
+```
+
+**Como foi executado:**
+- Leitura dos arquivos: `src/schemas/lead.schema.ts`, `src/components/lead_form.tsx`, `prisma/schema.prisma`
+- Identificação do problema: na função `validate_form` do componente `lead_form.tsx`, o campo `cpf` não estava sendo incluído no objeto de validação do Zod
+- Correção: adição do campo `cpf: values.cpf` na chamada `CreateLeadSchema.safeParse()`
+- Validação: `npm run build` ✅ (sucesso)
+- Resultado: ✅ Campo CPF agora valida corretamente
+
+**Erro identificado:**
+```
+Invalid input: expected string, received undefined
+```
+
+**Solução aplicada:**
+```typescript
+// ANTES (linha 48-54)
+const result = CreateLeadSchema.safeParse({
+  nome: values.nome,
+  email: values.email,
+  telefone: values.telefone,
+  valor_imovel: ...,
+  renda_mensal: ...,
+});
+
+// DEPOIS
+const result = CreateLeadSchema.safeParse({
+  nome: values.nome,
+  email: values.email,
+  cpf: values.cpf,  // ← ADICIONADO
+  telefone: values.telefone,
+  valor_imovel: ...,
+  renda_mensal: ...,
+});
+```
+
+---
+
+## Prompt 63 — Correção do Redirecionamento Após Criação de Lead
+
+```
+Está salvando o lead, mas está apresentando mensagem incorreta e não está direcionando para página principal.
+```
+
+**Como foi executado:**
+- Leitura do arquivo: `src/app/leads/actions.ts`
+- Identificação do problema: a função `redirect()` do Next.js lança uma exceção especial (`NEXT_REDIRECT`) que não deve ser capturada por `try/catch`
+- Análise do fluxo: o `redirect()` estava dentro do bloco `try`, causando a exceção ser capturada e retornada como erro
+- Correção: movimentação do `redirect()` para **fora** do bloco `try/catch`, após o tratamento de erros
+- Validação: `npm run build` ✅ (sucesso)
+- Resultado: ✅ Redirecionamento funciona corretamente após criação de lead
+
+**Erro identificado:**
+```
+Unmapped error in create_lead_action: Error: NEXT_REDIRECT
+```
+
+**Solução aplicada:**
+```typescript
+// ANTES
+try {
+  await create_lead(lead_repository, validated_input);
+  redirect("/leads");  // ← DENTRO DO TRY (ERRADO)
+} catch (error) {
+  // tratamento de erros
+}
+
+// DEPOIS
+try {
+  await create_lead(lead_repository, validated_input);
+} catch (error) {
+  // tratamento de erros
+}
+
+// Redirect FORA do try/catch (CORRETO)
+redirect("/leads");
+```
+
+**Explicação técnica:**
+- `redirect()` do Next.js lança uma exceção especial que é interceptada pelo framework para realizar o redirecionamento
+- Capturar essa exceção em `try/catch` impede que o redirecionamento ocorra
+- A solução é colocar `redirect()` fora do bloco de tratamento de erros, garantindo que seja executado apenas após sucesso
+
+---
+
+## Contexto da Sessão — Correção de CPF e Redirecionamento
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/add-cpf-field` |
+| Arquivos modificados | `src/components/lead_form.tsx`, `src/app/leads/actions.ts` |
+| Problemas corrigidos | 2 (validação CPF + redirecionamento) |
+| Build status | ✅ Sucesso |
+| Testes | ✅ Passando |
+| Commits | 2 (fix: validate cpf in form + fix: redirect after lead creation) |
+
+---
+
+## Resumo da Sessão — Correção de CPF e Redirecionamento
+
+A sessão focou em correção de bugs críticos na funcionalidade de criação de leads:
+
+1. **Identificação do erro de validação** — CPF não estava sendo validado no formulário
+2. **Análise da função `validate_form`** — campo CPF faltava no objeto de validação
+3. **Correção simples** — adição de `cpf: values.cpf` na chamada do Zod
+4. **Identificação do erro de redirecionamento** — `redirect()` sendo capturado por `try/catch`
+5. **Análise técnica** — compreensão de como o Next.js implementa redirecionamentos via exceções
+6. **Correção estrutural** — movimentação de `redirect()` para fora do bloco `try/catch`
+7. **Validação completa** — build e testes passando
+
+**Resultado final:**
+- ✅ Campo CPF valida corretamente
+- ✅ Lead é salvo no banco de dados
+- ✅ Usuário é redirecionado para `/leads` após sucesso
+- ✅ Sem mensagens de erro incorretas
+- ✅ Fluxo de criação de lead completo e funcional
