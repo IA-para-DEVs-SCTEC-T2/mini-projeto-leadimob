@@ -55,9 +55,9 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   const stats = calculate_stats(leads);
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-800 px-4 py-3 sm:px-6 sm:py-4">
+      <header className="border-b border-slate-700 bg-slate-800/80 backdrop-blur-sm px-4 py-3 sm:px-6 sm:py-4">
         <div className="mx-auto flex max-w-7xl items-center">
           <div className="flex items-center gap-2">
             <span className="text-xl sm:text-2xl">🏠</span>

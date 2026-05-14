@@ -13,7 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body className="bg-leadimobi-gradient min-h-screen">
+        {children}
+      </body>
     </html>
   );
 }

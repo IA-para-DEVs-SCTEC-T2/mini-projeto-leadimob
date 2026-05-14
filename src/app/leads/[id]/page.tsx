@@ -25,9 +25,9 @@ export default async function LeadDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-800 px-6 py-4">
+      <header className="border-b border-slate-700 bg-slate-800/80 backdrop-blur-sm px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center">
           <Link
             href="/leads"
@@ -78,7 +78,7 @@ export default async function LeadDetailPage({
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Dados Pessoais */}
-          <div className="bg-slate-800 rounded-lg p-6">
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50">
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Pessoais
             </h3>
@@ -130,13 +130,13 @@ export default async function LeadDetailPage({
           </div>
 
           {/* Dados Financeiros */}
-          <div className="bg-slate-800 rounded-lg p-6">
+          <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50">
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Financeiros
             </h3>
             
             <div className="space-y-6">
-              <div className="bg-slate-700 rounded-lg p-4">
+              <div className="bg-slate-700/50 backdrop-blur-sm rounded-lg p-4 border border-slate-600/50">
                 <div className="flex items-center gap-2 mb-2">
                   <svg
                     className="h-5 w-5 text-green-400"
@@ -158,7 +158,7 @@ export default async function LeadDetailPage({
                 </div>
               </div>
 
-              <div className="bg-slate-700 rounded-lg p-4">
+              <div className="bg-slate-700/50 backdrop-blur-sm rounded-lg p-4 border border-slate-600/50">
                 <div className="flex items-center gap-2 mb-2">
                   <svg
                     className="h-5 w-5 text-blue-400"
