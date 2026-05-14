@@ -54,16 +54,19 @@ function handle_repository_error(error: unknown): never {
     throw error;
   }
 
-  if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2002"
-  ) {
-    // P2002 is unique constraint violation
-    // Check which field caused the violation
-    const target = error.meta?.target as string[] | undefined;
-    
-    if (target?.includes("cpf")) {
-      throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2002") {
+      // P2002 is unique constraint violation
+      const target = error.meta?.target as string[] | undefined;
+      
+      // Check both target array and error message for CPF field
+      const isCpfError = target?.includes("cpf") || 
+                        error.message?.includes("cpf") ||
+                        error.message?.includes("leads_cpf_key");
+      
+      if (isCpfError) {
+        throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
+      }
     }
   }
 
