@@ -244,7 +244,7 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - O redirect para `/leads` após cadastro bem-sucedido satisfaz LI-3.1.3: a lista recarregada pelo Server Component refletirá automaticamente o novo lead na posição correta da ordenação
     - _Requirements: LI-1.1.2, LI-1.1.3, LI-1.2.6, LI-1.3.4, LI-1.3.5, LI-3.1.3, LI-5.1.2, LI-5.1.3_
 
-  - [ ] 12.2 Criar `src/app/leads/page.tsx` — lista priorizada
+  - [x] 12.2 Criar `src/app/leads/page.tsx` — lista priorizada
     - Implementar Server Component que chama `list_leads()` e renderiza a lista
     - Exibir contagem total e por classificação (Alto, Médio, Baixo, Não classificado) no topo
     - Renderizar cada lead com `LeadCard` e `PriorityBadge`
@@ -252,11 +252,11 @@ Implementação incremental da plataforma LeadImobi Core seguindo a arquitetura 
     - Exibir mensagem de erro descritiva com opção de tentar novamente em caso de falha ao carregar
     - _Requirements: LI-3.1.1, LI-3.1.3, LI-3.2.5, LI-3.2.6, LI-3.3.1, LI-3.3.2_
 
-  - [ ] 12.3 Criar `src/app/leads/new/page.tsx` — página de cadastro
+  - [x] 12.3 Criar `src/app/leads/new/page.tsx` — página de cadastro
     - Implementar Server Component que renderiza o `LeadForm`
     - _Requirements: LI-1.1.1_
 
-  - [ ] 12.4 Criar `src/app/leads/[id]/page.tsx` — página de detalhe
+  - [x] 12.4 Criar `src/app/leads/[id]/page.tsx` — página de detalhe
     - Implementar Server Component que recebe `params: { id: string }`
     - Chamar `lead_repository.find_by_id(id)`
     - Se não encontrado: chamar `notFound()` do Next.js para renderizar página 404 com link de retorno
