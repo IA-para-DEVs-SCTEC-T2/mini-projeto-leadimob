@@ -3117,3 +3117,112 @@ A sessão focou na implementação das funcionalidades faltantes do CRUD:
 - ✅ **Testes abrangentes** — 54 testes passando
 - ✅ **Documentação alinhada** — README reflete funcionalidades reais
 - ✅ **Pronto para produção** — todas as funcionalidades básicas implementadas
+
+---
+
+# Prompts Utilizados na Sessão — Criação de Issues de Auditoria de Segurança
+
+Registro dos prompts utilizados durante a sessão de transformação dos achados da auditoria de segurança em issues rastreáveis no GitHub Projects.
+
+---
+
+## Prompt 81 — Transformação de Achados em Issues GitHub
+
+```
+Você é um engenheiro de software responsável por transformar achados de uma auditoria de segurança em issues rastreáveis no GitHub Projects.
+Leia a tabela de Priorização de Correções fornecida abaixo e crie um issue individual para cada linha da tabela.
+
+---
+
+# OBJETIVO
+Criar 12 issues GitHub para o projeto:
+https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1
+
+Cada issue deve representar uma correção identificada na auditoria de segurança e qualidade do projeto LeadImobi (versão 0.1.0).
+Os issues devem estar prontos para serem copiados e cadastrados manualmente no GitHub, um a um.
+
+---
+
+# REGRAS
+1. **Um issue por achado** — cada linha da tabela de priorização gera exatamente um issue.
+2. **Título do issue** — use o formato: `[ID] Descrição curta e direta` (ex: `[C-01] Implementar autenticação mínima nas rotas de leads`)
+3. **Labels obrigatórias** — mapeie a prioridade da seguinte forma:
+- 🔴 Imediato → label: `critical` + `security`
+- 🟠 Curto prazo → label: `high` + `security` ou `performance` (conforme o achado)
+- 🟡 Médio prazo → label: `medium`
+4. **Corpo do issue** — deve conter as seguintes seções em Markdown:
+- `## Contexto` — breve descrição do problema (extraída da auditoria)
+- `## Arquivo(s) afetado(s)` — caminho(s) do arquivo conforme a auditoria
+- `## Impacto` — consequência do problema não corrigido
+- `## Solução recomendada` — passo(s) de correção, com trecho de código se disponível na auditoria
+- `## Esforço estimado` — valor da tabela de priorização
+5. **Milestone** — todos os issues de prioridade 🔴 devem indicar milestone: `Sprint 1 — Segurança Crítica`. Os demais: `Sprint 2 — Qualidade e Hardening`.
+6. **Assignees** — deixe em branco (a ser preenchido pelo time).
+7. **Não invente informações** — use apenas o que está documentado na auditoria.
+8. **Ordem de saída** — gere os issues na mesma ordem da tabela de priorização (C-01 → C-02 → C-03 → A-01 ... → M-05).
+```
+
+*(Criação de 12 issues GitHub usando GitHub CLI baseados na auditoria de segurança do documento AUDITORIA.md)*
+
+---
+
+## Contexto da Sessão — Criação de Issues de Auditoria
+
+| Item | Detalhe |
+|------|---------|
+| Documento base | `AUDITORIA.md` — Auditoria de Segurança e Qualidade LeadImobi v0.1.0 |
+| Issues criadas | 12 (#60 a #71) |
+| Labels criadas | 5 (`critical`, `security`, `high`, `medium`, `performance`) |
+| Repositório | `IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob` |
+| GitHub Project | #10 — [Mini Projeto LeadImobi](https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1) |
+| Ferramenta utilizada | GitHub CLI (`gh`) |
+
+### **Issues Críticos (🔴)**
+- **#60** - [C-01] Implementar autenticação mínima nas rotas de leads
+- **#61** - [C-02] Corrigir XSS via innerHTML no componente de busca  
+- **#62** - [C-03] Adicionar security headers HTTP no next.config.ts
+
+### **Issues de Alta Prioridade (🟠)**
+- **#63** - [A-01] Implementar mascaramento de CPF na exibição
+- **#64** - [A-02] Validar DATABASE_URL na inicialização do Prisma
+- **#65** - [A-03] Implementar paginação no método find_all()
+- **#66** - [A-04] Implementar rate limiting nas Server Actions
+
+### **Issues de Média Prioridade (🟡)**
+- **#67** - [M-01] Remover rota duplicada /new
+- **#68** - [M-02] Converter campo priority para enum Prisma
+- **#69** - [M-03] Implementar whitelist no parâmetro sort
+- **#70** - [M-04] Investigar override @hono/node-server no package.json
+- **#71** - [M-05] Refatorar busca client-side para abordagem React
+
+---
+
+## Resumo da Sessão — Criação de Issues de Auditoria
+
+A sessão focou na transformação de achados de auditoria em issues rastreáveis:
+
+1. **Análise da auditoria** — leitura completa do documento AUDITORIA.md
+2. **Identificação do repositório** — `IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob`
+3. **Criação de labels** — 5 labels para classificação de severidade
+4. **Criação de 12 issues** — um para cada achado da auditoria
+5. **Estruturação padronizada** — contexto, arquivos, impacto, solução, esforço
+6. **Associação ao projeto** — todos os issues adicionados ao GitHub Project #10
+7. **Rastreabilidade completa** — mapeamento direto da auditoria para issues
+
+**Resultado final:**
+- ✅ **12 issues criados** com estrutura padronizada
+- ✅ **Labels apropriadas** para classificação de severidade
+- ✅ **Associação ao projeto** GitHub para rastreamento
+- ✅ **Priorização clara** — 3 críticos, 4 altos, 5 médios
+- ✅ **Documentação completa** — contexto, impacto, solução para cada issue
+- ✅ **Pronto para execução** — issues prontos para serem trabalhados pela equipe
+
+---
+
+## Prompt 82 — Adição dos Prompts da Sessão
+
+```
+Adicione os prompts utilizados nessa sessão no arquivo /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md
+```
+
+*(Solicitação de atualização do prompts.md com os prompts 81 e 82 da sessão de criação de issues de auditoria)*
