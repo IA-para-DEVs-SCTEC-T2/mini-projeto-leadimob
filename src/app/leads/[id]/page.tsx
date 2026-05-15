@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { lead_repository } from "@/infra/repositories/lead_repository";
 import PriorityBadge from "@/components/priority_badge";
+import LeadActions from "@/components/lead_actions";
 import {
   format_currency,
   format_date,
@@ -64,7 +65,7 @@ export default async function LeadDetailPage({
               Cadastrado em {format_date(lead.created_at)}
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <div className="text-right">
               <div className="text-4xl font-bold text-yellow-400">
                 {format_score(lead.score)}
@@ -72,6 +73,7 @@ export default async function LeadDetailPage({
               <div className="text-sm text-slate-400">Score</div>
             </div>
             <PriorityBadge priority={lead.priority} />
+            <LeadActions leadId={lead.id} leadName={lead.nome} />
           </div>
         </div>
 

@@ -5,9 +5,11 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useState, useTransition, useEffect } from "react";
 import {
   CreateLeadSchema,
+  UpdateLeadSchema,
   type CreateLeadInput,
+  type UpdateLeadInput,
 } from "@/schemas/lead.schema";
-import { create_lead_action } from "@/app/leads/actions";
+import { create_lead_action, update_lead_action } from "@/app/leads/actions";
 import {
   mask_cpf,
   mask_phone,
@@ -15,7 +17,11 @@ import {
   parse_cpf,
   parse_phone,
   parse_currency,
+  format_currency,
+  format_cpf,
+  format_phone,
 } from "@/lib/formatters";
+import type { Lead } from "@/types/lead";
 
 type LeadFormField =
   | "nome"
@@ -29,8 +35,10 @@ type LeadFormValues = Record<LeadFormField, string>;
 type LeadFormErrors = Partial<Record<LeadFormField, string>>;
 
 interface LeadFormProps {
+  mode?: "create" | "edit";
+  lead?: Lead;
   initial_values?: Partial<LeadFormValues>;
-  onSubmit?: (data: CreateLeadInput) => Promise<void> | void;
+  onSubmit?: (data: CreateLeadInput | UpdateLeadInput) => Promise<void> | void;
 }
 
 const empty_values: LeadFormValues = {
@@ -42,8 +50,21 @@ const empty_values: LeadFormValues = {
   renda_mensal: "",
 };
 
-function validate_form(values: LeadFormValues): {
-  data: CreateLeadInput | null;
+function get_initial_values_from_lead(lead?: Lead): LeadFormValues {
+  if (!lead) return empty_values;
+  
+  return {
+    nome: lead.nome,
+    email: lead.email,
+    cpf: format_cpf(lead.cpf),
+    telefone: format_phone(lead.telefone),
+    valor_imovel: format_currency(lead.valor_imovel),
+    renda_mensal: format_currency(lead.renda_mensal),
+  };
+}
+
+function validate_form(values: LeadFormValues, mode: "create" | "edit" = "create"): {
+  data: CreateLeadInput | UpdateLeadInput | null;
   errors: LeadFormErrors;
   is_valid: boolean;
 } {
@@ -53,7 +74,9 @@ function validate_form(values: LeadFormValues): {
   const parsed_valor_imovel = parse_currency(values.valor_imovel);
   const parsed_renda_mensal = parse_currency(values.renda_mensal);
 
-  const result = CreateLeadSchema.safeParse({
+  const schema = mode === "create" ? CreateLeadSchema : UpdateLeadSchema;
+  
+  const result = schema.safeParse({
     nome: values.nome.trim(),
     email: values.email.trim(),
     cpf: parsed_cpf,
@@ -92,22 +115,27 @@ function validate_form(values: LeadFormValues): {
 }
 
 export default function LeadForm({
+  mode = "create",
+  lead,
   initial_values,
   onSubmit,
 }: LeadFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [values, set_values] = useState<LeadFormValues>({
-    ...empty_values,
-    ...initial_values,
-  });
+  
+  // Determine initial values based on mode and props
+  const computed_initial_values = mode === "edit" && lead 
+    ? get_initial_values_from_lead(lead)
+    : { ...empty_values, ...initial_values };
+    
+  const [values, set_values] = useState<LeadFormValues>(computed_initial_values);
   const [errors, set_errors] = useState<LeadFormErrors>({});
   const [server_error, set_server_error] = useState<string | null>(null);
   const [is_form_valid, set_is_form_valid] = useState(false);
 
   // Validate form whenever values change
   useEffect(() => {
-    const validation = validate_form(values);
+    const validation = validate_form(values, mode);
     set_is_form_valid(validation.is_valid);
     
     // Only show errors after user has interacted with fields
@@ -115,7 +143,7 @@ export default function LeadForm({
     if (has_content) {
       set_errors(validation.errors);
     }
-  }, [values]);
+  }, [values, mode]);
 
   function handle_change(event: ChangeEvent<HTMLInputElement>) {
     const field = event.target.name as LeadFormField;
@@ -149,7 +177,7 @@ export default function LeadForm({
   function handle_submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const validation = validate_form(values);
+    const validation = validate_form(values, mode);
     set_errors(validation.errors);
 
     if (!validation.is_valid || validation.data === null) {
@@ -166,7 +194,13 @@ export default function LeadForm({
     form_data.append("renda_mensal", parse_currency(values.renda_mensal).toString());
 
     startTransition(async () => {
-      const result = await create_lead_action(form_data);
+      let result;
+      
+      if (mode === "edit" && lead) {
+        result = await update_lead_action(lead.id, form_data);
+      } else {
+        result = await create_lead_action(form_data);
+      }
 
       if (result.success) {
         // Redirect is handled by the Server Action
@@ -196,7 +230,11 @@ export default function LeadForm({
   }
 
   function handle_cancel() {
-    router.push("/leads");
+    if (mode === "edit" && lead) {
+      router.push(`/leads/${lead.id}`);
+    } else {
+      router.push("/leads");
+    }
   }
 
   return (
@@ -374,7 +412,10 @@ export default function LeadForm({
             }`}
             type="submit"
           >
-            {isPending ? "Salvando..." : "Salvar Lead"}
+            {isPending 
+              ? (mode === "edit" ? "Atualizando..." : "Salvando...") 
+              : (mode === "edit" ? "Atualizar Lead" : "Salvar Lead")
+            }
           </button>
         </div>
       </form>

@@ -34,7 +34,9 @@ Centralizar e qualificar automaticamente leads imobiliários através de um **Í
 - **Classificação Visual** — Priorização automática: 🟢 Alto (≥80), 🟡 Médio (40-79), 🔴 Baixo (<40)
 - **Lista Priorizada** — Visualização ordenada por capacidade de financiamento
 - **Detalhes do Lead** — Acesso completo aos dados com explicação da fórmula de qualificação
-- **Gestão CRUD** — Criação, edição e exclusão de leads com recálculo automático
+- **Edição de Leads** — Atualização de dados com recálculo automático do score e prioridade
+- **Exclusão de Leads** — Remoção segura com confirmação para evitar exclusões acidentais
+- **Gestão CRUD Completa** — Criação, leitura, atualização e exclusão de leads com recálculo automático
 
 ---
 
@@ -45,6 +47,7 @@ src/
 ├── app/                    # Next.js App Router (rotas e UI)
 │   ├── leads/             # Páginas de leads
 │   │   ├── [id]/          # Detalhes do lead
+│   │   │   └── edit/      # Edição do lead
 │   │   ├── new/           # Cadastro de novo lead
 │   │   ├── actions.ts     # Server Actions
 │   │   └── page.tsx       # Lista de leads
@@ -54,6 +57,7 @@ src/
 ├── components/            # Componentes React reutilizáveis
 │   ├── lead_card.tsx      # Card de lead na listagem
 │   ├── lead_form.tsx      # Formulário de cadastro/edição
+│   ├── lead_actions.tsx   # Botões de ação (editar/excluir)
 │   ├── priority_badge.tsx # Badge de classificação visual
 │   ├── search_filter.tsx  # Filtro de busca
 │   └── sort_selector.tsx  # Seletor de ordenação
@@ -68,7 +72,8 @@ src/
 │   ├── create_lead.ts    # Cadastro de lead
 │   ├── list_leads.ts     # Listagem com ordenação
 │   ├── rank_leads.ts     # Ranking por índice
-│   └── update_lead.ts    # Edição de lead
+│   ├── update_lead.ts    # Edição de lead
+│   └── delete_lead.ts    # Exclusão de lead
 │
 ├── infra/               # Acesso a dados e integrações
 │   ├── db/              # Configuração de banco
@@ -290,8 +295,9 @@ npm run db:migrate:prod
 ### v1.0 (Atual)
 - ✅ Cadastro e qualificação de leads
 - ✅ Lista priorizada com classificação visual
-- ✅ CRUD completo de leads
+- ✅ CRUD completo de leads (criar, ler, atualizar, excluir)
 - ✅ Validação de CPF e dados financeiros
+- ✅ Recálculo automático de score ao editar
 
 ### v1.1 (Próximo)
 - 🔄 Filtros e busca avançada
