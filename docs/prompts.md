@@ -3017,3 +3017,103 @@ A sessão focou na criação de documentação técnica completa:
 - ✅ Instruções claras de execução
 - ✅ Informações de manutenção e contribuição
 - ✅ Padrão de mercado para repositórios de software
+
+---
+
+# Prompts Utilizados na Sessão — Implementação Completa do CRUD de Leads
+
+Registro dos prompts utilizados durante a sessão de implementação das funcionalidades de edição e exclusão de leads, completando o CRUD da aplicação.
+
+---
+
+## Prompt 78 — Identificação da Inconsistência no README
+
+```
+No /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/README.mdtem esse "Criação, edição e exclusão de leads com recálculo automático", mas em tela tenho apenas criação, detalhes e listagem. Falta atualização e exclusão.
+```
+
+*(Identificação de que o README mencionava funcionalidades de edição e exclusão que não estavam implementadas na aplicação)*
+
+---
+
+## Prompt 79 — Criação de Issue para Melhoria do CRUD
+
+```
+Cria uma issue nova para melhoria da complementação do CRUD no https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1
+```
+
+*(Criação da issue #58 no GitHub Project documentando a necessidade de implementar as funcionalidades faltantes do CRUD)*
+
+---
+
+## Prompt 80 — Criação de Branch, Commit e Pull Request
+
+```
+Crie uma nova branch para essa issue, realiza o commit, push request e abra um PR
+```
+
+*(Criação da branch `feature/complete-crud-operations`, implementação completa das funcionalidades de edição e exclusão, commit e abertura do PR #59)*
+
+---
+
+## Contexto da Sessão — Implementação Completa do CRUD
+
+| Item | Detalhe |
+|------|---------|
+| Issue criada | #58 — Implementação Completa do CRUD de Leads |
+| Branch | `feature/complete-crud-operations` |
+| Pull Request | #59 — feat(crud): Implement Complete CRUD Operations for Leads |
+| Funcionalidades implementadas | Edição e exclusão de leads com recálculo automático |
+| Arquivos criados | 6 (páginas, services, componentes, testes) |
+| Arquivos modificados | 8 (actions, repositório, tipos, schemas, componentes) |
+| Testes adicionados | 7 (update_lead.test.ts, delete_lead.test.ts) |
+| Build status | ✅ Sucesso |
+| Linhas adicionadas | +733 |
+
+### **Funcionalidades Implementadas:**
+
+#### **1. Edição de Leads**
+- **Rota**: `/leads/[id]/edit` - página de edição
+- **Service**: `update_lead.ts` - lógica de atualização com recálculo automático
+- **Action**: `update_lead_action` - Server Action para processar formulário
+- **Componente**: `LeadForm` modificado para suportar modo de edição
+- **Repositório**: método `update()` adicionado
+- **Schema**: `UpdateLeadSchema` para validação
+
+#### **2. Exclusão de Leads**
+- **Service**: `delete_lead.ts` - lógica de exclusão
+- **Action**: `delete_lead_action` - Server Action para exclusão
+- **Componente**: `LeadActions` com modal de confirmação
+- **Repositório**: método `delete()` adicionado
+- **Interface**: Botões de ação na página de detalhes
+
+#### **3. Melhorias na Interface**
+- **Botões de Ação**: Editar e Excluir na página de detalhes
+- **Modal de Confirmação**: Previne exclusões acidentais
+- **Formulário Flexível**: Suporte a modo criação e edição
+- **Navegação Intuitiva**: Fluxo completo entre páginas
+
+---
+
+## Resumo da Sessão — Implementação Completa do CRUD
+
+A sessão focou na implementação das funcionalidades faltantes do CRUD:
+
+1. **Identificação da inconsistência** entre README e funcionalidades implementadas
+2. **Criação de issue** #58 documentando a necessidade de completar o CRUD
+3. **Implementação completa** das funcionalidades de edição e exclusão
+4. **Arquitetura mantida** — separação em camadas, validação Zod, tratamento de erros
+5. **Testes implementados** — cobertura completa das novas funcionalidades
+6. **Interface aprimorada** — botões de ação, modal de confirmação, navegação
+7. **Validação completa** — build, testes e TypeScript sem erros
+8. **Documentação atualizada** — README alinhado com funcionalidades reais
+9. **Pull Request criado** — PR #59 com documentação detalhada
+
+**Resultado final:**
+- ✅ **CRUD Completo**: Create, Read, Update, Delete
+- ✅ **Recálculo automático** de score ao editar
+- ✅ **Exclusão segura** com confirmação
+- ✅ **Interface intuitiva** com navegação completa
+- ✅ **Testes abrangentes** — 54 testes passando
+- ✅ **Documentação alinhada** — README reflete funcionalidades reais
+- ✅ **Pronto para produção** — todas as funcionalidades básicas implementadas
