@@ -52,11 +52,23 @@ export default function SearchFilter() {
         empty_state = document.createElement('div');
         empty_state.id = 'search-empty-state';
         empty_state.className = 'py-8 text-center text-slate-400';
-        empty_state.innerHTML = `
-          <div class="text-4xl mb-2">🔍</div>
-          <p class="text-sm">Nenhum lead encontrado para "${search_term}"</p>
-          <p class="text-xs mt-1">Tente buscar por nome, email ou telefone</p>
-        `;
+        
+        // ✅ SEGURO - Construir elementos via API DOM sem interpolação de strings
+        const icon_div = document.createElement('div');
+        icon_div.className = 'text-4xl mb-2';
+        icon_div.textContent = '🔍';
+        
+        const message_p = document.createElement('p');
+        message_p.className = 'text-sm';
+        message_p.textContent = `Nenhum lead encontrado para "${search_term}"`;
+        
+        const hint_p = document.createElement('p');
+        hint_p.className = 'text-xs mt-1';
+        hint_p.textContent = 'Tente buscar por nome, email ou telefone';
+        
+        empty_state.appendChild(icon_div);
+        empty_state.appendChild(message_p);
+        empty_state.appendChild(hint_p);
         cards_container.appendChild(empty_state);
       }
       
@@ -68,11 +80,23 @@ export default function SearchFilter() {
         const empty_cell = document.createElement('td');
         (empty_cell as HTMLTableCellElement).colSpan = 7;
         empty_cell.className = 'py-8 text-center text-slate-400';
-        empty_cell.innerHTML = `
-          <div class="text-4xl mb-2">🔍</div>
-          <p class="text-sm">Nenhum lead encontrado para "${search_term}"</p>
-          <p class="text-xs mt-1">Tente buscar por nome, email ou telefone</p>
-        `;
+        
+        // ✅ SEGURO - Construir elementos via API DOM sem interpolação de strings
+        const icon_div = document.createElement('div');
+        icon_div.className = 'text-4xl mb-2';
+        icon_div.textContent = '🔍';
+        
+        const message_p = document.createElement('p');
+        message_p.className = 'text-sm';
+        message_p.textContent = `Nenhum lead encontrado para "${search_term}"`;
+        
+        const hint_p = document.createElement('p');
+        hint_p.className = 'text-xs mt-1';
+        hint_p.textContent = 'Tente buscar por nome, email ou telefone';
+        
+        empty_cell.appendChild(icon_div);
+        empty_cell.appendChild(message_p);
+        empty_cell.appendChild(hint_p);
         empty_row.appendChild(empty_cell);
         table_body.appendChild(empty_row);
       }
