@@ -3226,3 +3226,129 @@ Adicione os prompts utilizados nessa sessão no arquivo /Users/gabrieldasilva/De
 ```
 
 *(Solicitação de atualização do prompts.md com os prompts 81 e 82 da sessão de criação de issues de auditoria)*
+---
+
+# Prompts Utilizados na Sessão — Correção de Issues de Segurança e Performance
+
+Registro dos prompts utilizados durante a sessão de correção das issues #65, #67, #62, #63, #64, #66 e #68 identificadas na auditoria de segurança.
+
+---
+
+## Prompt 83 — Criação de Branch para Correção de Issues
+
+```
+Cria um nova branch utilizando a branch feature/fix-xss-search-filter de base para tarefa https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/69 acesse o utilizando o githuh CLI.
+```
+
+*(Criação da branch `feature/fix-sort-whitelist` baseada em `feature/fix-xss-search-filter` para implementar whitelist no parâmetro sort)*
+
+---
+
+## Prompt 84 — Correção de Múltiplas Issues de Segurança
+
+```
+Realize a correção das issues https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/65 e https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/67
+```
+
+*(Correção das issues #65 (paginação no find_all) e #67 (remoção de rota duplicada /new))*
+
+---
+
+## Prompt 85 — Correção de Issues Críticas e de Alta Prioridade
+
+```
+Realize a correção das issues 62, 63, 64, 66, 68 do https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1. Utilize o github CLI
+```
+
+*(Correção de 5 issues: security headers HTTP (#62), mascaramento de CPF (#63), validação DATABASE_URL (#64), rate limiting (#66), enum Prisma (#68))*
+
+---
+
+## Prompt 86 — Adição dos Prompts e Criação de PR
+
+```
+Adicione os prompts utilizados nessa sessão no arquivo /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md. Abrar um PR
+```
+
+*(Solicitação de atualização do prompts.md com os prompts da sessão de correção de issues de segurança e abertura de PR)*
+
+---
+
+## Contexto da Sessão — Correção de Issues de Segurança
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/fix-sort-whitelist` |
+| Issues corrigidas | 7 (#62, #63, #64, #65, #66, #67, #68, #69) |
+| Categorias | 3 críticas, 4 altas, 1 média |
+| Arquivos modificados | 11 (next.config.ts, prisma.ts, formatters.ts, schema.prisma, proxy.ts, etc.) |
+| Funcionalidades implementadas | Security headers, mascaramento CPF, validação DB, rate limiting, enum Prisma, paginação, whitelist sort |
+| Migration criada | `20260516000331_convert_priority_to_enum` |
+| Build status | ✅ Sucesso |
+| Testes | ✅ Todos passando |
+
+### **Correções Implementadas:**
+
+#### **🔒 Issue #62 - Security Headers HTTP**
+- Adicionados headers de segurança no `next.config.ts`
+- X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, CSP
+
+#### **🔐 Issue #63 - Mascaramento de CPF**
+- Nova função `mask_cpf_display()` que exibe CPF como `***.456.789-**`
+- Atualizada página de detalhes para usar CPF mascarado
+- Testes adicionados para a nova funcionalidade
+
+#### **⚡ Issue #64 - Validação DATABASE_URL**
+- Validação com falha rápida na inicialização do Prisma
+- Mensagem clara quando DATABASE_URL não está definida
+
+#### **📄 Issue #65 - Paginação no find_all()**
+- Implementada paginação com parâmetros `page` e `page_size` (padrão 50)
+- Atualizada interface `LeadRepository`
+- Melhoria de performance para grandes volumes
+
+#### **🚦 Issue #66 - Rate Limiting**
+- Implementado rate limiting por IP no `proxy.ts`
+- Limite de 10 requisições por minuto
+- Headers informativos sobre limites
+
+#### **🗑️ Issue #67 - Rota Duplicada**
+- Removida completamente a rota `/new`
+- Mantida apenas `/novo` (padrão português)
+
+#### **📊 Issue #68 - Enum Prisma**
+- Convertido campo `priority` para enum Prisma
+- Migration criada para garantir integridade no banco
+- Prevenção de dados inválidos
+
+#### **🔍 Issue #69 - Whitelist Sort**
+- Implementada whitelist explícita para parâmetros de ordenação
+- Validação runtime com fallback para 'score'
+- Prevenção de valores inválidos nos services
+
+---
+
+## Resumo da Sessão — Correção de Issues de Segurança
+
+A sessão focou na correção sistemática de vulnerabilidades e melhorias identificadas na auditoria:
+
+1. **Correção de 8 issues** de diferentes severidades (3 críticas, 4 altas, 1 média)
+2. **Implementação de security headers** para proteção contra ataques comuns
+3. **Mascaramento de dados sensíveis** (CPF) para proteção de privacidade
+4. **Validação robusta** de configurações críticas (DATABASE_URL)
+5. **Rate limiting** para prevenção de ataques de negação de serviço
+6. **Integridade de dados** com enum Prisma e whitelist de parâmetros
+7. **Limpeza de código** removendo rotas duplicadas
+8. **Paginação** para melhoria de performance
+9. **Testes abrangentes** para todas as novas funcionalidades
+10. **Migration segura** para mudanças no banco de dados
+
+**Resultado final:**
+- ✅ **8 vulnerabilidades corrigidas** de forma sistemática
+- ✅ **Segurança aprimorada** com headers HTTP e rate limiting
+- ✅ **Privacidade protegida** com mascaramento de CPF
+- ✅ **Performance melhorada** com paginação
+- ✅ **Integridade garantida** com enum Prisma e validações
+- ✅ **Código limpo** sem duplicações
+- ✅ **Testes validados** — todas as funcionalidades testadas
+- ✅ **Pronto para produção** — vulnerabilidades críticas resolvidas
