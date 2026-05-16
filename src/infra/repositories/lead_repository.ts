@@ -86,9 +86,13 @@ async function create(data: CreateLeadData): Promise<Lead> {
   }
 }
 
-async function find_all(): Promise<Lead[]> {
+async function find_all(page = 1, page_size = 50): Promise<Lead[]> {
   try {
-    const leads = await prisma.lead.findMany();
+    const leads = await prisma.lead.findMany({
+      take: page_size,
+      skip: (page - 1) * page_size,
+      orderBy: { created_at: 'desc' },
+    });
 
     return leads.map(map_prisma_to_lead);
   } catch (error) {

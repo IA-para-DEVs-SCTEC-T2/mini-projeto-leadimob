@@ -2,8 +2,16 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../../generated/prisma/client'
 
 const create_prisma_client = () => {
+  const connection_string = process.env.DATABASE_URL;
+  if (!connection_string) {
+    throw new Error(
+      'DATABASE_URL environment variable is not set. ' +
+      'Copy .env.example to .env and fill in your credentials.'
+    );
+  }
+
   const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: connection_string,
   })
 
   return new PrismaClient({ adapter })

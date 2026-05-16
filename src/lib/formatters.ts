@@ -57,6 +57,17 @@ export const format_cpf = (cpf: string): string => {
 }
 
 /**
+ * Mascara um CPF para exibição segura, ocultando dígitos sensíveis.
+ * Mantém apenas os dígitos centrais visíveis para identificação.
+ * Exemplo: "12345678901" → "***.456.789-**"
+ */
+export const mask_cpf_display = (cpf: string): string => {
+  const clean = cpf.replace(/\D/g, '');
+  if (clean.length !== 11) return cpf;
+  return `***.${clean.slice(3, 6)}.${clean.slice(6, 9)}-**`;
+};
+
+/**
  * Valida CPF usando o algoritmo oficial dos dígitos verificadores.
  * Rejeita CPFs com todos os dígitos iguais e valida os dígitos verificadores.
  * 
