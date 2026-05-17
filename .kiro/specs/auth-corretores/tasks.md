@@ -36,28 +36,28 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Executar `npx prisma generate` para atualizar o cliente gerado
     - _Requirements: AC-1.3.1, AC-4.1.1_
 
-- [ ] 3. Camada `types/` — tipos de Corretor e extensão do next-auth
-  - [ ] 3.1 Criar `src/types/corretor.ts`
+- [x] 3. Camada `types/` — tipos de Corretor e extensão do next-auth
+  - [x] 3.1 Criar `src/types/corretor.ts`
     - Definir `interface Corretor` com campos: `id`, `nome`, `email`, `created_at`
     - Definir `interface CorretorWithHash extends Corretor` com campo `password_hash`
     - Definir `interface CreateCorretorInput` com campos: `nome`, `email`, `senha`
     - Sem dependências de Prisma, Zod ou next-auth
     - _Requirements: AC-1.3.1_
 
-  - [ ] 3.2 Criar `src/types/next-auth.d.ts` — extensão de tipos do next-auth
+  - [x] 3.2 Criar `src/types/next-auth.d.ts` — extensão de tipos do next-auth
     - Declarar módulo `next-auth` estendendo `Session.user` com campo `corretor_id: string`
     - Declarar módulo `next-auth/jwt` estendendo `JWT` com campo `corretor_id?: string`
     - _Requirements: AC-2.2.3_
 
-- [ ] 4. Camada `schemas/` — validação de corretor
-  - [ ] 4.1 Criar `src/schemas/corretor.schema.ts`
+- [x] 4. Camada `schemas/` — validação de corretor
+  - [x] 4.1 Criar `src/schemas/corretor.schema.ts`
     - Definir `RegisterSchema` com `z.object()`: `nome` (min 2, max 100), `email` (email), `senha` (min 8)
     - Definir `LoginSchema` com `z.object()`: `email` (email), `senha` (min 1)
     - Exportar tipos `RegisterInput` e `LoginInput` via `z.infer<>`
     - _Requirements: AC-1.2.1, AC-1.2.2, AC-1.2.3_
 
 - [ ] 5. Camada `infra/` — repositório de corretor
-  - [ ] 5.1 Criar `src/infra/repositories/corretor_repository.ts`
+  - [-] 5.1 Criar `src/infra/repositories/corretor_repository.ts`
     - Implementar `corretor_repository` com métodos:
       - `create(data: { nome: string; email: string; password_hash: string }): Promise<Corretor>`
       - `find_by_email(email: string): Promise<CorretorWithHash | null>`

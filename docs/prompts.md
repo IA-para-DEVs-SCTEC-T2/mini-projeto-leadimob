@@ -3506,3 +3506,75 @@ adicione os prompts em #prompts.md
 | Constraint alterada | `@@unique([cpf, corretor_id])` em `Lead` (era `@unique` global) |
 | Prisma Client | Regenerado com model `Corretor` |
 | Próxima task | 3.1 — Criar `src/types/corretor.ts` |
+
+
+---
+
+# Sessão — Implementação de Autenticação de Corretores (Tasks 3 e 4)
+
+---
+
+## Prompt 48 — Início das Tasks 3 e 4 (Types e Schemas de Corretor)
+
+```
+Antes, faça o commit do que foi feito seguindo o padrão de #gitflow.md,
+adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das tasks 3 e 4 da spec auth-corretores: criação dos tipos compartilhados de Corretor e schemas de validação Zod)*
+
+---
+
+## Contexto da Sessão — Types e Schemas de Corretor
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Tasks implementadas | 3.1, 3.2, 4.1 |
+| Arquivos criados | `src/types/corretor.ts`, `src/types/next-auth.d.ts`, `src/schemas/corretor.schema.ts` |
+| Arquivos modificados | `.kiro/specs/auth-corretores/tasks.md` |
+
+### Task 3.1 — Tipos de Corretor
+
+Criado `src/types/corretor.ts` contendo:
+- `interface Corretor` — tipo base com `id`, `nome`, `email`, `created_at`
+- `interface CorretorWithHash extends Corretor` — tipo com `password_hash` para uso interno
+- `interface CreateCorretorInput` — tipo de entrada para criação com `nome`, `email`, `senha`
+
+Regras aplicadas:
+- Sem dependências de Prisma, Zod ou next-auth
+- Tipos puros do domínio
+- Separação clara entre dados públicos e sensíveis
+
+### Task 3.2 — Extensão de Tipos do next-auth
+
+Criado `src/types/next-auth.d.ts` contendo:
+- Extensão do módulo `next-auth` — `Session.user` com campo `corretor_id: string`
+- Extensão do módulo `next-auth/jwt` — `JWT` com campo `corretor_id?: string`
+
+Regras aplicadas:
+- Declaração de módulos TypeScript
+- Extensão de tipos existentes do next-auth
+- Preparação para armazenar ID do corretor na sessão
+
+### Task 4.1 — Schemas de Validação Zod
+
+Criado `src/schemas/corretor.schema.ts` contendo:
+- `RegisterSchema` — validação de cadastro com `nome` (min 2, max 100), `email` (email), `senha` (min 8)
+- `LoginSchema` — validação de login com `email` (email), `senha` (min 1)
+- Tipos `RegisterInput` e `LoginInput` inferidos via `z.infer<>`
+
+Regras aplicadas:
+- Validação declarativa com Zod
+- Mensagens de erro em português
+- Separação entre schemas de registro e login
+- Exportação de tipos TypeScript inferidos
+
+---
+
+## Próximos Passos
+
+- Task 5 — Implementar repositório de corretores em `src/infra/repositories/corretor_repository.ts`
+- Task 6 — Implementar serviço de registro em `src/services/register_corretor.ts`
+- Task 7 — Configurar next-auth v5 em `src/lib/auth.ts`
