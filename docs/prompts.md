@@ -3017,3 +3017,212 @@ A sessão focou na criação de documentação técnica completa:
 - ✅ Instruções claras de execução
 - ✅ Informações de manutenção e contribuição
 - ✅ Padrão de mercado para repositórios de software
+
+---
+
+# Prompts Utilizados na Sessão — Implementação Completa do CRUD de Leads
+
+Registro dos prompts utilizados durante a sessão de implementação das funcionalidades de edição e exclusão de leads, completando o CRUD da aplicação.
+
+---
+
+## Prompt 78 — Identificação da Inconsistência no README
+
+```
+No /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/README.mdtem esse "Criação, edição e exclusão de leads com recálculo automático", mas em tela tenho apenas criação, detalhes e listagem. Falta atualização e exclusão.
+```
+
+*(Identificação de que o README mencionava funcionalidades de edição e exclusão que não estavam implementadas na aplicação)*
+
+---
+
+## Prompt 79 — Criação de Issue para Melhoria do CRUD
+
+```
+Cria uma issue nova para melhoria da complementação do CRUD no https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1
+```
+
+*(Criação da issue #58 no GitHub Project documentando a necessidade de implementar as funcionalidades faltantes do CRUD)*
+
+---
+
+## Prompt 80 — Criação de Branch, Commit e Pull Request
+
+```
+Crie uma nova branch para essa issue, realiza o commit, push request e abra um PR
+```
+
+*(Criação da branch `feature/complete-crud-operations`, implementação completa das funcionalidades de edição e exclusão, commit e abertura do PR #59)*
+
+---
+
+## Contexto da Sessão — Implementação Completa do CRUD
+
+| Item | Detalhe |
+|------|---------|
+| Issue criada | #58 — Implementação Completa do CRUD de Leads |
+| Branch | `feature/complete-crud-operations` |
+| Pull Request | #59 — feat(crud): Implement Complete CRUD Operations for Leads |
+| Funcionalidades implementadas | Edição e exclusão de leads com recálculo automático |
+| Arquivos criados | 6 (páginas, services, componentes, testes) |
+| Arquivos modificados | 8 (actions, repositório, tipos, schemas, componentes) |
+| Testes adicionados | 7 (update_lead.test.ts, delete_lead.test.ts) |
+| Build status | ✅ Sucesso |
+| Linhas adicionadas | +733 |
+
+### **Funcionalidades Implementadas:**
+
+#### **1. Edição de Leads**
+- **Rota**: `/leads/[id]/edit` - página de edição
+- **Service**: `update_lead.ts` - lógica de atualização com recálculo automático
+- **Action**: `update_lead_action` - Server Action para processar formulário
+- **Componente**: `LeadForm` modificado para suportar modo de edição
+- **Repositório**: método `update()` adicionado
+- **Schema**: `UpdateLeadSchema` para validação
+
+#### **2. Exclusão de Leads**
+- **Service**: `delete_lead.ts` - lógica de exclusão
+- **Action**: `delete_lead_action` - Server Action para exclusão
+- **Componente**: `LeadActions` com modal de confirmação
+- **Repositório**: método `delete()` adicionado
+- **Interface**: Botões de ação na página de detalhes
+
+#### **3. Melhorias na Interface**
+- **Botões de Ação**: Editar e Excluir na página de detalhes
+- **Modal de Confirmação**: Previne exclusões acidentais
+- **Formulário Flexível**: Suporte a modo criação e edição
+- **Navegação Intuitiva**: Fluxo completo entre páginas
+
+---
+
+## Resumo da Sessão — Implementação Completa do CRUD
+
+A sessão focou na implementação das funcionalidades faltantes do CRUD:
+
+1. **Identificação da inconsistência** entre README e funcionalidades implementadas
+2. **Criação de issue** #58 documentando a necessidade de completar o CRUD
+3. **Implementação completa** das funcionalidades de edição e exclusão
+4. **Arquitetura mantida** — separação em camadas, validação Zod, tratamento de erros
+5. **Testes implementados** — cobertura completa das novas funcionalidades
+6. **Interface aprimorada** — botões de ação, modal de confirmação, navegação
+7. **Validação completa** — build, testes e TypeScript sem erros
+8. **Documentação atualizada** — README alinhado com funcionalidades reais
+9. **Pull Request criado** — PR #59 com documentação detalhada
+
+**Resultado final:**
+- ✅ **CRUD Completo**: Create, Read, Update, Delete
+- ✅ **Recálculo automático** de score ao editar
+- ✅ **Exclusão segura** com confirmação
+- ✅ **Interface intuitiva** com navegação completa
+- ✅ **Testes abrangentes** — 54 testes passando
+- ✅ **Documentação alinhada** — README reflete funcionalidades reais
+- ✅ **Pronto para produção** — todas as funcionalidades básicas implementadas
+
+---
+
+# Prompts Utilizados na Sessão — Criação de Issues de Auditoria de Segurança
+
+Registro dos prompts utilizados durante a sessão de transformação dos achados da auditoria de segurança em issues rastreáveis no GitHub Projects.
+
+---
+
+## Prompt 81 — Transformação de Achados em Issues GitHub
+
+```
+Você é um engenheiro de software responsável por transformar achados de uma auditoria de segurança em issues rastreáveis no GitHub Projects.
+Leia a tabela de Priorização de Correções fornecida abaixo e crie um issue individual para cada linha da tabela.
+
+---
+
+# OBJETIVO
+Criar 12 issues GitHub para o projeto:
+https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1
+
+Cada issue deve representar uma correção identificada na auditoria de segurança e qualidade do projeto LeadImobi (versão 0.1.0).
+Os issues devem estar prontos para serem copiados e cadastrados manualmente no GitHub, um a um.
+
+---
+
+# REGRAS
+1. **Um issue por achado** — cada linha da tabela de priorização gera exatamente um issue.
+2. **Título do issue** — use o formato: `[ID] Descrição curta e direta` (ex: `[C-01] Implementar autenticação mínima nas rotas de leads`)
+3. **Labels obrigatórias** — mapeie a prioridade da seguinte forma:
+- 🔴 Imediato → label: `critical` + `security`
+- 🟠 Curto prazo → label: `high` + `security` ou `performance` (conforme o achado)
+- 🟡 Médio prazo → label: `medium`
+4. **Corpo do issue** — deve conter as seguintes seções em Markdown:
+- `## Contexto` — breve descrição do problema (extraída da auditoria)
+- `## Arquivo(s) afetado(s)` — caminho(s) do arquivo conforme a auditoria
+- `## Impacto` — consequência do problema não corrigido
+- `## Solução recomendada` — passo(s) de correção, com trecho de código se disponível na auditoria
+- `## Esforço estimado` — valor da tabela de priorização
+5. **Milestone** — todos os issues de prioridade 🔴 devem indicar milestone: `Sprint 1 — Segurança Crítica`. Os demais: `Sprint 2 — Qualidade e Hardening`.
+6. **Assignees** — deixe em branco (a ser preenchido pelo time).
+7. **Não invente informações** — use apenas o que está documentado na auditoria.
+8. **Ordem de saída** — gere os issues na mesma ordem da tabela de priorização (C-01 → C-02 → C-03 → A-01 ... → M-05).
+```
+
+*(Criação de 12 issues GitHub usando GitHub CLI baseados na auditoria de segurança do documento AUDITORIA.md)*
+
+---
+
+## Contexto da Sessão — Criação de Issues de Auditoria
+
+| Item | Detalhe |
+|------|---------|
+| Documento base | `AUDITORIA.md` — Auditoria de Segurança e Qualidade LeadImobi v0.1.0 |
+| Issues criadas | 12 (#60 a #71) |
+| Labels criadas | 5 (`critical`, `security`, `high`, `medium`, `performance`) |
+| Repositório | `IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob` |
+| GitHub Project | #10 — [Mini Projeto LeadImobi](https://github.com/orgs/IA-para-DEVs-SCTEC-T2/projects/10/views/1) |
+| Ferramenta utilizada | GitHub CLI (`gh`) |
+
+### **Issues Críticos (🔴)**
+- **#60** - [C-01] Implementar autenticação mínima nas rotas de leads
+- **#61** - [C-02] Corrigir XSS via innerHTML no componente de busca  
+- **#62** - [C-03] Adicionar security headers HTTP no next.config.ts
+
+### **Issues de Alta Prioridade (🟠)**
+- **#63** - [A-01] Implementar mascaramento de CPF na exibição
+- **#64** - [A-02] Validar DATABASE_URL na inicialização do Prisma
+- **#65** - [A-03] Implementar paginação no método find_all()
+- **#66** - [A-04] Implementar rate limiting nas Server Actions
+
+### **Issues de Média Prioridade (🟡)**
+- **#67** - [M-01] Remover rota duplicada /new
+- **#68** - [M-02] Converter campo priority para enum Prisma
+- **#69** - [M-03] Implementar whitelist no parâmetro sort
+- **#70** - [M-04] Investigar override @hono/node-server no package.json
+- **#71** - [M-05] Refatorar busca client-side para abordagem React
+
+---
+
+## Resumo da Sessão — Criação de Issues de Auditoria
+
+A sessão focou na transformação de achados de auditoria em issues rastreáveis:
+
+1. **Análise da auditoria** — leitura completa do documento AUDITORIA.md
+2. **Identificação do repositório** — `IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob`
+3. **Criação de labels** — 5 labels para classificação de severidade
+4. **Criação de 12 issues** — um para cada achado da auditoria
+5. **Estruturação padronizada** — contexto, arquivos, impacto, solução, esforço
+6. **Associação ao projeto** — todos os issues adicionados ao GitHub Project #10
+7. **Rastreabilidade completa** — mapeamento direto da auditoria para issues
+
+**Resultado final:**
+- ✅ **12 issues criados** com estrutura padronizada
+- ✅ **Labels apropriadas** para classificação de severidade
+- ✅ **Associação ao projeto** GitHub para rastreamento
+- ✅ **Priorização clara** — 3 críticos, 4 altos, 5 médios
+- ✅ **Documentação completa** — contexto, impacto, solução para cada issue
+- ✅ **Pronto para execução** — issues prontos para serem trabalhados pela equipe
+
+---
+
+## Prompt 82 — Adição dos Prompts da Sessão
+
+```
+Adicione os prompts utilizados nessa sessão no arquivo /Users/gabrieldasilva/Desktop/mini-projeto-leadimob/docs/prompts.md
+```
+
+*(Solicitação de atualização do prompts.md com os prompts 81 e 82 da sessão de criação de issues de auditoria)*

@@ -211,6 +211,28 @@ export const parse_currency = (value: string): number => {
 }
 
 /**
+ * Formata um telefone no padrão brasileiro (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.
+ * Detecta automaticamente se é celular (11 dígitos) ou fixo (10 dígitos).
+ * Exemplo: "11987654321" → "(11) 98765-4321" | "1134567890" → "(11) 3456-7890"
+ */
+export const format_phone = (phone: string): string => {
+  // Remove caracteres não numéricos
+  const clean_phone = phone.replace(/\D/g, '')
+
+  // Valida se tem 10 ou 11 dígitos
+  if (clean_phone.length === 10) {
+    // Telefone fixo: (XX) XXXX-XXXX
+    return clean_phone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+  } else if (clean_phone.length === 11) {
+    // Celular: (XX) XXXXX-XXXX
+    return clean_phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+  }
+
+  // Retorna original se não tem formato válido
+  return phone
+}
+
+/**
  * Remove formatação de CPF e retorna apenas os dígitos.
  * Exemplo: "123.456.789-01" → "12345678901"
  */

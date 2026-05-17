@@ -3,6 +3,7 @@ import type { Lead as PrismaLead } from "@/generated/prisma/client";
 import { prisma } from "@/infra/db/prisma";
 import type {
   CreateLeadData,
+  UpdateLeadData,
   Lead,
   LeadPriority,
   LeadRepository,
@@ -107,8 +108,42 @@ async function find_by_id(id: string): Promise<Lead | null> {
   }
 }
 
+async function update(id: string, data: UpdateLeadData): Promise<Lead> {
+  try {
+    const lead = await prisma.lead.update({
+      where: { id },
+      data: {
+        nome: data.nome,
+        email: data.email,
+        cpf: data.cpf,
+        telefone: data.telefone,
+        valor_imovel: data.valor_imovel,
+        renda_mensal: data.renda_mensal,
+        score: data.score,
+        priority: data.priority,
+      },
+    });
+
+    return map_prisma_to_lead(lead);
+  } catch (error) {
+    handle_repository_error(error);
+  }
+}
+
+async function delete_lead(id: string): Promise<void> {
+  try {
+    await prisma.lead.delete({
+      where: { id },
+    });
+  } catch (error) {
+    handle_repository_error(error);
+  }
+}
+
 export const lead_repository: LeadRepository = {
   create,
   find_all,
   find_by_id,
+  update,
+  delete: delete_lead,
 };

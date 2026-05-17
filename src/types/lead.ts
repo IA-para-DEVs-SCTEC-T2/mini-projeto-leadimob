@@ -44,8 +44,30 @@ export interface CreateLeadData {
   priority: LeadPriority;
 }
 
+export interface UpdateLeadData {
+  nome: string;
+  email: string;
+  cpf: string;
+  telefone: string;
+  valor_imovel: number;
+  renda_mensal: number;
+  score: number | null;
+  priority: LeadPriority;
+}
+
+export interface UpdateLeadInput {
+  nome: string;
+  email: string;
+  cpf: string;
+  telefone: string;
+  valor_imovel: number;
+  renda_mensal: number;
+}
+
 export interface LeadRepository {
   create(data: CreateLeadData): Promise<Lead>;
   find_all(): Promise<Lead[]>;
   find_by_id(id: string): Promise<Lead | null>;
+  update(id: string, data: UpdateLeadData): Promise<Lead>;
+  delete(id: string): Promise<void>;
 }
