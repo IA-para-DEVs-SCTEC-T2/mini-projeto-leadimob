@@ -3,6 +3,7 @@ import {
   format_score, 
   format_date, 
   format_cpf,
+  mask_cpf_display,
   validate_cpf,
   mask_cpf,
   mask_phone,
@@ -113,6 +114,24 @@ describe('formatters', () => {
 
     it('should handle empty string', () => {
       expect(format_cpf('')).toBe('')
+    })
+  })
+
+  describe('mask_cpf_display', () => {
+    it('should mask CPF for secure display', () => {
+      expect(mask_cpf_display('12345678901')).toBe('***.456.789-**')
+    })
+
+    it('should mask already formatted CPF', () => {
+      expect(mask_cpf_display('123.456.789-01')).toBe('***.456.789-**')
+    })
+
+    it('should return original if CPF has invalid length', () => {
+      expect(mask_cpf_display('1234567890')).toBe('1234567890')
+    })
+
+    it('should handle empty string', () => {
+      expect(mask_cpf_display('')).toBe('')
     })
   })
 

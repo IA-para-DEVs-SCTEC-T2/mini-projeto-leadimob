@@ -66,7 +66,7 @@ export interface UpdateLeadInput {
 
 export interface LeadRepository {
   create(data: CreateLeadData): Promise<Lead>;
-  find_all(): Promise<Lead[]>;
+  find_all(page?: number, page_size?: number): Promise<Lead[]>;
   find_by_id(id: string): Promise<Lead | null>;
   update(id: string, data: UpdateLeadData): Promise<Lead>;
   delete(id: string): Promise<void>;

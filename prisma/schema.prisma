@@ -10,17 +10,24 @@ datasource db {
   provider = "postgresql"
 }
 
+enum LeadPriority {
+  Alto
+  Medio
+  Baixo
+  NaoClassificado
+}
+
 model Lead {
-  id           String   @id @default(cuid())
+  id           String       @id @default(cuid())
   nome         String
   email        String
-  cpf          String   @unique
+  cpf          String       @unique
   telefone     String
-  valor_imovel Decimal  @db.Decimal(15, 2)
-  renda_mensal Decimal  @db.Decimal(15, 2)
-  score        Decimal? @db.Decimal(8, 2)
-  priority     String   // 'Alto' | 'Medio' | 'Baixo' | 'NaoClassificado'
-  created_at   DateTime @default(now())
+  valor_imovel Decimal      @db.Decimal(15, 2)
+  renda_mensal Decimal      @db.Decimal(15, 2)
+  score        Decimal?     @db.Decimal(8, 2)
+  priority     LeadPriority
+  created_at   DateTime     @default(now())
 
   @@map("leads")
 }

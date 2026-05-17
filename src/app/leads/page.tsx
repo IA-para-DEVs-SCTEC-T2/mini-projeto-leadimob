@@ -39,7 +39,12 @@ interface LeadsPageProps {
 
 export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   const params = await searchParams;
-  const sort_by = (params.sort as SortOption) || "score";
+  
+  // Whitelist de opções válidas de ordenação
+  const VALID_SORTS: SortOption[] = ['score', 'priority', 'renda', 'valor_imovel'];
+  const sort_by: SortOption = VALID_SORTS.includes(params.sort as SortOption)
+    ? (params.sort as SortOption)
+    : 'score';
 
   let leads: Lead[] = [];
   let error: string | null = null;

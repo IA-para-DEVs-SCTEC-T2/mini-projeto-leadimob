@@ -7,7 +7,7 @@ import {
   format_currency,
   format_date,
   format_score,
-  format_cpf,
+  mask_cpf_display,
 } from "@/lib/formatters";
 
 interface LeadDetailPageProps {
@@ -126,7 +126,7 @@ export default async function LeadDetailPage({
                 <label className="block text-sm text-slate-400 mb-1">
                   CPF
                 </label>
-                <div className="text-white font-medium">{format_cpf(lead.cpf)}</div>
+                <div className="text-white font-medium">{mask_cpf_display(lead.cpf)}</div>
               </div>
             </div>
           </div>
