@@ -17,11 +17,24 @@ enum LeadPriority {
   NaoClassificado
 }
 
+model Corretor {
+  id            String   @id @default(cuid())
+  nome          String
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  leads         Lead[]
+
+  @@map("corretores")
+}
+
 model Lead {
   id           String       @id @default(cuid())
+  corretor_id  String
+  corretor     Corretor     @relation(fields: [corretor_id], references: [id])
   nome         String
   email        String
-  cpf          String       @unique
+  cpf          String
   telefone     String
   valor_imovel Decimal      @db.Decimal(15, 2)
   renda_mensal Decimal      @db.Decimal(15, 2)
@@ -29,5 +42,6 @@ model Lead {
   priority     LeadPriority
   created_at   DateTime     @default(now())
 
+  @@unique([cpf, corretor_id])
   @@map("leads")
 }

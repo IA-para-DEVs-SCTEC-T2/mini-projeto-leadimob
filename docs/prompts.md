@@ -3438,3 +3438,71 @@ adicione os prompts em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\promp
 | Variáveis adicionadas | `AUTH_SECRET` no `.env` e `.env.example` |
 | Commit | `chore(auth): instala next-auth v5 e bcryptjs, configura AUTH_SECRET e cria spec auth-corretores` |
 | Próxima task | 2.1 — Atualizar schema Prisma com model Corretor e FK em Lead |
+
+---
+
+# Prompts Utilizados na Sessão — Task 2: Banco de Dados — Model Corretor e Ajuste em Lead
+
+Registro dos prompts utilizados durante a sessão de atualização do schema Prisma e criação da migration para autenticação de corretores.
+
+---
+
+## Prompt 73 — Execução da Task 2 (Schema Prisma e Migration)
+
+```
+Execute the following task from the spec at .kiro/specs/auth-corretores/tasks.md:
+
+Task: 2. Banco de dados — model Corretor e ajuste em Lead
+
+Subtasks:
+- 2.1 Atualizar schema Prisma com model Corretor e FK em Lead
+- 2.2 Criar e executar migration
+```
+
+*(Execução via orquestrador de tasks Kiro — delegado ao subagente spec-task-execution)*
+
+**Como foi executado:**
+
+### Task 2.1 — Atualizar schema Prisma
+
+- Leitura do `prisma/schema.prisma` atual
+- Adição do model `Corretor` com campos: `id` (cuid), `nome`, `email` (@unique), `password_hash`, `created_at` (@default(now)), `leads Lead[]`, `@@map("corretores")`
+- Adição de `corretor_id String` e relação `corretor Corretor @relation(fields: [corretor_id], references: [id])` ao model `Lead`
+- Remoção de `@unique` de `email` e `cpf` em `Lead` (não são mais únicos globalmente)
+- Adição de `@@unique([cpf, corretor_id])` em `Lead` (CPF único por corretor)
+- Validação com `npx prisma validate` ✅
+
+### Task 2.2 — Criar e executar migration
+
+- Executado `npx prisma migrate dev --name add_corretor_auth`
+- Problema identificado: SQL gerado usava `DROP INDEX` mas PostgreSQL exige `DROP CONSTRAINT` para índices criados via constraint — SQL corrigido manualmente para usar `DROP CONSTRAINT IF EXISTS`
+- `prisma migrate reset --force` executado para recriar banco do zero em dev (esperado conforme spec)
+- 4 migrations aplicadas em sequência: `init`, `add_cpf_field`, `convert_priority_to_enum`, `add_corretor_auth` ✅
+- `npx prisma generate` executado — Prisma Client 7 regenerado com model `Corretor` em `src/generated/prisma/models/Corretor.ts` ✅
+
+---
+
+## Prompt 74 — Commit e Registro de Prompts
+
+```
+Antes, Faça o commit do que foi feito seguindo o padrão de #gitflow.md,
+adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das alterações das tasks 2.1 e 2.2 e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Task 2: Banco de Dados
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Tasks concluídas | 2.1 (schema Prisma) e 2.2 (migration + generate) |
+| Arquivos modificados | `prisma/schema.prisma`, `prisma/migrations/migration_lock.toml`, `.kiro/specs/auth-corretores/tasks.md` |
+| Arquivos criados | `prisma/migrations/20260517230645_add_corretor_auth/migration.sql` |
+| Model adicionado | `Corretor` com FK em `Lead` |
+| Constraint alterada | `@@unique([cpf, corretor_id])` em `Lead` (era `@unique` global) |
+| Prisma Client | Regenerado com model `Corretor` |
+| Próxima task | 3.1 — Criar `src/types/corretor.ts` |

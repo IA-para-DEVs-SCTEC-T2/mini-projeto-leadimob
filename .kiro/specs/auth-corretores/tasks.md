@@ -22,15 +22,15 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Adicionar `AUTH_SECRET` ao `.env.example` com valor placeholder
     - _Requirements: AC-2.2.2, AC-2.2.4_
 
-- [ ] 2. Banco de dados — model Corretor e ajuste em Lead
-  - [ ] 2.1 Atualizar schema Prisma com model Corretor e FK em Lead
+- [x] 2. Banco de dados — model Corretor e ajuste em Lead
+  - [x] 2.1 Atualizar schema Prisma com model Corretor e FK em Lead
     - Adicionar model `Corretor` com campos: `id` (cuid), `nome`, `email` (@unique), `password_hash`, `created_at` (now), `leads Lead[]`, `@@map("corretores")`
     - Adicionar campo `corretor_id String` e relação `corretor Corretor @relation(...)` ao model `Lead`
     - Remover `@unique` de `email` e `cpf` em `Lead` (não são mais únicos globalmente)
     - Adicionar `@@unique([cpf, corretor_id])` em `Lead` (CPF único por corretor)
     - _Requirements: AC-1.3.1, AC-1.3.2, AC-4.1.1_
 
-  - [ ] 2.2 Criar e executar migration
+  - [x] 2.2 Criar e executar migration
     - Executar `npx prisma migrate dev --name add_corretor_auth`
     - Verificar que a migration foi criada em `prisma/migrations/`
     - Executar `npx prisma generate` para atualizar o cliente gerado
