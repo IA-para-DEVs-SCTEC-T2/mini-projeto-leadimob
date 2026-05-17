@@ -3352,3 +3352,89 @@ A sessão focou na correção sistemática de vulnerabilidades e melhorias ident
 - ✅ **Código limpo** sem duplicações
 - ✅ **Testes validados** — todas as funcionalidades testadas
 - ✅ **Pronto para produção** — vulnerabilidades críticas resolvidas
+
+---
+
+# Prompts Utilizados na Sessão — Implementação da Autenticação de Corretores (Issue #60)
+
+Registro dos prompts utilizados durante a sessão de início da implementação da autenticação mínima nas rotas de leads.
+
+---
+
+## Prompt 73 — Criação do Spec e Branch de Autenticação
+
+```
+Nesse projeto precisamos criar uma função de cadastro e login com token salvo nos cookies.
+- Cada usuario/corretor deve ter os proprios leads
+- Ajustar o banco de dados para trabalhar com tabelas relacionadas
+Vamos fazer essa task do kamban:
+[C-01] Implementar autenticação mínima nas rotas de leads · Mini Projeto LeadImobi
+https://github.com/IA-para-DEVs-SCTEC-T2/mini-projeto-leadimob/issues/60
+```
+
+*(Análise do projeto existente, escolha de next-auth v5 como biblioteca de autenticação,
+criação da branch `feature/auth-next-auth` a partir de `develop`,
+criação do spec completo em `.kiro/specs/auth-corretores/` com requirements.md, design.md e tasks.md)*
+
+**Decisões tomadas:**
+- Biblioteca: next-auth v5 (beta) — compatível com Next.js 16 App Router
+- Sessão: JWT em cookie httpOnly gerenciado pelo next-auth
+- Hash de senha: bcryptjs (custo 10)
+- CPF único por corretor (não globalmente) — `@@unique([cpf, corretor_id])`
+- `corretor_id` sempre extraído da sessão no servidor, nunca do cliente
+
+---
+
+## Prompt 74 — Task 1.1: Instalar next-auth e bcryptjs
+
+```
+Vamos começar com task 1, uma de cada vez
+```
+
+*(Execução da task 1.1 — instalação de `next-auth@beta`, `bcryptjs` e `@types/bcryptjs`)*
+
+**Resultado:**
+- `next-auth@^5.0.0-beta.31` adicionado às `dependencies`
+- `bcryptjs@^3.0.3` adicionado às `dependencies`
+- `@types/bcryptjs@^2.4.6` adicionado às `devDependencies`
+
+---
+
+## Prompt 75 — Task 1.2: Criar variáveis de ambiente para next-auth
+
+```
+(continuação — próxima task)
+```
+
+*(Execução da task 1.2 — adição de `AUTH_SECRET` ao `.env` e `.env.example`)*
+
+**Resultado:**
+- `AUTH_SECRET` com valor seguro (32 bytes base64url) adicionado ao `.env`
+- `AUTH_SECRET="your-secret-here"` adicionado ao `.env.example` como placeholder
+- `.env` coberto pelo `.gitignore` — segredo não vai para o git
+
+---
+
+## Prompt 76 — Commit e Registro de Prompts
+
+```
+Antes, faça o commit do que foi feito seguindo o padrão de mini-projeto-leadimob/gitflow.md,
+adicione os prompts em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md
+```
+
+*(Commit das tasks 1.1 e 1.2 + spec auth-corretores + atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Autenticação de Corretores (Início)
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Issue | #60 — [C-01] Implementar autenticação mínima nas rotas de leads |
+| Spec criado | `.kiro/specs/auth-corretores/` (requirements.md, design.md, tasks.md) |
+| Tasks concluídas | 1.1 (instalar deps) e 1.2 (variáveis de ambiente) |
+| Dependências adicionadas | `next-auth@beta`, `bcryptjs`, `@types/bcryptjs` |
+| Variáveis adicionadas | `AUTH_SECRET` no `.env` e `.env.example` |
+| Commit | `chore(auth): instala next-auth v5 e bcryptjs, configura AUTH_SECRET e cria spec auth-corretores` |
+| Próxima task | 2.1 — Atualizar schema Prisma com model Corretor e FK em Lead |
