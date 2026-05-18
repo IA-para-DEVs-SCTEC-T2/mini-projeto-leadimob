@@ -57,7 +57,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - _Requirements: AC-1.2.1, AC-1.2.2, AC-1.2.3_
 
 - [ ] 5. Camada `infra/` — repositório de corretor
-  - [-] 5.1 Criar `src/infra/repositories/corretor_repository.ts`
+  - [x] 5.1 Criar `src/infra/repositories/corretor_repository.ts`
     - Implementar `corretor_repository` com métodos:
       - `create(data: { nome: string; email: string; password_hash: string }): Promise<Corretor>`
       - `find_by_email(email: string): Promise<CorretorWithHash | null>`

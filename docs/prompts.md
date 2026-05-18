@@ -3578,3 +3578,64 @@ Regras aplicadas:
 - Task 5 — Implementar repositório de corretores em `src/infra/repositories/corretor_repository.ts`
 - Task 6 — Implementar serviço de registro em `src/services/register_corretor.ts`
 - Task 7 — Configurar next-auth v5 em `src/lib/auth.ts`
+
+
+---
+
+# Sessão — Implementação da Autenticação de Corretores (Task 5.1)
+
+Registro dos prompts utilizados durante a sessão de implementação do repositório de corretores para autenticação.
+
+---
+
+## Prompt 48 — Execução da Task 5.1 (Repositório de Corretor)
+
+```
+Execure a task 5. Camada `infra/` — repositório de corretor- [-] 5.1 Criar `src/infra/repositories/corretor_repository.ts`- Implementar `corretor_repository` com métodos:- `create(data: { nome: string; email: string; password_hash: string }): Promise<Corretor>`- `find_by_email(email: string): Promise<CorretorWithHash | null>`- `find_by_id(id: string): Promise<Corretor | null>`- Capturar erro Prisma `P2002` (email duplicado) e lançar `{ error: 'EMAIL_ALREADY_EXISTS' }`- Capturar erros de conexão e lançar `{ error: 'DATABASE_UNAVAILABLE' }`- Nunca retornar `password_hash` nos métodos `find_by_id` e `create` (apenas em `find_by_email` para uso interno do authorize)- _Requirements: AC-1.3.1, AC-1.3.2, AC-1.3.3_
+```
+
+*(Delegação da implementação ao subagente spec-task-execution — repositório criado com 3 métodos, tratamento de erros Prisma P2002, seleção explícita de campos para controlar exposição do password_hash)*
+
+**Como foi executado:**
+- Leitura do contexto: tipos em `src/types/corretor.ts`, padrão de repositório em `lead_repository.ts`, Prisma singleton em `src/infra/db/prisma.ts`
+- Implementação de `corretor_repository` com:
+  - `create`: retorna `Corretor` sem `password_hash` usando `select` explícito
+  - `find_by_email`: retorna `CorretorWithHash` com `password_hash` para uso interno do authorize
+  - `find_by_id`: retorna `Corretor` sem `password_hash` usando `select` explícito
+- Tratamento de erros:
+  - Captura de `Prisma.PrismaClientKnownRequestError` com código `P2002` (unique constraint violation)
+  - Verificação do campo `email` no erro para lançar `{ error: 'EMAIL_ALREADY_EXISTS' }`
+  - Captura genérica de erros de conexão lançando `{ error: 'DATABASE_UNAVAILABLE' }`
+- Criação de testes em `src/__tests__/infra/corretor_repository.test.ts`:
+  - 9 testes cobrindo todos os métodos e cenários de erro
+  - Validação de que `password_hash` não é exposto em `create` e `find_by_id`
+  - Validação de que `password_hash` é incluído em `find_by_email`
+- Task 5.1 marcada como concluída
+- Task 5 (parent) auto-completada
+
+---
+
+## Prompt 49 — Commit e Registro de Prompts
+
+```
+Antes, faça o commit do que foi feito seguindo o padrão de #gitflow.md , adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das alterações da task 5.1 seguindo Conventional Commits e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Repositório de Corretor
+
+| Item | Detalhe |
+|------|---------|
+| Spec | `auth-corretores` |
+| Task | 5.1 — Criar `src/infra/repositories/corretor_repository.ts` |
+| Parent Task | 5. Camada `infra/` — repositório de corretor |
+| Arquivos criados | `src/infra/repositories/corretor_repository.ts`, `src/__tests__/infra/corretor_repository.test.ts` |
+| Métodos implementados | `create`, `find_by_email`, `find_by_id` |
+| Erros tratados | `P2002` (EMAIL_ALREADY_EXISTS), erros de conexão (DATABASE_UNAVAILABLE) |
+| Testes criados | 9 testes (3 por método) |
+| Status | ✅ Task 5.1 concluída, Task 5 auto-completada |
+| Próxima task ready | 6.1 — Atualizar `lead_repository.ts` para isolamento por corretor |
+
