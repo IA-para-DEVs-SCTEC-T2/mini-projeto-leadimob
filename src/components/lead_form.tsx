@@ -126,6 +126,13 @@ export default function LeadForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  const getButtonText = (): string => {
+    if (isPending) {
+      return mode === "edit" ? "Atualizando..." : "Salvando...";
+    }
+    return mode === "edit" ? "Atualizar Lead" : "Salvar Lead";
+  };
+
   // Determine initial values based on mode and props
   const computed_initial_values = mode === "edit" && lead
     ? get_initial_values_from_lead(lead)
@@ -395,11 +402,7 @@ export default function LeadForm({
             }`}
             type="submit"
           >
-            {isPending ? (
-              mode === "edit" ? "Atualizando..." : "Salvando..."
-            ) : (
-              mode === "edit" ? "Atualizar Lead" : "Salvar Lead"
-            )}
+            {getButtonText()}
           </button>
         </div>
       </form>

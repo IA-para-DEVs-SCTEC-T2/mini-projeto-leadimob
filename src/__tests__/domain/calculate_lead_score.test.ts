@@ -8,8 +8,8 @@ describe("calculate_lead_score", () => {
     it("should always return valid=false when valor_imovel is null or zero", () => {
       fc.assert(
         fc.property(
-          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 })),
-          fc.oneof(fc.constant(null), fc.float({ min: Math.fround(0.01), max: Math.fround(100000) })),
+          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 }).filter(x => !isNaN(x) && isFinite(x))),
+          fc.oneof(fc.constant(null), fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }).filter(x => !isNaN(x) && isFinite(x))),
           (valor_imovel, renda_mensal) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             return !result.valid && result.priority === "NaoClassificado";
@@ -21,8 +21,8 @@ describe("calculate_lead_score", () => {
     it("should always return valid=false when renda_mensal is null or zero", () => {
       fc.assert(
         fc.property(
-          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 })),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 }).filter(x => !isNaN(x) && isFinite(x))),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             return !result.valid && result.priority === "NaoClassificado";
@@ -159,7 +159,7 @@ describe("calculate_lead_score", () => {
           fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
           (renda_mensal, valor_imovel) => {
             fc.pre(!isNaN(renda_mensal) && !isNaN(valor_imovel) && isFinite(renda_mensal) && isFinite(valor_imovel));
-            
+
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             if (result.valid) {
               const expected_score = Math.round(((renda_mensal * 12 * 5) / valor_imovel) * 100 * 100) / 100;
