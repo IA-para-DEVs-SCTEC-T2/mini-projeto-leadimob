@@ -3,8 +3,8 @@
  * Definição de schemas OpenAPI para documentação automática
  */
 
-import { extendZodWithOpenApi } from "zod-openapi";
 import { z } from "zod";
+import { extendZodWithOpenApi } from "zod-openapi";
 
 extendZodWithOpenApi(z);
 

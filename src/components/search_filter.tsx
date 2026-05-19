@@ -77,7 +77,7 @@ export default function SearchFilter() {
       // Filter table rows (desktop)
       const table_rows = document.querySelectorAll(".lead-row");
       table_rows.forEach((row) => {
-        const search_text = row.getAttribute("data-search-text") || "";
+        const search_text = row.getAttribute("data-search-text") ?? "";
         const should_show = search_lower === "" || search_text.includes(search_lower);
         (row as HTMLElement).style.display = should_show ? "" : "none";
       });
@@ -85,7 +85,7 @@ export default function SearchFilter() {
       // Filter cards (mobile)
       const cards = document.querySelectorAll(".lead-card");
       cards.forEach((card) => {
-        const search_text = card.getAttribute("data-search-text") || "";
+        const search_text = card.getAttribute("data-search-text") ?? "";
         const should_show = search_lower === "" || search_text.includes(search_lower);
         (card as HTMLElement).style.display = should_show ? "" : "none";
       });

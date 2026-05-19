@@ -121,7 +121,7 @@ export default function LeadForm({
   mode = "create",
   lead,
   initial_values,
-  onSubmit,
+  _onSubmit,
 }: LeadFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -395,10 +395,11 @@ export default function LeadForm({
             }`}
             type="submit"
           >
-            {isPending
-              ? (mode === "edit" ? "Atualizando..." : "Salvando...")
-              : (mode === "edit" ? "Atualizar Lead" : "Salvar Lead")
-            }
+            {isPending ? (
+              mode === "edit" ? "Atualizando..." : "Salvando..."
+            ) : (
+              mode === "edit" ? "Atualizar Lead" : "Salvar Lead"
+            )}
           </button>
         </div>
       </form>

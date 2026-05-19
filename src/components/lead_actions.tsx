@@ -12,7 +12,7 @@ interface LeadActionsProps {
 }
 
 export default function LeadActions({ leadId, leadName }: LeadActionsProps) {
-  const router = useRouter();
+  const _router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);

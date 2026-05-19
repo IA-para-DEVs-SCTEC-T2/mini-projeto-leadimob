@@ -61,8 +61,8 @@ function handle_repository_error(error: unknown): never {
       const target = error.meta?.target as string[] | undefined;
 
       // Check both target array and error message for CPF field
-      const isCpfError = target?.includes("cpf") ||
-                        error.message?.includes("cpf") ||
+      const isCpfError = target?.includes("cpf") ??
+                        error.message?.includes("cpf") ??
                         error.message?.includes("leads_cpf_key");
 
       if (isCpfError) {

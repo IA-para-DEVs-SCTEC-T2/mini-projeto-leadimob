@@ -3,7 +3,8 @@
  * Endpoints para obter, atualizar e deletar leads específicos
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { lead_repository } from "@/infra/repositories/lead_repository";
 import { UpdateLeadSchema } from "@/schemas/lead.schema";

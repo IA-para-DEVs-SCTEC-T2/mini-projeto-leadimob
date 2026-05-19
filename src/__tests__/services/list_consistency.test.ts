@@ -68,7 +68,7 @@ describe("List consistency after lead creation", () => {
         renda_mensal: 6000,
       };
 
-      const createdLead = await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input);
       const leadsList = await list_leads(mockRepository);
 
       const listedLead = leadsList[0];

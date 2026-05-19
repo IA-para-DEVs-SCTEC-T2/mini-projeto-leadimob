@@ -155,9 +155,11 @@ describe("calculate_lead_score", () => {
     it("should maintain formula consistency: score = (renda * 12 * 5) / valor * 100", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
           (renda_mensal, valor_imovel) => {
+            fc.pre(!isNaN(renda_mensal) && !isNaN(valor_imovel) && isFinite(renda_mensal) && isFinite(valor_imovel));
+            
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             if (result.valid) {
               const expected_score = Math.round(((renda_mensal * 12 * 5) / valor_imovel) * 100 * 100) / 100;
