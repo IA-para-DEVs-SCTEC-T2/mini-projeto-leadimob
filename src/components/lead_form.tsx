@@ -39,7 +39,7 @@ interface LeadFormProps {
   mode?: "create" | "edit";
   lead?: Lead;
   initial_values?: Partial<LeadFormValues>;
-  onSubmit?: (data: CreateLeadInput | UpdateLeadInput) => Promise<void> | void;
+  _onSubmit?: (data: CreateLeadInput | UpdateLeadInput) => Promise<void> | void;
 }
 
 const empty_values: LeadFormValues = {
