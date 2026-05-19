@@ -14,13 +14,6 @@ export const openapi_config = {
     description:
       "API REST para qualificação inteligente de leads imobiliários. Centraliza o cadastro de leads e calcula automaticamente um Índice de Qualificação Financeira baseado em padrões bancários.",
     version: "1.0.0",
-    contact: {
-      name: "LeadImobi Support",
-      url: "https://leadimobi.com",
-    },
-    license: {
-      name: "MIT",
-    },
   },
   servers: [
     {
