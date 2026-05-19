@@ -256,7 +256,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           email: "test@example.com",
-        })
+        }),
       );
     });
 
@@ -290,7 +290,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           email: "test@example.com",
-        })
+        }),
       );
     });
   });
@@ -327,7 +327,7 @@ describe("create_lead service", () => {
         expect.objectContaining({
           score: 96,
           priority: "Alto",
-        })
+        }),
       );
     });
 
@@ -363,7 +363,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           score: expectedScore,
-        })
+        }),
       );
     });
   });
@@ -499,7 +499,7 @@ describe("create_lead service", () => {
           valor_imovel: 400000.50,
           renda_mensal: 12000.75,
           score: expect.any(Number),
-        })
+        }),
       );
     });
   });

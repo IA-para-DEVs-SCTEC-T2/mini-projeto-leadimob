@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { validate_cpf } from "@/lib/formatters";
 
 export const CreateLeadSchema = z.object({

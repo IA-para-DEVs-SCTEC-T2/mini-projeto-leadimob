@@ -10,7 +10,7 @@ describe("List consistency after lead creation", () => {
 
   beforeEach(() => {
     mockLeads = [];
-    
+
     mockRepository = {
       create: jest.fn().mockImplementation(async (data) => {
         const newLead: Lead = {
@@ -72,7 +72,7 @@ describe("List consistency after lead creation", () => {
       const leadsList = await list_leads(mockRepository);
 
       const listedLead = leadsList[0];
-      
+
       // Verify all fields match
       expect(listedLead.nome).toBe(input.nome);
       expect(listedLead.email).toBe("bruno@example.com"); // Should be normalized
@@ -164,13 +164,13 @@ describe("List consistency after lead creation", () => {
       const leadsList = await list_leads(mockRepository, "score");
 
       expect(leadsList).toHaveLength(3);
-      
+
       // Valid leads should come first, ordered by score
       expect(leadsList[0].nome).toBe("Valid Lead"); // Higher score: 180
       expect(leadsList[0].score).toBe(180);
       expect(leadsList[1].nome).toBe("Another Valid"); // Lower score: 160
       expect(leadsList[1].score).toBe(160);
-      
+
       // Unclassified lead should come last
       expect(leadsList[2].nome).toBe("Invalid Lead");
       expect(leadsList[2].score).toBe(null);
@@ -341,14 +341,14 @@ describe("List consistency after lead creation", () => {
       };
 
       await create_lead(mockRepository, input);
-      
+
       const leadsList1 = await list_leads(mockRepository);
       const leadsList2 = await list_leads(mockRepository);
 
       // Lists should be equal but not the same reference
       expect(leadsList1).toEqual(leadsList2);
       expect(leadsList1).not.toBe(leadsList2);
-      
+
       // Individual leads should be equal but not the same reference
       expect(leadsList1[0]).toEqual(leadsList2[0]);
       expect(leadsList1[0]).not.toBe(leadsList2[0]);
@@ -383,7 +383,7 @@ describe("List consistency after lead creation", () => {
       for (let i = 0; i < leadsList.length - 1; i++) {
         const currentLead = leadsList[i];
         const nextLead = leadsList[i + 1];
-        
+
         if (currentLead.score !== null && nextLead.score !== null) {
           expect(currentLead.score).toBeGreaterThanOrEqual(nextLead.score);
         }

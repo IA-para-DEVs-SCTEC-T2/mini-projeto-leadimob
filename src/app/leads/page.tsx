@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { list_leads } from "@/services/list_leads";
-import { lead_repository } from "@/infra/repositories/lead_repository";
-import type { Lead } from "@/types/lead";
-import type { SortOption } from "@/services/rank_leads";
+
 import PriorityBadge from "@/components/priority_badge";
-import SortSelector from "@/components/sort_selector";
 import SearchFilter from "@/components/search_filter";
+import SortSelector from "@/components/sort_selector";
+import { lead_repository } from "@/infra/repositories/lead_repository";
 import { format_currency, format_score } from "@/lib/formatters";
+import { list_leads } from "@/services/list_leads";
+import type { SortOption } from "@/services/rank_leads";
+import type { Lead } from "@/types/lead";
 
 interface LeadStats {
   total: number;
@@ -19,9 +20,13 @@ function calculate_stats(leads: Lead[]): LeadStats {
   return leads.reduce(
     (stats, lead) => {
       stats.total += 1;
-      if (lead.priority === "Alto") stats.alto += 1;
-      else if (lead.priority === "Medio") stats.medio += 1;
-      else if (lead.priority === "Baixo") stats.baixo += 1;
+      if (lead.priority === "Alto") {
+        stats.alto += 1;
+      } else if (lead.priority === "Medio") {
+        stats.medio += 1;
+      } else if (lead.priority === "Baixo") {
+        stats.baixo += 1;
+      }
       return stats;
     },
     {
@@ -39,12 +44,12 @@ interface LeadsPageProps {
 
 export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   const params = await searchParams;
-  
+
   // Whitelist de opções válidas de ordenação
-  const VALID_SORTS: SortOption[] = ['score', 'priority', 'renda', 'valor_imovel'];
+  const VALID_SORTS: SortOption[] = ["score", "priority", "renda", "valor_imovel"];
   const sort_by: SortOption = VALID_SORTS.includes(params.sort as SortOption)
     ? (params.sort as SortOption)
-    : 'score';
+    : "score";
 
   let leads: Lead[] = [];
   let error: string | null = null;

@@ -1,11 +1,12 @@
 import type { CSSProperties } from "react";
-import type { Lead } from "@/types/lead";
+
 import {
+  format_cpf,
   format_currency,
   format_date,
   format_score,
-  format_cpf,
 } from "@/lib/formatters";
+import type { Lead } from "@/types/lead";
 
 interface LeadCardProps {
   lead: Lead;

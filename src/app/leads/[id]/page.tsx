@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { lead_repository } from "@/infra/repositories/lead_repository";
-import PriorityBadge from "@/components/priority_badge";
+
 import LeadActions from "@/components/lead_actions";
+import PriorityBadge from "@/components/priority_badge";
+import { lead_repository } from "@/infra/repositories/lead_repository";
 import {
   format_currency,
   format_date,
@@ -84,7 +85,7 @@ export default async function LeadDetailPage({
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Pessoais
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm text-slate-400 mb-1">
@@ -136,7 +137,7 @@ export default async function LeadDetailPage({
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Financeiros
             </h3>
-            
+
             <div className="space-y-6">
               <div className="bg-slate-700/50 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">

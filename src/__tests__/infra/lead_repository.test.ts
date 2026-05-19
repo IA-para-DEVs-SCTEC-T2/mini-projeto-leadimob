@@ -1,5 +1,4 @@
 import type { Lead } from "@/types/lead";
-import type { CreateLeadData } from "@/types/lead";
 
 // Mock do repositório para testes
 describe("lead_repository", () => {

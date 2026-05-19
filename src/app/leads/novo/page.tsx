@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import LeadForm from "@/components/lead_form";
 
 export default function NovoLeadPage() {

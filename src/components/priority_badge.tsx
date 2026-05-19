@@ -1,4 +1,4 @@
-import { LeadPriority } from "@/types/lead";
+import type { LeadPriority } from "@/types/lead";
 
 interface PriorityBadgeProps {
   priority: LeadPriority;

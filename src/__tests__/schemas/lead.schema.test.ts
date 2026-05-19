@@ -1,4 +1,5 @@
 import fc from "fast-check";
+
 import { CreateLeadSchema } from "@/schemas/lead.schema";
 
 describe("CreateLeadSchema", () => {
@@ -17,7 +18,7 @@ describe("CreateLeadSchema", () => {
           });
 
           return !result.success;
-        })
+        }),
       );
     });
 
@@ -34,7 +35,7 @@ describe("CreateLeadSchema", () => {
           });
 
           return !result.success;
-        })
+        }),
       );
     });
 
@@ -44,11 +45,13 @@ describe("CreateLeadSchema", () => {
           fc.integer({ min: 0, max: 10 }).chain((len) =>
             fc.tuple(
               fc.constant(len),
-              fc.stringMatching(/^\d{0,10}$/)
-            )
+              fc.stringMatching(/^\d{0,10}$/),
+            ),
           ),
           ([len, cpf]) => {
-            if (cpf.length !== len) return true; // Skip if length doesn't match
+            if (cpf.length !== len) {
+              return true;
+            } // Skip if length doesn't match
 
             const result = CreateLeadSchema.safeParse({
               nome: "John Doe",
@@ -60,8 +63,8 @@ describe("CreateLeadSchema", () => {
             });
 
             return !result.success;
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -80,8 +83,8 @@ describe("CreateLeadSchema", () => {
             });
 
             return !result.success;
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -126,8 +129,8 @@ describe("CreateLeadSchema", () => {
             });
 
             return !result.success;
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -146,8 +149,8 @@ describe("CreateLeadSchema", () => {
             });
 
             return !result.success;
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -166,8 +169,8 @@ describe("CreateLeadSchema", () => {
             });
 
             return !result.success;
-          }
-        )
+          },
+        ),
       );
     });
   });
