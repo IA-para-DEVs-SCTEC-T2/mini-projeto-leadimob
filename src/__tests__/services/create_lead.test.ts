@@ -344,8 +344,12 @@ describe("create_lead service", () => {
       const expectedScore = Math.round(((5500 * 12 * 5) / 350000) * 100 * 100) / 100;
 
       const getPriority = (score: number): "Alto" | "Medio" | "Baixo" => {
-        if (score >= 80) return "Alto";
-        if (score >= 40) return "Medio";
+        if (score >= 80) {
+          return "Alto";
+        }
+        if (score >= 40) {
+          return "Medio";
+        }
         return "Baixo";
       };
 
