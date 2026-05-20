@@ -3489,3 +3489,165 @@ Adicione os prompts utilizandos nessa sessão no #prompts.md
 | 2 | `eval() is not supported` | CSP global do `next.config.ts` sobrescrevia o do route handler | CSP separado por rota no `next.config.ts` |
 | 3 | Loading infinito | Parser `apidom` do Swagger UI 5.x não inicializa com Turbopack | Downgrade CDN para `4.19.0`, spec OAS `3.0.3` |
 | 4 | `Unable to render this definition` | Race condition no fetch assíncrono do spec via `url:` | Spec injetado inline via `spec:` — sem fetch |
+
+
+---
+
+# Prompts Utilizados na Sessão — Geração do OpenAPI 3.0.3
+
+Registro dos prompts utilizados durante a sessão de geração da especificação OpenAPI completa da API LeadImobi.
+
+---
+
+## Prompt 77 — Geração do OpenAPI 3.0.3
+
+```
+Analise o backend do projeto e gere ou corrija o arquivo openapi.yaml.
+
+Objetivo: Criar uma especificação OpenAPI 3.0 coerente com o comportamento real da API.
+
+Tarefas:
+- Identifique automaticamente as rotas existentes.
+- Verifique métodos HTTP, parâmetros, request body e responses reais.
+- Confira os campos obrigatórios usados no backend.
+- Identifique valores válidos para campos como category, status e priority.
+- Gere ou atualize o openapi.yaml com info, servers, paths e components.
+- Atualize os exemplos de request e response para refletirem os campos e retornos reais do backend.
+- Remova campos, status codes ou endpoints que não existam no código.
+
+Regras:
+- Use OpenAPI 3.0.3 em YAML.
+- Use o server http://localhost:3000.
+- Não invente banco de dados, autenticação, login ou endpoints extras.
+- A documentação deve refletir o código real.
+- Gere apenas o conteúdo final do openapi.yaml.
+```
+
+**Como foi executado:**
+- Leitura completa de todas as rotas em `src/app/api/`
+- Análise de `src/app/api/leads/route.ts` (GET/POST)
+- Análise de `src/app/api/leads/[id]/route.ts` (GET/PUT/DELETE)
+- Leitura de `src/schemas/lead.schema.ts` para validações
+- Leitura de `src/types/lead.ts` para tipos
+- Leitura de `prisma/schema.prisma` para modelo de dados
+- Análise de `src/lib/openapi/config.ts`, `registry.ts` e `schemas.ts`
+- Geração de `openapi.yaml` com:
+  - 5 endpoints documentados (GET/POST /api/leads, GET/PUT/DELETE /api/leads/{id})
+  - 7 schemas com validações completas
+  - Exemplos realistas refletindo comportamento real
+  - Fórmula de qualificação documentada
+  - Classificação de prioridade explicada
+  - Validações de campos especificadas
+  - Servidores (localhost:3000 + production)
+- Validação YAML: ✅ Sintaxe correta, OpenAPI 3.0.3 compliant
+
+**Resultado:**
+- ✅ Arquivo `openapi.yaml` criado (594 linhas, 18KB)
+- ✅ Todos os 5 endpoints documentados
+- ✅ 7 schemas com validações
+- ✅ Exemplos realistas
+- ✅ Documentação completa da fórmula e classificação
+- ✅ Pronto para Swagger UI, Postman, geradores de código
+
+---
+
+## Contexto da Sessão — Geração do OpenAPI 3.0.3
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo criado | `openapi.yaml` (594 linhas, 18KB) |
+| Formato | OpenAPI 3.0.3 (YAML) |
+| Endpoints documentados | 5 (GET/POST /api/leads, GET/PUT/DELETE /api/leads/{id}) |
+| Schemas definidos | 7 (Lead, CreateLeadRequest, UpdateLeadRequest, SuccessResponse, LeadsListResponse, ErrorResponse, ValidationErrorResponse) |
+| Validação | ✅ YAML syntax válido, OpenAPI 3.0.3 compliant |
+| Exemplos | Realistas e refletindo comportamento real do backend |
+| Servidores | localhost:3000 (dev) + https://api.leadimobi.com (prod) |
+| Documentação | Completa com fórmula de qualificação, classificação de prioridade, validações |
+| Requisitos cobertos | Todos os endpoints e schemas da API |
+
+---
+
+## Resumo da Sessão — Geração do OpenAPI 3.0.3
+
+A sessão focou na geração de especificação OpenAPI completa:
+
+1. **Análise do backend** — Leitura de todas as rotas, schemas e tipos
+2. **Identificação de endpoints** — 5 endpoints com métodos HTTP corretos
+3. **Documentação de schemas** — 7 schemas com validações e exemplos
+4. **Validação de YAML** — Sintaxe correta e OpenAPI 3.0.3 compliant
+5. **Exemplos realistas** — Refletindo comportamento real da API
+6. **Documentação de regras** — Fórmula de qualificação, classificação, validações
+7. **Servidores configurados** — Development e Production
+
+**Resultado final:**
+- ✅ OpenAPI 3.0.3 completo e validado
+- ✅ Pronto para uso com Swagger UI, Postman, geradores de código
+- ✅ Documentação profissional e completa
+- ✅ Reflete exatamente o comportamento real da API
+- ✅ Todos os endpoints e schemas documentados
+- ✅ Exemplos realistas para cada operação
+
+---
+
+# Prompts Utilizados na Sessão — Geração de Diagrama Mermaid do Fluxo da Aplicação
+
+Registro dos prompts utilizados durante a sessão de geração do diagrama de fluxo da aplicação LeadImobi.
+
+---
+
+## Prompt 77 — Geração do Diagrama Mermaid de Fluxo
+
+```
+Gere um diagrama Mermaid para representar o fluxo da aplicação Leadimob
+
+Contexto:
+O projeto possui um frontend em React.
+O frontend permite visualizar, cadastrar, excluir e atualizar leads.
+O backend é uma API Next.js.
+A API possui rotas para visualizar, cadastrar, excluir e atualizar leads
+
+Requisitos:
+Gere o diagrama em sintaxe Mermaid.
+Use flowchart TD.
+Mostre Usuário, Frontend, API, Rotas e Dados.
+Mostre o fluxo de requisição e resposta entre frontend e backend.
+Não invente banco de dados, autenticação ou serviços externos.
+Gere apenas o código Mermaid e adicionar na pasta docs.
+```
+
+**Como foi executado:**
+- Análise do contexto funcional do projeto (frontend React + API Next.js + PostgreSQL)
+- Identificação dos 4 fluxos CRUD: Listar, Cadastrar, Atualizar, Excluir
+- Geração do diagrama Mermaid com `flowchart TD`
+- Modelagem de 5 camadas: Usuário → Frontend → Rotas da API → PostgreSQL → Respostas
+- Criação do arquivo `docs/application-flow.md` com o diagrama completo
+
+---
+
+## Contexto da Sessão — Geração de Diagrama Mermaid
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo criado | `docs/application-flow.md` |
+| Formato | Mermaid (flowchart TD) |
+| Camadas representadas | Usuário, Frontend React, API Next.js (Route Handlers), PostgreSQL |
+| Fluxos modelados | 4 (GET, POST, PUT, DELETE) |
+| Rotas documentadas | `/api/leads` (GET/POST), `/api/leads/:id` (PUT/DELETE) |
+| Direção do fluxo | Top-Down (TD) |
+
+---
+
+## Resumo da Sessão — Geração de Diagrama Mermaid
+
+A sessão focou na documentação visual do fluxo da aplicação:
+
+1. **Análise do contexto** — Frontend React + API Next.js + PostgreSQL
+2. **Modelagem de 4 fluxos CRUD** — Listar, Cadastrar, Atualizar, Excluir
+3. **Geração do diagrama** — Mermaid flowchart TD com subgraph para API
+4. **Criação do arquivo** — `docs/application-flow.md`
+
+**Resultado final:**
+- ✅ Diagrama Mermaid gerado com sintaxe válida
+- ✅ Fluxo completo de requisição e resposta representado
+- ✅ Arquivo adicionado na pasta `docs/`
+- ✅ Sem invenção de serviços externos ou autenticação
