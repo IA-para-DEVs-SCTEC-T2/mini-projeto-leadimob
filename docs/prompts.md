@@ -3586,3 +3586,68 @@ A sessão focou na geração de especificação OpenAPI completa:
 - ✅ Reflete exatamente o comportamento real da API
 - ✅ Todos os endpoints e schemas documentados
 - ✅ Exemplos realistas para cada operação
+
+---
+
+# Prompts Utilizados na Sessão — Geração de Diagrama Mermaid do Fluxo da Aplicação
+
+Registro dos prompts utilizados durante a sessão de geração do diagrama de fluxo da aplicação LeadImobi.
+
+---
+
+## Prompt 77 — Geração do Diagrama Mermaid de Fluxo
+
+```
+Gere um diagrama Mermaid para representar o fluxo da aplicação Leadimob
+
+Contexto:
+O projeto possui um frontend em React.
+O frontend permite visualizar, cadastrar, excluir e atualizar leads.
+O backend é uma API Next.js.
+A API possui rotas para visualizar, cadastrar, excluir e atualizar leads
+
+Requisitos:
+Gere o diagrama em sintaxe Mermaid.
+Use flowchart TD.
+Mostre Usuário, Frontend, API, Rotas e Dados.
+Mostre o fluxo de requisição e resposta entre frontend e backend.
+Não invente banco de dados, autenticação ou serviços externos.
+Gere apenas o código Mermaid e adicionar na pasta docs.
+```
+
+**Como foi executado:**
+- Análise do contexto funcional do projeto (frontend React + API Next.js + PostgreSQL)
+- Identificação dos 4 fluxos CRUD: Listar, Cadastrar, Atualizar, Excluir
+- Geração do diagrama Mermaid com `flowchart TD`
+- Modelagem de 5 camadas: Usuário → Frontend → Rotas da API → PostgreSQL → Respostas
+- Criação do arquivo `docs/application-flow.md` com o diagrama completo
+
+---
+
+## Contexto da Sessão — Geração de Diagrama Mermaid
+
+| Item | Detalhe |
+|------|---------|
+| Arquivo criado | `docs/application-flow.md` |
+| Formato | Mermaid (flowchart TD) |
+| Camadas representadas | Usuário, Frontend React, API Next.js (Route Handlers), PostgreSQL |
+| Fluxos modelados | 4 (GET, POST, PUT, DELETE) |
+| Rotas documentadas | `/api/leads` (GET/POST), `/api/leads/:id` (PUT/DELETE) |
+| Direção do fluxo | Top-Down (TD) |
+
+---
+
+## Resumo da Sessão — Geração de Diagrama Mermaid
+
+A sessão focou na documentação visual do fluxo da aplicação:
+
+1. **Análise do contexto** — Frontend React + API Next.js + PostgreSQL
+2. **Modelagem de 4 fluxos CRUD** — Listar, Cadastrar, Atualizar, Excluir
+3. **Geração do diagrama** — Mermaid flowchart TD com subgraph para API
+4. **Criação do arquivo** — `docs/application-flow.md`
+
+**Resultado final:**
+- ✅ Diagrama Mermaid gerado com sintaxe válida
+- ✅ Fluxo completo de requisição e resposta representado
+- ✅ Arquivo adicionado na pasta `docs/`
+- ✅ Sem invenção de serviços externos ou autenticação
