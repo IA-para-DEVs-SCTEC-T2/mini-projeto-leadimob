@@ -1,4 +1,5 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
 
 // Armazenamento em memória para contagem de requisições por IP
 const request_counts = new Map<string, { count: number; reset_at: number }>();
@@ -7,7 +8,21 @@ const request_counts = new Map<string, { count: number; reset_at: number }>();
 const LIMIT = 10; // requisições
 const WINDOW = 60_000; // por minuto (60 segundos)
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  
+  // Proteção de rotas — autenticação
+  const session = await auth();
+  
+  // Redirecionar para login se tentar acessar /leads/* sem autenticação
+  if (pathname.startsWith('/leads') && !session?.user?.corretor_id) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
+  
+  // Redirecionar para /leads se tentar acessar /auth/* já autenticado
+  if (pathname.startsWith('/auth') && session?.user?.corretor_id) {
+    return NextResponse.redirect(new URL('/leads', request.url));
+  }
   // Aplicar rate limiting apenas nas rotas de criação de leads
   if (request.nextUrl.pathname === '/leads/novo' || 
       request.nextUrl.pathname.startsWith('/leads') && request.method === 'POST') {
@@ -63,4 +78,8 @@ export function proxy(request: NextRequest) {
       }
     }
   }
+}
+
+export const config = {
+  matcher: ['/leads/:path*', '/auth/:path*'],
 }
