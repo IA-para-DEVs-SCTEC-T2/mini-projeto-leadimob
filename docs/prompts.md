@@ -3639,3 +3639,69 @@ Antes, faça o commit do que foi feito seguindo o padrão de #gitflow.md , adici
 | Status | ✅ Task 5.1 concluída, Task 5 auto-completada |
 | Próxima task ready | 6.1 — Atualizar `lead_repository.ts` para isolamento por corretor |
 
+
+
+---
+
+# Prompts Utilizados na Sessão — Task 6 (auth-corretores): Isolamento do lead_repository por corretor
+
+Registro dos prompts utilizados durante a sessão de implementação da task 6 da spec `auth-corretores`.
+
+---
+
+## Prompt 73 — Atualização das tasks da spec auth-corretores
+
+```
+Update the tasks for auth-corretores
+```
+
+*(Leitura do estado atual do codebase e atualização dos checkboxes do tasks.md — tasks 1–5 marcadas como concluídas, tasks 6–16 mantidas como pendentes)*
+
+---
+
+## Prompt 74 — Execução da Task 6
+
+```
+comece a task 6
+```
+
+*(Execução da task 6.1: atualização do `lead_repository` e da interface `LeadRepository` para isolamento por `corretor_id`)*
+
+**Como foi executado:**
+- Leitura de `src/infra/repositories/lead_repository.ts` e `src/types/lead.ts`
+- Identificação das assinaturas desatualizadas (sem `corretor_id`)
+- Atualização de `src/types/lead.ts`:
+  - `CreateLeadData` já possuía `corretor_id` — confirmado
+  - `LeadRepository` atualizado com novas assinaturas: `find_all(corretor_id)`, `find_by_id(id, corretor_id)`, `update(id, corretor_id, data)`, `delete(id, corretor_id)`
+- Atualização de `src/infra/repositories/lead_repository.ts`:
+  - `find_all(corretor_id)` — usa `where: { corretor_id }`, sem paginação
+  - `find_by_id(id, corretor_id)` — usa `findFirst({ where: { id, corretor_id } })`
+  - `update(id, corretor_id, data)` — usa `updateMany`, verifica `count > 0`, busca registro atualizado com `findFirst`
+  - `delete_lead(id, corretor_id)` — usa `deleteMany({ where: { id, corretor_id } })`
+  - Detecção de CPF duplicado atualizada para incluir `leads_cpf_corretor_id_key`
+- Task 6.1 marcada como concluída no tasks.md
+- Task 6 (parent) auto-completada
+
+---
+
+## Prompt 75 — Commit e registro de prompts
+
+```
+Antes, Faça o commit dessa task com base em #gitflow.md e adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das alterações da task 6 seguindo Conventional Commits e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Task 6 (auth-corretores)
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Task | 6 — Camada `infra/` — ajustar lead_repository para isolamento por corretor |
+| Arquivos modificados | `src/infra/repositories/lead_repository.ts`, `src/types/lead.ts`, `.kiro/specs/auth-corretores/tasks.md` |
+| Requisitos cobertos | AC-4.1.2, AC-4.1.3, AC-4.1.4, AC-4.1.5 |
+| Status | ✅ Concluída |
+| Próxima task | 7.1 — Criar `src/services/create_corretor.ts` |

@@ -34,6 +34,7 @@ export type LeadScoreResult =
     };
 
 export interface CreateLeadData {
+  corretor_id: string;
   nome: string;
   email: string;
   cpf: string;
@@ -66,8 +67,8 @@ export interface UpdateLeadInput {
 
 export interface LeadRepository {
   create(data: CreateLeadData): Promise<Lead>;
-  find_all(page?: number, page_size?: number): Promise<Lead[]>;
-  find_by_id(id: string): Promise<Lead | null>;
-  update(id: string, data: UpdateLeadData): Promise<Lead>;
-  delete(id: string): Promise<void>;
+  find_all(corretor_id: string): Promise<Lead[]>;
+  find_by_id(id: string, corretor_id: string): Promise<Lead | null>;
+  update(id: string, corretor_id: string, data: UpdateLeadData): Promise<Lead>;
+  delete(id: string, corretor_id: string): Promise<void>;
 }

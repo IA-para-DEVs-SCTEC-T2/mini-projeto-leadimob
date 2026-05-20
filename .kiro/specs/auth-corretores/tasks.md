@@ -56,7 +56,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Exportar tipos `RegisterInput` e `LoginInput` via `z.infer<>`
     - _Requirements: AC-1.2.1, AC-1.2.2, AC-1.2.3_
 
-- [ ] 5. Camada `infra/` — repositório de corretor
+- [x] 5. Camada `infra/` — repositório de corretor
   - [x] 5.1 Criar `src/infra/repositories/corretor_repository.ts`
     - Implementar `corretor_repository` com métodos:
       - `create(data: { nome: string; email: string; password_hash: string }): Promise<Corretor>`
@@ -68,7 +68,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - _Requirements: AC-1.3.1, AC-1.3.2, AC-1.3.3_
 
 - [ ] 6. Camada `infra/` — ajustar lead_repository para isolamento por corretor
-  - [ ] 6.1 Atualizar `src/infra/repositories/lead_repository.ts`
+  - [-] 6.1 Atualizar `src/infra/repositories/lead_repository.ts`
     - Adicionar `corretor_id: string` ao tipo `CreateLeadData`
     - Atualizar `create` para incluir `corretor_id` no INSERT
     - Atualizar `find_all(corretor_id: string)` para filtrar por `corretor_id` no WHERE
@@ -208,7 +208,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Se retornar `null`: chamar `notFound()`
     - _Requirements: AC-4.1.4, AC-4.1.5_
 
-- [ ] 16. Checkpoint final — verificação e testes
+- [~] 16. Checkpoint final — verificação e testes
   - Verificar que o projeto compila sem erros TypeScript (`npx tsc --noEmit`)
   - Verificar que a migration foi aplicada corretamente
   - Testar manualmente: cadastro → login → criar lead → ver apenas leads próprios → logout
