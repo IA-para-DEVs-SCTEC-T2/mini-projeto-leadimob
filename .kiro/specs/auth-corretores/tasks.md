@@ -100,8 +100,8 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - `src/lib/session.ts` já existe
     - _Requirements: AC-3.1.1_
 
-- [ ] 10. Rota de handlers do next-auth
-  - [ ] 10.1 Verificar `src/app/api/auth/[...nextauth]/route.ts`
+- [x] 10. Rota de handlers do next-auth
+  - [x] 10.1 Verificar `src/app/api/auth/[...nextauth]/route.ts`
     - Confirmar que importa `handlers` de `@/lib/auth`
     - Confirmar que exporta `GET` e `POST` dos handlers
     - _Requirements: AC-2.2.1_
