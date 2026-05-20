@@ -166,20 +166,20 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Em `delete_lead_action`: chamar `get_session()`, passar `corretor_id` para `delete_lead(repository, id, corretor_id)`
     - _Requirements: AC-4.1.2, AC-4.1.4_
 
-- [ ] 15. Camada `app/` — atualizar páginas de leads para usar sessão
-  - [ ] 15.1 Atualizar `src/app/leads/page.tsx`
+- [x] 15. Camada `app/` — atualizar páginas de leads para usar sessão
+  - [x] 15.1 Atualizar `src/app/leads/page.tsx`
     - Chamar `get_session()` para obter `corretor_id` e `nome`
     - Passar `corretor_id` para `list_leads(repository, corretor_id)`
     - Renderizar `LogoutButton` com `nome` do corretor no header/layout
     - _Requirements: AC-4.1.3, AC-5.1.3_
 
-  - [ ] 15.2 Atualizar `src/app/leads/[id]/page.tsx`
+  - [x] 15.2 Atualizar `src/app/leads/[id]/page.tsx`
     - Chamar `get_session()` para obter `corretor_id`
     - Passar `corretor_id` para `lead_repository.find_by_id(id, corretor_id)`
     - Se retornar `null`: chamar `notFound()`
     - _Requirements: AC-4.1.4, AC-4.1.5_
 
-  - [ ] 15.3 Atualizar `src/app/leads/[id]/edit/page.tsx`
+  - [x] 15.3 Atualizar `src/app/leads/[id]/edit/page.tsx`
     - Chamar `get_session()` para obter `corretor_id`
     - Passar `corretor_id` para `lead_repository.find_by_id(id, corretor_id)`
     - Se retornar `null`: chamar `notFound()`
