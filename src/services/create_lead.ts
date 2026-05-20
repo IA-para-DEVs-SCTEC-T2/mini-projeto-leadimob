@@ -10,6 +10,7 @@ import { calculate_lead_score } from "@/domain/rules/calculate_lead_score";
 export async function create_lead(
   repository: LeadRepository,
   input: CreateLeadInput,
+  corretor_id: string,
 ): Promise<Lead> {
   const score_result = calculate_lead_score(
     input.renda_mensal,
@@ -17,6 +18,7 @@ export async function create_lead(
   );
 
   const data: CreateLeadData = {
+    corretor_id,
     nome: input.nome,
     email: normalize_email(input.email),
     cpf: input.cpf,

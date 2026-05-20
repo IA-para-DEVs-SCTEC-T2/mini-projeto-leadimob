@@ -85,23 +85,23 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Propagar `EMAIL_ALREADY_EXISTS` sem transformação
     - _Requirements: AC-1.2.5, AC-1.3.1_
 
-- [ ] 8. Camada `services/` — ajustar services de lead para receber corretor_id
-  - [ ] 8.1 Atualizar `src/services/create_lead.ts`
+- [x] 8. Camada `services/` — ajustar services de lead para receber corretor_id
+  - [x] 8.1 Atualizar `src/services/create_lead.ts`
     - Adicionar parâmetro `corretor_id: string` à função
     - Passar `corretor_id` para `repository.create(data)`
     - _Requirements: AC-4.1.2_
 
-  - [ ] 8.2 Atualizar `src/services/list_leads.ts`
+  - [x] 8.2 Atualizar `src/services/list_leads.ts`
     - Adicionar parâmetro `corretor_id: string` à função
     - Passar `corretor_id` para `repository.find_all(corretor_id)`
     - _Requirements: AC-4.1.3_
 
-  - [ ] 8.3 Atualizar `src/services/update_lead.ts`
+  - [x] 8.3 Atualizar `src/services/update_lead.ts`
     - Adicionar parâmetro `corretor_id: string` à função
     - Passar `corretor_id` para `repository.update(id, corretor_id, data)`
     - _Requirements: AC-4.1.4_
 
-  - [ ] 8.4 Atualizar `src/services/delete_lead.ts`
+  - [x] 8.4 Atualizar `src/services/delete_lead.ts`
     - Adicionar parâmetro `corretor_id: string` à função
     - Passar `corretor_id` para `repository.delete(id, corretor_id)`
     - _Requirements: AC-4.1.4_
