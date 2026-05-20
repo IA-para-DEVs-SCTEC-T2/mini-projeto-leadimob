@@ -3705,3 +3705,57 @@ Antes, Faça o commit dessa task com base em #gitflow.md e adicione os prompts e
 | Requisitos cobertos | AC-4.1.2, AC-4.1.3, AC-4.1.4, AC-4.1.5 |
 | Status | ✅ Concluída |
 | Próxima task | 7.1 — Criar `src/services/create_corretor.ts` |
+
+
+---
+
+# Prompts Utilizados na Sessão — Task 7 (auth-corretores): Service de criação de corretor
+
+Registro dos prompts utilizados durante a sessão de implementação da task 7 da spec `auth-corretores`.
+
+---
+
+## Prompt 76 — Execução da Task 7
+
+```
+Comece a task 7
+```
+
+*(Execução da task 7.1: criação do service `create_corretor` na camada de serviços)*
+
+**Como foi executado:**
+- Leitura de `src/types/corretor.ts` e `src/infra/repositories/corretor_repository.ts`
+- Criação de `src/services/create_corretor.ts` com:
+  - Importação de `bcryptjs` (já instalado)
+  - Parâmetro `repository: Pick<typeof corretor_repository, 'create'>` — facilita testes com mock
+  - Hash da senha: `bcrypt.hash(input.senha, 10)` (custo 10 conforme AC-1.2.5)
+  - Chamada a `repository.create({ nome, email, password_hash })`
+  - Erros `EMAIL_ALREADY_EXISTS` e `DATABASE_UNAVAILABLE` propagados sem captura
+- Verificação TypeScript: erros existentes são todos cascata de tasks anteriores (esperado)
+- Task 7.1 e task 7 (parent) marcadas como concluídas no tasks.md
+
+---
+
+## Prompt 77 — Commit e registro de prompts
+
+```
+Antes, Faça o commit dessa task com base em #gitflow.md e adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das alterações da task 7 seguindo Conventional Commits e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Task 7 (auth-corretores)
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Task | 7 — Camada `services/` — service de criação de corretor |
+| Arquivo criado | `src/services/create_corretor.ts` |
+| Arquivo modificado | `.kiro/specs/auth-corretores/tasks.md` |
+| Dependência utilizada | `bcryptjs` (já instalado) |
+| Requisitos cobertos | AC-1.2.5, AC-1.3.1 |
+| Status | ✅ Concluída |
+| Próxima wave | Task 8 — Atualizar services de lead para receber `corretor_id` |

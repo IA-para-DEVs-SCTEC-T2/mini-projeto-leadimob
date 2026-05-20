@@ -77,8 +77,8 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Atualizar `delete(id: string, corretor_id: string)` para incluir `corretor_id` no WHERE
     - _Requirements: AC-4.1.2, AC-4.1.3, AC-4.1.4, AC-4.1.5_
 
-- [ ] 7. Camada `services/` — service de criação de corretor
-  - [ ] 7.1 Criar `src/services/create_corretor.ts`
+- [x] 7. Camada `services/` — service de criação de corretor
+  - [x] 7.1 Criar `src/services/create_corretor.ts`
     - Implementar `async function create_corretor(repository, input: CreateCorretorInput): Promise<Corretor>`
     - Fazer hash da senha: `bcrypt.hash(input.senha, 10)`
     - Chamar `repository.create({ nome, email, password_hash })`
