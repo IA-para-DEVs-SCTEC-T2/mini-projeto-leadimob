@@ -185,7 +185,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Se retornar `null`: chamar `notFound()`
     - _Requirements: AC-4.1.4, AC-4.1.5_
 
-- [ ] 16. Checkpoint final — verificação e testes
+- [x] 16. Checkpoint final — verificação e testes
   - Verificar que o projeto compila sem erros TypeScript (`npx tsc --noEmit`)
   - Verificar que a migration foi aplicada corretamente
   - Testar manualmente: cadastro → login → criar lead → ver apenas leads próprios → logout
