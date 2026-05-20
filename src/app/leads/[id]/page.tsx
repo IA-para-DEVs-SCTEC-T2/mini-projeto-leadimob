@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { lead_repository } from "@/infra/repositories/lead_repository";
 import PriorityBadge from "@/components/priority_badge";
 import LeadActions from "@/components/lead_actions";
@@ -17,9 +18,16 @@ interface LeadDetailPageProps {
 export default async function LeadDetailPage({
   params,
 }: LeadDetailPageProps) {
+  // Verificar autenticação
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    redirect("/auth/login");
+  }
+
   const { id } = await params;
 
-  const lead = await lead_repository.find_by_id(id);
+  const lead = await lead_repository.find_by_id(id, session.user.id);
 
   if (!lead) {
     notFound();

@@ -4013,3 +4013,110 @@ Task 13: Criar páginas de autenticação (/auth/login e /auth/register)
 | Requisitos cobertos | AC-1.1.1, AC-1.1.2, AC-1.2.4, AC-1.3.3, AC-2.1.1 |
 | Status | ✅ Concluída |
 | Próxima task | 14 — Atualizar Server Actions de leads para usar sessão |
+
+---
+
+# Prompts Utilizados na Sessão — Tasks 14 e 15: Integração de Sessão nas Páginas de Leads
+
+Registro dos prompts utilizados durante a sessão de integração da autenticação NextAuth nas Server Actions e páginas de leads.
+
+---
+
+## Prompt 77 — Execução da Task 14 (Server Actions com Sessão)
+
+```
+Pode começar a task 14. Camada `app/` — atualizar Server Actions de leads para usar sessão
+```
+
+**Como foi executado:**
+- Leitura de `src/app/leads/actions.ts` para entender a estrutura atual
+- Leitura dos services `create_lead.ts`, `update_lead.ts`, `delete_lead.ts` para verificar assinaturas com `corretor_id`
+- Adicionado import de `auth` do NextAuth em `actions.ts`
+- Adicionada verificação de sessão (`session.user.id`) em todas as três actions:
+  - `create_lead_action` — retorna erro se não autenticado, passa `session.user.id` para `create_lead()`
+  - `update_lead_action` — retorna erro se não autenticado, passa `session.user.id` para `update_lead()`
+  - `delete_lead_action` — retorna erro se não autenticado, passa `session.user.id` para `delete_lead()`
+- Diagnóstico: zero erros TypeScript
+- Commit: `feat(leads): adiciona verificação de sessão nas Server Actions`
+
+**Resultado:**
+- ✅ Todas as Server Actions protegidas por autenticação
+- ✅ `corretor_id` sempre extraído da sessão no servidor (nunca do cliente)
+- ✅ Mensagens de erro amigáveis para usuários não autenticados
+
+---
+
+## Prompt 78 — Execução da Task 15 (Páginas de Leads com Sessão)
+
+```
+Comece a task 15. Camada `app/` — atualizar páginas de leads para usar sessão
+- [ ] 15.1 Atualizar `src/app/leads/page.tsx`
+- [ ] 15.2 Atualizar `src/app/leads/[id]/page.tsx`
+- [ ] 15.3 Atualizar `src/app/leads/[id]/edit/page.tsx`
+```
+
+**Como foi executado:**
+
+**15.1 — `src/app/leads/page.tsx`:**
+- Adicionado import de `auth` e `redirect` do Next.js
+- Adicionado import de `LogoutButton`
+- Adicionada verificação de sessão com `redirect("/auth/login")` se não autenticado
+- `list_leads()` agora recebe `session.user.id` como `corretor_id`
+- Header atualizado: `LogoutButton` renderizado com `session.user.name`
+- Layout do header ajustado para `justify-between` para acomodar o botão de logout
+
+**15.2 — `src/app/leads/[id]/page.tsx`:**
+- Adicionado import de `auth` e `redirect`
+- Adicionada verificação de sessão com `redirect("/auth/login")` se não autenticado
+- `lead_repository.find_by_id()` agora recebe `session.user.id` como segundo argumento
+- `notFound()` chamado se lead não pertencer ao corretor autenticado
+
+**15.3 — `src/app/leads/[id]/edit/page.tsx`:**
+- Adicionado import de `auth` e `redirect`
+- Adicionada verificação de sessão com `redirect("/auth/login")` se não autenticado
+- `lead_repository.find_by_id()` agora recebe `session.user.id` como segundo argumento
+- `notFound()` chamado se lead não pertencer ao corretor autenticado
+
+- Diagnóstico: zero erros TypeScript nos 3 arquivos
+
+---
+
+## Prompt 79 — Adição dos Prompts e Commit
+
+```
+Adicione os prompts em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md e faça o commit
+```
+
+*(Atualização do prompts.md com os prompts 77, 78 e 79 da sessão de integração de sessão)*
+
+---
+
+## Contexto da Sessão — Tasks 14 e 15
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Tasks concluídas | 14.1, 15.1, 15.2, 15.3 |
+| Arquivos modificados | `src/app/leads/actions.ts`, `src/app/leads/page.tsx`, `src/app/leads/[id]/page.tsx`, `src/app/leads/[id]/edit/page.tsx` |
+| Requisitos cobertos | AC-1.1.2, AC-1.2.4, AC-1.3.3, AC-4.1.3, AC-4.1.4, AC-4.1.5, AC-5.1.3 |
+| Diagnóstico TypeScript | ✅ Zero erros em todos os arquivos |
+| Commits | `feat(leads): adiciona verificação de sessão nas Server Actions` |
+
+---
+
+## Resumo da Sessão — Integração de Sessão nas Páginas de Leads
+
+A sessão focou na integração completa da autenticação NextAuth nas camadas de app:
+
+1. **Task 14.1** — Server Actions protegidas: `create_lead_action`, `update_lead_action`, `delete_lead_action`
+2. **Task 15.1** — Página de listagem: sessão verificada, `corretor_id` passado para `list_leads()`, `LogoutButton` no header
+3. **Task 15.2** — Página de detalhes: sessão verificada, `corretor_id` passado para `find_by_id()`, `notFound()` para leads de outros corretores
+4. **Task 15.3** — Página de edição: sessão verificada, `corretor_id` passado para `find_by_id()`, `notFound()` para leads de outros corretores
+
+**Resultado final:**
+- ✅ Isolamento completo de dados por corretor em todas as páginas
+- ✅ Redirecionamento automático para login quando não autenticado
+- ✅ `corretor_id` nunca vem do cliente — sempre da sessão no servidor
+- ✅ `LogoutButton` com nome do corretor exibido no header da listagem
+- ✅ Pronto para a Task 16 (testes de integração)
