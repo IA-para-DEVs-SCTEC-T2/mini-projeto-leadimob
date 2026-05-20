@@ -106,8 +106,8 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Passar `corretor_id` para `repository.delete(id, corretor_id)`
     - _Requirements: AC-4.1.4_
 
-- [ ] 9. Camada `lib/` — configuração do next-auth e helper de sessão
-  - [ ] 9.1 Criar `src/lib/auth.ts` — configuração central do next-auth
+- [x] 9. Camada `lib/` — configuração do next-auth e helper de sessão
+  - [x] 9.1 Criar `src/lib/auth.ts` — configuração central do next-auth
     - Configurar `NextAuth` com `CredentialsProvider`
     - Implementar `authorize`: busca corretor por email, compara senha com bcrypt, retorna `{ id, name, email }` ou `null`
     - Implementar callback `jwt`: adiciona `corretor_id` ao token quando `user` está presente
@@ -117,7 +117,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Exportar `{ handlers, auth, signIn, signOut }`
     - _Requirements: AC-2.2.1, AC-2.2.2, AC-2.2.3, AC-2.2.4, AC-2.2.5_
 
-  - [ ] 9.2 Criar `src/lib/session.ts` — helper de sessão para Server Components
+  - [x] 9.2 Criar `src/lib/session.ts` — helper de sessão para Server Components
     - Implementar `async function get_session()` que chama `auth()` e redireciona para `/auth/login` se não autenticado
     - Retornar a sessão tipada com `corretor_id`
     - _Requirements: AC-3.1.1_
