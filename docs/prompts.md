@@ -3759,3 +3759,54 @@ Antes, Faça o commit dessa task com base em #gitflow.md e adicione os prompts e
 | Requisitos cobertos | AC-1.2.5, AC-1.3.1 |
 | Status | ✅ Concluída |
 | Próxima wave | Task 8 — Atualizar services de lead para receber `corretor_id` |
+
+
+---
+
+# Prompts Utilizados na Sessão — Task 8 (auth-corretores): Services de lead com corretor_id
+
+Registro dos prompts utilizados durante a sessão de implementação da task 8 da spec `auth-corretores`.
+
+---
+
+## Prompt 78 — Execução da Task 8
+
+```
+Inicie a task 8. Camada `services/` — ajustar services de lead para receber corretor_id
+```
+
+*(Execução das tasks 8.1 a 8.4: atualização dos services de lead para receber e propagar `corretor_id`)*
+
+**Como foi executado:**
+- Leitura do estado atual dos 4 services de lead
+- Task 8.1 (`create_lead.ts`) — já possuía `corretor_id` implementado ✅
+- Task 8.2 (`list_leads.ts`) — já possuía `corretor_id` implementado ✅
+- Task 8.3 (`update_lead.ts`) — atualizado: adicionado `corretor_id: string` como terceiro parâmetro (após `id`), chamada `repository.update(id, corretor_id, data)` corrigida
+- Task 8.4 (`delete_lead.ts`) — atualizado: adicionado `corretor_id: string` como terceiro parâmetro, chamada `repository.delete(id, corretor_id)` corrigida
+- Tasks 8.1–8.4 e task 8 (parent) marcadas como concluídas no tasks.md
+
+---
+
+## Prompt 79 — Commit e registro de prompts
+
+```
+Antes, Faça o commit dessa task com base em #gitflow.md e adicione os prompts em #prompts.md
+```
+
+*(Solicitação de commit das alterações da task 8 seguindo Conventional Commits e atualização do prompts.md)*
+
+---
+
+## Contexto da Sessão — Task 8 (auth-corretores)
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Task | 8 — Camada `services/` — ajustar services de lead para receber corretor_id |
+| Arquivos modificados | `src/services/update_lead.ts`, `src/services/delete_lead.ts`, `.kiro/specs/auth-corretores/tasks.md` |
+| Arquivos já corretos | `src/services/create_lead.ts`, `src/services/list_leads.ts` |
+| Requisitos cobertos | AC-4.1.2, AC-4.1.3, AC-4.1.4 |
+| Commit | `feat(services): adiciona corretor_id aos services de lead para isolamento por corretor` |
+| Status | ✅ Concluída |
+| Próxima wave | Task 9 — Configuração do next-auth e helper de sessão |
