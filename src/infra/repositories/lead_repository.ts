@@ -1,12 +1,12 @@
-import { Prisma } from "@/generated/prisma/client";
 import type { Lead as PrismaLead } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/infra/db/prisma";
 import type {
   CreateLeadData,
-  UpdateLeadData,
   Lead,
   LeadPriority,
   LeadRepository,
+  UpdateLeadData,
 } from "@/types/lead";
 
 type RepositoryError = {
@@ -15,13 +15,13 @@ type RepositoryError = {
 
 function map_priority(priority: string): LeadPriority {
   switch (priority) {
-    case "Alto":
-    case "Medio":
-    case "Baixo":
-    case "NaoClassificado":
-      return priority;
-    default:
-      throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
+  case "Alto":
+  case "Medio":
+  case "Baixo":
+  case "NaoClassificado":
+    return priority;
+  default:
+    throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
   }
 }
 
@@ -59,12 +59,12 @@ function handle_repository_error(error: unknown): never {
     if (error.code === "P2002") {
       // P2002 is unique constraint violation
       const target = error.meta?.target as string[] | undefined;
-      
+
       // Check both target array and error message for CPF field
-      const isCpfError = target?.includes("cpf") || 
-                        error.message?.includes("cpf") ||
+      const isCpfError = target?.includes("cpf") ??
+                        error.message?.includes("cpf") ??
                         error.message?.includes("leads_cpf_key");
-      
+
       if (isCpfError) {
         throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
       }
@@ -91,7 +91,7 @@ async function find_all(page = 1, page_size = 50): Promise<Lead[]> {
     const leads = await prisma.lead.findMany({
       take: page_size,
       skip: (page - 1) * page_size,
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
 
     return leads.map(map_prisma_to_lead);

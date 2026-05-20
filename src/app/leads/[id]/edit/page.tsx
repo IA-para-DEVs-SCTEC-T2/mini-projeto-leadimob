@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
-import { lead_repository } from "@/infra/repositories/lead_repository";
+import { notFound } from "next/navigation";
+
 import LeadForm from "@/components/lead_form";
+import { lead_repository } from "@/infra/repositories/lead_repository";
 
 interface EditLeadPageProps {
   params: Promise<{ id: string }>;

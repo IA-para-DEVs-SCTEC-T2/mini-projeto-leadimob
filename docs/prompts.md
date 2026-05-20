@@ -3352,3 +3352,140 @@ A sessão focou na correção sistemática de vulnerabilidades e melhorias ident
 - ✅ **Código limpo** sem duplicações
 - ✅ **Testes validados** — todas as funcionalidades testadas
 - ✅ **Pronto para produção** — vulnerabilidades críticas resolvidas
+
+
+---
+
+# Prompts Utilizados na Sessão — Implementação de OpenAPI 3.1 e Swagger UI
+
+Registro dos prompts utilizados durante a sessão de adição de documentação OpenAPI ao projeto LeadImobi.
+
+---
+
+## Prompt 61 — Implementação Completa de OpenAPI 3.1
+
+```
+Você é um agente técnico especialista em arquitetura de software, documentação de APIs, padrões REST e ecossistema Next.js.
+Sua tarefa é analisar um projeto Next.js full-stack monolítico utilizando App Router, identificar todas as rotas de API existentes
+e implementar suporte completo a OpenAPI 3.1, garantindo documentação automática, tipagem consistente e integração com o fluxo atual da aplicação.
+
+Objetivo:
+Adicionar documentação OpenAPI ao projeto para que ele possua:
+- Especificação OpenAPI centralizada
+- Documentação interativa via Swagger UI ou Redoc
+- Geração automática de schemas
+- Padronização de contratos
+- Tipagem compartilhada entre frontend e backend
+- Validação consistente entre request/response
+- Facilidade para consumo por clientes externos
+
+[Instrução completa com regras obrigatórias, etapas de execução, saída esperada e critérios de qualidade]
+```
+
+**Como foi executado:**
+- Diagnóstico do projeto: Server Actions em vez de route handlers, dependências `zod-openapi` e `swagger-ui-react` já instaladas
+- Criação de `src/lib/openapi/config.ts` — configuração base com OpenAPI 3.0.3
+- Criação de `src/lib/openapi/schemas.ts` — schemas Zod com extensões OpenAPI
+- Criação de `src/lib/openapi/registry.ts` — geração do documento via `createDocument`
+- Criação de `src/app/api/leads/route.ts` — GET e POST
+- Criação de `src/app/api/leads/[id]/route.ts` — GET, PUT e DELETE
+- Criação de `src/app/api/openapi.json/route.ts` — endpoint que serve o spec
+- Criação de `src/app/docs/page.tsx` — página de documentação com Swagger UI
+- Build validado com sucesso
+
+---
+
+## Prompt 62 — Correção do Bug: `OpenApi3_1Element.refract is not a function`
+
+```
+Realize os ajustes necessários para correção do bug
+[imagem mostrando: TypeError: OpenApi3_1Element.refract is not a function]
+```
+
+**Como foi executado:**
+- Identificados dois problemas: SSR com Turbopack e CSP sem `unsafe-eval`
+- `src/app/docs/page.tsx`: trocado import estático por `dynamic()` com `ssr: false`
+- `next.config.ts`: adicionado `'unsafe-eval'` e `https://unpkg.com` ao CSP
+
+---
+
+## Prompt 63 — Loading Infinito sem Erros
+
+```
+Continuo com o mesmo problema e com layout pouco amigável.
+[imagem mostrando loading infinito na página /docs]
+```
+
+**Como foi executado:**
+- Identificada causa raiz: `swagger-ui-react@5.x` usa parser `apidom` para OAS 3.1 que não inicializa corretamente com Turbopack
+- Estratégia completamente trocada: abandonado `swagger-ui-react` como componente React
+- Criado `src/app/api/docs/route.ts` — serve HTML puro com Swagger UI via CDN (`unpkg.com`)
+- `src/app/docs/page.tsx` passou a fazer redirect 307 para `/api/docs`
+- CSP permissivo (`unsafe-eval`, `unpkg.com`) movido para o route handler
+
+---
+
+## Prompt 64 — Persistência do Loading Infinito
+
+```
+Continuo com o mesmo problema
+[imagem mostrando: eval() is not supported in this environment]
+```
+
+**Como foi executado:**
+- Identificada causa real: `next.config.ts` com `source: "/(.*)"` sobrescrevia o CSP do route handler
+- Headers do `next.config.ts` têm precedência sobre headers do `NextResponse`
+- `next.config.ts` reescrito com dois `source` separados:
+  - `/api/docs` → CSP permissivo com `unsafe-eval`, `unpkg.com`, `worker-src blob:`
+  - `/((?!api/docs).*)` → CSP restritivo para o restante da aplicação
+- CSP removido do route handler (redundante)
+
+---
+
+## Prompt 65 — "Unable to render this definition"
+
+```
+Continuo com o mesmo problema
+[imagem mostrando: Unable to render this definition — The provided definition does not specify a valid version field]
+```
+
+**Como foi executado:**
+- Identificado: Swagger UI 4.x com `url:` fazia fetch assíncrono que resultava em race condition
+- Solução: trocado `url: '/api/openapi.json'` por `spec: ${spec_json}` — spec injetado inline no HTML
+- `get_openapi_document()` chamado no servidor, JSON serializado com escape de `</script>`
+- Eliminado completamente o fetch assíncrono e todos os problemas de parsing
+- Versão do CDN: `swagger-ui-dist@4.19.0`, spec: `openapi: 3.0.3`
+
+---
+
+## Prompt 66 — Registro dos Prompts da Sessão
+
+```
+Adicione os prompts utilizandos nessa sessão no #prompts.md
+```
+
+*(Solicitação de atualização do `docs/prompts.md` com os prompts 61–66 desta sessão)*
+
+---
+
+## Contexto da Sessão — Implementação OpenAPI e Swagger UI
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `develop` |
+| Objetivo | Implementação completa de documentação OpenAPI 3.1 com Swagger UI |
+| Arquivos criados | `src/lib/openapi/config.ts`, `src/lib/openapi/schemas.ts`, `src/lib/openapi/registry.ts`, `src/app/api/leads/route.ts`, `src/app/api/leads/[id]/route.ts`, `src/app/api/openapi.json/route.ts`, `src/app/api/docs/route.ts`, `src/app/docs/page.tsx`, `src/app/docs/layout.tsx` |
+| Arquivos modificados | `next.config.ts`, `src/lib/openapi/config.ts` |
+| Dependências utilizadas | `zod-openapi@2.19.0` (já instalada), `swagger-ui-react@5.32.6` (abandonada), `swagger-ui-dist@4.19.0` (CDN) |
+| Endpoints de API criados | `GET /api/leads`, `POST /api/leads`, `GET /api/leads/{id}`, `PUT /api/leads/{id}`, `DELETE /api/leads/{id}` |
+| Documentação disponível | `/api/docs` (Swagger UI), `/api/openapi.json` (spec JSON) |
+| Versão do spec | OpenAPI `3.0.3` |
+
+### Bugs resolvidos
+
+| # | Erro | Causa | Solução |
+|---|------|-------|---------|
+| 1 | `OpenApi3_1Element.refract is not a function` | `swagger-ui-react` incompatível com Turbopack/SSR | Trocado por HTML puro via route handler + CDN |
+| 2 | `eval() is not supported` | CSP global do `next.config.ts` sobrescrevia o do route handler | CSP separado por rota no `next.config.ts` |
+| 3 | Loading infinito | Parser `apidom` do Swagger UI 5.x não inicializa com Turbopack | Downgrade CDN para `4.19.0`, spec OAS `3.0.3` |
+| 4 | `Unable to render this definition` | Race condition no fetch assíncrono do spec via `url:` | Spec injetado inline via `spec:` — sem fetch |

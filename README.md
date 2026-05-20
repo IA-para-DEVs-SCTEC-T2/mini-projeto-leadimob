@@ -37,6 +37,8 @@ Centralizar e qualificar automaticamente leads imobiliários através de um **Í
 - **Edição de Leads** — Atualização de dados com recálculo automático do score e prioridade
 - **Exclusão de Leads** — Remoção segura com confirmação para evitar exclusões acidentais
 - **Gestão CRUD Completa** — Criação, leitura, atualização e exclusão de leads com recálculo automático
+- **API REST** — Endpoints RESTful para integração com clientes externos
+- **Documentação Interativa** — Swagger UI disponível em `/api/docs`
 
 ---
 
@@ -45,12 +47,18 @@ Centralizar e qualificar automaticamente leads imobiliários através de um **Í
 ```
 src/
 ├── app/                    # Next.js App Router (rotas e UI)
+│   ├── api/               # Route Handlers (API REST)
+│   │   ├── leads/         # GET /api/leads, POST /api/leads
+│   │   │   └── [id]/      # GET, PUT, DELETE /api/leads/{id}
+│   │   ├── openapi.json/  # GET /api/openapi.json (spec OpenAPI)
+│   │   └── docs/          # GET /api/docs (Swagger UI)
 │   ├── leads/             # Páginas de leads
 │   │   ├── [id]/          # Detalhes do lead
 │   │   │   └── edit/      # Edição do lead
 │   │   ├── new/           # Cadastro de novo lead
 │   │   ├── actions.ts     # Server Actions
 │   │   └── page.tsx       # Lista de leads
+│   ├── docs/              # Redirect → /api/docs
 │   ├── globals.css        # Estilos globais
 │   └── layout.tsx         # Layout principal
 │
@@ -88,7 +96,11 @@ src/
 │   └── lead.ts          # Interfaces e tipos do domínio
 │
 ├── lib/                 # Utilitários e helpers
-│   └── formatters.ts    # Formatação de dados
+│   ├── formatters.ts    # Formatação de dados
+│   └── openapi/         # Configuração da API REST
+│       ├── config.ts    # Metadados OpenAPI (versão, servers, tags)
+│       ├── schemas.ts   # Schemas Zod com extensões OpenAPI
+│       └── registry.ts  # Geração do documento OpenAPI
 │
 └── __tests__/           # Testes automatizados
     ├── domain/          # Testes de regras de negócio
@@ -114,6 +126,17 @@ src/
 ### Validação & Estilização
 - **Zod 4.4.3** — Validação de schemas
 - **Tailwind CSS 4** — Estilização utilitária
+
+### API REST & Documentação
+- **zod-openapi 2.19.0** — Geração de schemas OpenAPI a partir de Zod
+- **Swagger UI** — Documentação interativa (via CDN, sem dependência de build)
+
+### Qualidade de Código
+- **ESLint 9** — Linting com Flat Config
+- **@typescript-eslint** — Regras TypeScript
+- **eslint-plugin-unused-imports** — Detecção de imports não utilizados
+- **eslint-plugin-simple-import-sort** — Ordenação automática de imports
+- **eslint-plugin-react-hooks** — Validação de regras de hooks
 
 ### Testes
 - **Jest 30.3.0** — Framework de testes
@@ -163,6 +186,14 @@ npm run dev
 
 A aplicação estará disponível em `http://localhost:3000`.
 
+**Rotas disponíveis após inicialização:**
+
+| Rota | Descrição |
+|------|-----------|
+| `http://localhost:3000/leads` | Interface principal |
+| `http://localhost:3000/api/docs` | Documentação interativa (Swagger UI) |
+| `http://localhost:3000/api/openapi.json` | Especificação OpenAPI 3.0.3 |
+
 ---
 
 ## Scripts Disponíveis
@@ -172,7 +203,8 @@ A aplicação estará disponível em `http://localhost:3000`.
 npm run dev          # Inicia servidor de desenvolvimento
 npm run build        # Build para produção
 npm run start        # Inicia servidor de produção
-npm run lint         # Executa linting
+npm run lint         # Executa linting (ESLint)
+npm run lint:fix     # Corrige problemas de lint automaticamente
 ```
 
 ### Banco de Dados
@@ -194,7 +226,40 @@ npm run test:watch     # Executa testes em modo watch
 
 ---
 
-## Arquitetura
+## API REST
+
+A aplicação expõe uma API REST completa para integração com clientes externos.
+
+### Endpoints
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/leads` | Lista todos os leads ordenados por score |
+| `POST` | `/api/leads` | Cria novo lead |
+| `GET` | `/api/leads/{id}` | Obtém lead específico |
+| `PUT` | `/api/leads/{id}` | Atualiza lead |
+| `DELETE` | `/api/leads/{id}` | Remove lead |
+| `GET` | `/api/openapi.json` | Especificação OpenAPI 3.0.3 |
+| `GET` | `/api/docs` | Swagger UI interativo |
+
+### Formato de Resposta
+
+```json
+// Sucesso
+{ "success": true, "data": { ... } }
+
+// Erro de validação
+{ "success": false, "errors": { "campo": ["mensagem"] } }
+
+// Erro genérico
+{ "success": false, "error": "mensagem" }
+```
+
+### Documentação
+
+Acesse `http://localhost:3000/api/docs` para explorar e testar todos os endpoints interativamente. A especificação completa em JSON está disponível em `http://localhost:3000/api/openapi.json`.
+
+---
 
 ### Padrão em Camadas
 - **app/**: Interface e rotas (Next.js App Router)
@@ -298,6 +363,8 @@ npm run db:migrate:prod
 - ✅ CRUD completo de leads (criar, ler, atualizar, excluir)
 - ✅ Validação de CPF e dados financeiros
 - ✅ Recálculo automático de score ao editar
+- ✅ API REST com 5 endpoints documentados
+- ✅ Documentação interativa via Swagger UI (`/api/docs`)
 
 ### v1.1 (Próximo)
 - 🔄 Filtros e busca avançada
@@ -342,7 +409,12 @@ test(scope): descrição
 ### Documentação Adicional
 - `docs/PRD.md` — Product Requirements Document
 - `docs/uml_use_cases.md` — Casos de uso detalhados
+- `docs/prompts.md` — Histórico de prompts utilizados no desenvolvimento
+- `OPENAPI_IMPLEMENTATION.md` — Detalhes da implementação OpenAPI
+- `API_EXAMPLES.md` — Exemplos de uso da API REST
+- `INTEGRATION_GUIDE.md` — Guia de integração para clientes externos
 - `.kiro/steering/` — Regras técnicas e arquiteturais
+- `LINTING_SETUP.md` — Documentação completa da configuração de linting
 
 ### Contato
 Para dúvidas técnicas ou sugestões, abra uma issue no repositório.

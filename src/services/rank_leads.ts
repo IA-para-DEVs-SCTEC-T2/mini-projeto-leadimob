@@ -10,16 +10,16 @@ function has_score(lead: Lead): lead is ScoredLead {
 
 function get_priority_order(priority: string): number {
   switch (priority) {
-    case "Alto":
-      return 3;
-    case "Medio":
-      return 2;
-    case "Baixo":
-      return 1;
-    case "NaoClassificado":
-      return 0;
-    default:
-      return 0;
+  case "Alto":
+    return 3;
+  case "Medio":
+    return 2;
+  case "Baixo":
+    return 1;
+  case "NaoClassificado":
+    return 0;
+  default:
+    return 0;
   }
 }
 

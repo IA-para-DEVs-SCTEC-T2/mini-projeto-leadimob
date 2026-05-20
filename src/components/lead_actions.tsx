@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+
 import { delete_lead_action } from "@/app/leads/actions";
 
 interface LeadActionsProps {
@@ -11,7 +12,7 @@ interface LeadActionsProps {
 }
 
 export default function LeadActions({ leadId, leadName }: LeadActionsProps) {
-  const router = useRouter();
+  const _router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);

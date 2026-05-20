@@ -2,25 +2,26 @@
 
 import { useRouter } from "next/navigation";
 import type { ChangeEvent, FormEvent } from "react";
-import { useState, useTransition, useEffect } from "react";
-import {
-  CreateLeadSchema,
-  UpdateLeadSchema,
-  type CreateLeadInput,
-  type UpdateLeadInput,
-} from "@/schemas/lead.schema";
+import { useState, useTransition } from "react";
+
 import { create_lead_action, update_lead_action } from "@/app/leads/actions";
 import {
-  mask_cpf,
-  mask_phone,
-  mask_currency,
-  parse_cpf,
-  parse_phone,
-  parse_currency,
-  format_currency,
   format_cpf,
+  format_currency,
   format_phone,
+  mask_cpf,
+  mask_currency,
+  mask_phone,
+  parse_cpf,
+  parse_currency,
+  parse_phone,
 } from "@/lib/formatters";
+import {
+  type CreateLeadInput,
+  CreateLeadSchema,
+  type UpdateLeadInput,
+  UpdateLeadSchema,
+} from "@/schemas/lead.schema";
 import type { Lead } from "@/types/lead";
 
 type LeadFormField =
@@ -38,7 +39,7 @@ interface LeadFormProps {
   mode?: "create" | "edit";
   lead?: Lead;
   initial_values?: Partial<LeadFormValues>;
-  onSubmit?: (data: CreateLeadInput | UpdateLeadInput) => Promise<void> | void;
+  _onSubmit?: (data: CreateLeadInput | UpdateLeadInput) => Promise<void> | void;
 }
 
 const empty_values: LeadFormValues = {
@@ -51,8 +52,10 @@ const empty_values: LeadFormValues = {
 };
 
 function get_initial_values_from_lead(lead?: Lead): LeadFormValues {
-  if (!lead) return empty_values;
-  
+  if (!lead) {
+    return empty_values;
+  }
+
   return {
     nome: lead.nome,
     email: lead.email,
@@ -75,7 +78,7 @@ function validate_form(values: LeadFormValues, mode: "create" | "edit" = "create
   const parsed_renda_mensal = parse_currency(values.renda_mensal);
 
   const schema = mode === "create" ? CreateLeadSchema : UpdateLeadSchema;
-  
+
   const result = schema.safeParse({
     nome: values.nome.trim(),
     email: values.email.trim(),
@@ -118,32 +121,31 @@ export default function LeadForm({
   mode = "create",
   lead,
   initial_values,
-  onSubmit,
+  _onSubmit,
 }: LeadFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  
+
+  const getButtonText = (): string => {
+    if (isPending) {
+      return mode === "edit" ? "Atualizando..." : "Salvando...";
+    }
+    return mode === "edit" ? "Atualizar Lead" : "Salvar Lead";
+  };
+
   // Determine initial values based on mode and props
-  const computed_initial_values = mode === "edit" && lead 
+  const computed_initial_values = mode === "edit" && lead
     ? get_initial_values_from_lead(lead)
     : { ...empty_values, ...initial_values };
-    
-  const [values, set_values] = useState<LeadFormValues>(computed_initial_values);
-  const [errors, set_errors] = useState<LeadFormErrors>({});
-  const [server_error, set_server_error] = useState<string | null>(null);
-  const [is_form_valid, set_is_form_valid] = useState(false);
 
-  // Validate form whenever values change
-  useEffect(() => {
-    const validation = validate_form(values, mode);
-    set_is_form_valid(validation.is_valid);
-    
-    // Only show errors after user has interacted with fields
-    const has_content = Object.values(values).some(value => value.trim() !== "");
-    if (has_content) {
-      set_errors(validation.errors);
-    }
-  }, [values, mode]);
+  const [values, set_values] = useState<LeadFormValues>(computed_initial_values);
+  const [server_error, set_server_error] = useState<string | null>(null);
+
+  // Compute validation state directly without effect
+  const validation = validate_form(values, mode);
+  const has_content = Object.values(values).some(value => value.trim() !== "");
+  const is_form_valid = validation.is_valid;
+  const display_errors = has_content ? validation.errors : {};
 
   function handle_change(event: ChangeEvent<HTMLInputElement>) {
     const field = event.target.name as LeadFormField;
@@ -151,19 +153,19 @@ export default function LeadForm({
 
     // Apply masks based on field type
     switch (field) {
-      case "cpf":
-        value = mask_cpf(value);
-        break;
-      case "telefone":
-        value = mask_phone(value);
-        break;
-      case "valor_imovel":
-      case "renda_mensal":
-        value = mask_currency(value);
-        break;
-      default:
-        // No mask for other fields
-        break;
+    case "cpf":
+      value = mask_cpf(value);
+      break;
+    case "telefone":
+      value = mask_phone(value);
+      break;
+    case "valor_imovel":
+    case "renda_mensal":
+      value = mask_currency(value);
+      break;
+    default:
+      // No mask for other fields
+      break;
     }
 
     set_values((current_values) => ({
@@ -178,7 +180,6 @@ export default function LeadForm({
     event.preventDefault();
 
     const validation = validate_form(values, mode);
-    set_errors(validation.errors);
 
     if (!validation.is_valid || validation.data === null) {
       return;
@@ -195,7 +196,7 @@ export default function LeadForm({
 
     startTransition(async () => {
       let result;
-      
+
       if (mode === "edit" && lead) {
         result = await update_lead_action(lead.id, form_data);
       } else {
@@ -209,22 +210,11 @@ export default function LeadForm({
 
       if ("errors" in result) {
         // Handle validation errors from server (including CPF already exists)
-        set_errors(
-          Object.entries(result.errors).reduce(
-            (acc, [field, messages]) => {
-              acc[field as LeadFormField] = messages[0];
-              return acc;
-            },
-            {} as LeadFormErrors,
-          ),
-        );
-        // Clear server error when we have field-specific errors
+        // Note: Server errors are displayed via display_errors computed state
         set_server_error(null);
       } else if ("error" in result) {
         // Handle general server error
         set_server_error(result.error);
-        // Clear field errors when we have a general error
-        set_errors({});
       }
     });
   }
@@ -249,7 +239,7 @@ export default function LeadForm({
         {/* Dados Pessoais Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-yellow-400">DADOS PESSOAIS</h3>
-          
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="nome" className="block text-sm font-medium text-slate-100">
@@ -261,15 +251,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="Ex: João da Silva"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.nome 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.nome
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="text"
                 value={values.nome}
               />
-              {errors.nome !== undefined && (
-                <p className="text-sm text-red-400">{errors.nome}</p>
+              {display_errors.nome !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.nome}</p>
               )}
             </div>
 
@@ -283,15 +273,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="Ex: joao.silva@email.com"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.email 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.email
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="email"
                 value={values.email}
               />
-              {errors.email !== undefined && (
-                <p className="text-sm text-red-400">{errors.email}</p>
+              {display_errors.email !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.email}</p>
               )}
             </div>
           </div>
@@ -307,15 +297,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="(11) 98765-4321"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.telefone 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.telefone
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="tel"
                 value={values.telefone}
               />
-              {errors.telefone !== undefined && (
-                <p className="text-sm text-red-400">{errors.telefone}</p>
+              {display_errors.telefone !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.telefone}</p>
               )}
             </div>
 
@@ -329,15 +319,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="000.000.000-00"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.cpf 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.cpf
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="text"
                 value={values.cpf}
               />
-              {errors.cpf !== undefined && (
-                <p className="text-sm text-red-400">{errors.cpf}</p>
+              {display_errors.cpf !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.cpf}</p>
               )}
             </div>
           </div>
@@ -346,7 +336,7 @@ export default function LeadForm({
         {/* Dados Financeiros Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-yellow-400">DADOS FINANCEIROS</h3>
-          
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="renda_mensal" className="block text-sm font-medium text-slate-100">
@@ -358,15 +348,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="R$ 0,00"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.renda_mensal 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.renda_mensal
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="text"
                 value={values.renda_mensal}
               />
-              {errors.renda_mensal !== undefined && (
-                <p className="text-sm text-red-400">{errors.renda_mensal}</p>
+              {display_errors.renda_mensal !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.renda_mensal}</p>
               )}
             </div>
 
@@ -380,15 +370,15 @@ export default function LeadForm({
                 onChange={handle_change}
                 placeholder="R$ 0,00"
                 className={`w-full rounded border px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none ${
-                  errors.valor_imovel 
-                    ? 'border-red-500 bg-red-900/20 focus:border-red-400' 
-                    : 'border-slate-600 bg-slate-700 focus:border-yellow-400'
+                  display_errors.valor_imovel
+                    ? "border-red-500 bg-red-900/20 focus:border-red-400"
+                    : "border-slate-600 bg-slate-700 focus:border-yellow-400"
                 }`}
                 type="text"
                 value={values.valor_imovel}
               />
-              {errors.valor_imovel !== undefined && (
-                <p className="text-sm text-red-400">{errors.valor_imovel}</p>
+              {display_errors.valor_imovel !== undefined && (
+                <p className="text-sm text-red-400">{display_errors.valor_imovel}</p>
               )}
             </div>
           </div>
@@ -407,15 +397,12 @@ export default function LeadForm({
             disabled={isPending || !is_form_valid}
             className={`flex-1 rounded px-4 py-2 font-semibold transition-colors ${
               isPending || !is_form_valid
-                ? 'cursor-not-allowed bg-slate-600 text-slate-400'
-                : 'bg-yellow-400 text-slate-900 hover:bg-yellow-500'
+                ? "cursor-not-allowed bg-slate-600 text-slate-400"
+                : "bg-yellow-400 text-slate-900 hover:bg-yellow-500"
             }`}
             type="submit"
           >
-            {isPending 
-              ? (mode === "edit" ? "Atualizando..." : "Salvando...") 
-              : (mode === "edit" ? "Atualizar Lead" : "Salvar Lead")
-            }
+            {getButtonText()}
           </button>
         </div>
       </form>

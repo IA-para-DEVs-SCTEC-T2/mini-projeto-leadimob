@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+
 import type { SortOption } from "@/services/rank_leads";
 
 interface SortSelectorProps {
