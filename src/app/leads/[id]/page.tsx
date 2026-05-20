@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
 import { lead_repository } from "@/infra/repositories/lead_repository";
 import PriorityBadge from "@/components/priority_badge";
 import LeadActions from "@/components/lead_actions";

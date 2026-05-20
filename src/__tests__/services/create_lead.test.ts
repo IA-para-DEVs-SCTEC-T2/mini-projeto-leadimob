@@ -11,6 +11,8 @@ describe("create_lead service", () => {
       create: jest.fn(),
       find_all: jest.fn(),
       find_by_id: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     };
   });
 
@@ -44,9 +46,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "Ana Costa",
         email: "ana@example.com",
         cpf: "11144477735",
@@ -85,9 +88,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "Bruno Lima",
         email: "bruno@example.com",
         cpf: "22255588846",
@@ -126,9 +130,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "Carla Melo",
         email: "carla@example.com",
         cpf: "33366699957",
@@ -167,9 +172,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "David Silva",
         email: "david@example.com",
         cpf: "44477700068",
@@ -208,9 +214,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "Elena Santos",
         email: "elena@example.com",
         cpf: "55588811179",
@@ -251,7 +258,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -285,7 +292,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -321,7 +328,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -358,7 +365,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -382,9 +389,10 @@ describe("create_lead service", () => {
       const repositoryError = { error: "CPF_ALREADY_EXISTS" as const };
       mockRepository.create.mockRejectedValue(repositoryError);
 
-      await expect(create_lead(mockRepository, input)).rejects.toEqual(repositoryError);
+      await expect(create_lead(mockRepository, input, "corretor-test-id")).rejects.toEqual(repositoryError);
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: "Duplicate CPF",
         email: "duplicate@example.com",
         cpf: "11144477735",
@@ -409,7 +417,7 @@ describe("create_lead service", () => {
       const repositoryError = { error: "DATABASE_UNAVAILABLE" as const };
       mockRepository.create.mockRejectedValue(repositoryError);
 
-      await expect(create_lead(mockRepository, input)).rejects.toEqual(repositoryError);
+      await expect(create_lead(mockRepository, input, "corretor-test-id")).rejects.toEqual(repositoryError);
     });
 
     it("should propagate unexpected errors", async () => {
@@ -425,7 +433,7 @@ describe("create_lead service", () => {
       const unexpectedError = new Error("Unexpected database error");
       mockRepository.create.mockRejectedValue(unexpectedError);
 
-      await expect(create_lead(mockRepository, input)).rejects.toThrow("Unexpected database error");
+      await expect(create_lead(mockRepository, input, "corretor-test-id")).rejects.toThrow("Unexpected database error");
     });
   });
 
@@ -451,9 +459,10 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      const result = await create_lead(mockRepository, input);
+      const result = await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith({
+        corretor_id: "corretor-test-id",
         nome: input.nome,
         email: input.email,
         cpf: input.cpf,
@@ -492,7 +501,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -530,7 +539,7 @@ describe("create_lead service", () => {
 
       mockRepository.create.mockResolvedValue(expectedLead);
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
       expect(mockRepository.create).toHaveBeenCalledTimes(1);
       expect(mockRepository.find_all).not.toHaveBeenCalled();
@@ -538,3 +547,5 @@ describe("create_lead service", () => {
     });
   });
 });
+
+

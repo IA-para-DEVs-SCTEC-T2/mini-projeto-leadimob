@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
 import { CreateLeadSchema, UpdateLeadSchema, type CreateLeadInput, type UpdateLeadInput } from "@/schemas/lead.schema";
 import { create_lead } from "@/services/create_lead";
 import { update_lead } from "@/services/update_lead";

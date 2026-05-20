@@ -36,6 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token
     },
     session({ session, token }) {
+      session.user.id = token.corretor_id as string
       session.user.corretor_id = token.corretor_id as string
       return session
     },

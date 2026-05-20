@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { list_leads } from "@/services/list_leads";
 import { lead_repository } from "@/infra/repositories/lead_repository";
@@ -8,7 +8,7 @@ import type { SortOption } from "@/services/rank_leads";
 import PriorityBadge from "@/components/priority_badge";
 import SortSelector from "@/components/sort_selector";
 import SearchFilter from "@/components/search_filter";
-import LogoutButton from "@/components/logout_button";
+import { LogoutButton } from "@/components/logout_button";
 import { format_currency, format_score } from "@/lib/formatters";
 
 interface LeadStats {
