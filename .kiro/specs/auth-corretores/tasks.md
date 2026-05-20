@@ -138,16 +138,16 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Receber prop `nome: string` para exibir o nome do corretor
     - _Requirements: AC-5.1.1, AC-5.1.2, AC-5.1.3_
 
-- [ ] 13. Camada `app/` — páginas de autenticação
-  - [ ] 13.1 Criar `src/app/auth/register/page.tsx`
+- [x] 13. Camada `app/` — páginas de autenticação
+  - [x] 13.1 Criar `src/app/auth/register/page.tsx`
     - Server Component que renderiza `RegisterForm`
     - _Requirements: AC-1.1.1_
 
-  - [ ] 13.2 Criar `src/app/auth/login/page.tsx`
+  - [x] 13.2 Criar `src/app/auth/login/page.tsx`
     - Server Component que renderiza `LoginForm`
     - _Requirements: AC-2.1.1_
 
-  - [ ] 13.3 Criar `src/app/auth/actions.ts` — Server Action de cadastro
+  - [x] 13.3 Criar `src/app/auth/actions.ts` — Server Action de cadastro
     - Adicionar diretiva `'use server'`
     - Implementar `register_action(formData: FormData)`:
       - Extrair `nome`, `email`, `senha` do FormData
