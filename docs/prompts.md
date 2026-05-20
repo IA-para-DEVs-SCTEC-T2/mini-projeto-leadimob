@@ -3960,3 +3960,56 @@ A sessão focou na implementação da infraestrutura de autenticação:
 - ✅ Proteção de rotas implementada
 - ✅ 3 tasks concluídas (10.1, 11.1, 12)
 - ✅ Pronto para implementar páginas de autenticação (Task 13)
+
+
+---
+
+## Prompt 76 — Implementação das Páginas de Autenticação (Task 13)
+
+```
+Task 13: Criar páginas de autenticação (/auth/login e /auth/register)
+```
+
+**Como foi executado:**
+- Criação de `src/app/auth/register/page.tsx` — Server Component que renderiza `RegisterForm`
+- Criação de `src/app/auth/login/page.tsx` — Server Component que renderiza `LoginForm`
+- Criação de `src/app/auth/actions.ts` — Server Action de cadastro:
+  - Diretiva `'use server'`
+  - Função `register_action(formData: FormData)`:
+    - Extração de `nome`, `email`, `senha` do FormData
+    - Validação com `RegisterSchema.safeParse(data)`
+    - Retorno de erros por campo se validação falhar
+    - Chamada a `create_corretor(corretor_repository, input)` em try/catch
+    - Tratamento de erro `EMAIL_ALREADY_EXISTS` com mensagem genérica
+    - Tratamento de erro genérico com log e mensagem amigável
+    - `redirect('/auth/login')` após sucesso (fora do try/catch)
+- Validação: `getDiagnostics` confirmou zero erros nos 3 arquivos
+- Atualização do tasks.md marcando task 13 completa (13.1, 13.2, 13.3)
+- Commit: `feat(auth): implementa páginas de autenticação e Server Action de cadastro`
+
+**Resultado:**
+- ✅ Página de cadastro `/auth/register` funcional
+- ✅ Página de login `/auth/login` funcional
+- ✅ Server Action `register_action` com validação completa
+- ✅ Tratamento robusto de erros (EMAIL_ALREADY_EXISTS, erro genérico)
+- ✅ Redirecionamento correto após sucesso
+- ✅ Task 13 completa (13.1, 13.2, 13.3)
+- ✅ Requisitos AC-1.1.1, AC-1.1.2, AC-1.2.4, AC-1.3.3, AC-2.1.1 atendidos
+
+---
+
+## Contexto da Sessão — Task 13 (Páginas de Autenticação)
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Task | 13 — Camada `app/` — páginas de autenticação |
+| Arquivos criados | `src/app/auth/register/page.tsx`, `src/app/auth/login/page.tsx`, `src/app/auth/actions.ts` |
+| Arquivo modificado | `.kiro/specs/auth-corretores/tasks.md` |
+| Componentes utilizados | `RegisterForm`, `LoginForm` |
+| Services utilizados | `create_corretor` |
+| Repositório utilizado | `corretor_repository` |
+| Requisitos cobertos | AC-1.1.1, AC-1.1.2, AC-1.2.4, AC-1.3.3, AC-2.1.1 |
+| Status | ✅ Concluída |
+| Próxima task | 14 — Atualizar Server Actions de leads para usar sessão |
