@@ -4120,3 +4120,107 @@ A sessão focou na integração completa da autenticação NextAuth nas camadas 
 - ✅ `corretor_id` nunca vem do cliente — sempre da sessão no servidor
 - ✅ `LogoutButton` com nome do corretor exibido no header da listagem
 - ✅ Pronto para a Task 16 (testes de integração)
+
+---
+
+# Prompts Utilizados na Sessão — Task 16: Checkpoint Final de Verificação e Testes
+
+Registro dos prompts utilizados durante a sessão de checkpoint final da spec `auth-corretores`.
+
+---
+
+## Prompt 80 — Início da Task 16 (Checkpoint Final)
+
+```
+Pode começar a task 16
+```
+
+**Como foi executado:**
+
+### 1. Verificação TypeScript (`npx tsc --noEmit`)
+
+Identificados **53 erros** em 9 arquivos. Problemas encontrados:
+
+**Erros no código de produção:**
+- `auth` importado de `@/app/api/auth/[...nextauth]/route` — esse módulo só exporta `GET`/`POST`. Corrigido para `@/lib/auth`
+- `LogoutButton` importado como default export — o componente usa named export. Corrigido para `{ LogoutButton }`
+- `session.user.id` não existia no tipo `Session.user` — o tipo declarado em `next-auth.d.ts` só tinha `corretor_id`. Corrigido adicionando `id: string` ao tipo e populando no callback `session` em `lib/auth.ts`
+
+**Erros nos testes:**
+- `create_lead.test.ts` — mock sem `update`/`delete`, chamadas sem `corretor_id`, `toHaveBeenCalledWith` sem `corretor_id` no objeto
+- `delete_lead.test.ts` — chamadas sem `corretor_id`
+- `update_lead.test.ts` — assinatura mudou para `(repository, id, corretor_id, input)`
+- `list_consistency.test.ts` — mock sem `update`/`delete`, chamadas de `create_lead` e `list_leads` sem `corretor_id`
+- `calculate_lead_score.test.ts` — acesso a `result.score` sem type narrowing (`if (result.valid)`)
+
+### 2. Correções aplicadas
+
+**`src/types/next-auth.d.ts`:**
+- Adicionado `id: string` ao tipo `Session.user`
+
+**`src/lib/auth.ts`:**
+- Adicionado `session.user.id = token.corretor_id as string` no callback `session`
+
+**`src/app/leads/actions.ts`, `page.tsx`, `[id]/page.tsx`, `[id]/edit/page.tsx`:**
+- Import corrigido de `@/app/api/auth/[...nextauth]/route` → `@/lib/auth`
+- Import de `LogoutButton` corrigido para named export
+
+**Testes:**
+- Mocks atualizados com `update` e `delete`
+- `corretor_id: "corretor-test-id"` adicionado em todas as chamadas de services
+- `toHaveBeenCalledWith` atualizado com `corretor_id` no objeto `CreateLeadData`
+- `noNaN: true` adicionado em todos os `fc.float()` dos testes PBT
+- Type narrowing `if (result.valid)` adicionado nos testes de `calculate_lead_score`
+
+### 3. Resultados finais
+
+- `npx tsc --noEmit` ✅ — zero erros
+- `npx jest --runInBand` ✅ — **176/176 testes passando**
+- `npx next build` ✅ — build limpo, 9 rotas compiladas
+
+---
+
+## Prompt 81 — Adição dos Prompts e Commit
+
+```
+Adicione os prompts em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md
+```
+
+*(Atualização do prompts.md com os prompts 80 e 81 da sessão de checkpoint final)*
+
+---
+
+## Contexto da Sessão — Task 16: Checkpoint Final
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Spec | `auth-corretores` |
+| Task | 16 — Checkpoint final — verificação e testes |
+| Erros TypeScript encontrados | 53 (em 9 arquivos) |
+| Erros TypeScript resolvidos | 53/53 (100%) |
+| Testes passando | 176/176 (100%) |
+| Build | ✅ Sucesso — 9 rotas compiladas |
+| Arquivos corrigidos (produção) | `next-auth.d.ts`, `lib/auth.ts`, `actions.ts`, `leads/page.tsx`, `[id]/page.tsx`, `[id]/edit/page.tsx` |
+| Arquivos corrigidos (testes) | `calculate_lead_score.test.ts`, `create_lead.test.ts`, `delete_lead.test.ts`, `update_lead.test.ts`, `list_consistency.test.ts` |
+| Commits | `fix(auth): corrige tipos de sessao e atualiza testes para assinaturas com corretor_id` |
+
+---
+
+## Resumo da Sessão — Checkpoint Final
+
+A sessão focou em garantir a qualidade e corretude de toda a implementação da spec `auth-corretores`:
+
+1. **Diagnóstico TypeScript** — 53 erros identificados em 9 arquivos
+2. **Correção de imports** — `auth` e `LogoutButton` apontavam para módulos errados
+3. **Correção de tipos NextAuth** — `session.user.id` adicionado ao tipo e ao callback
+4. **Atualização de testes** — mocks, assinaturas e expects alinhados com as novas assinaturas dos services
+5. **Correção de testes PBT** — `noNaN: true` e type narrowing para evitar falsos negativos
+6. **Validação completa** — TypeScript, Jest e Next.js build todos passando
+
+**Resultado final:**
+- ✅ Spec `auth-corretores` 100% concluída (tasks 1–16)
+- ✅ Zero erros TypeScript
+- ✅ 176 testes passando
+- ✅ Build de produção limpo
+- ✅ Isolamento de dados por corretor implementado em todas as camadas
