@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { CreateLeadSchema, UpdateLeadSchema, type CreateLeadInput, type UpdateLeadInput } from "@/schemas/lead.schema";
 import { create_lead } from "@/services/create_lead";
 import { update_lead } from "@/services/update_lead";
@@ -23,6 +24,16 @@ type ActionResult =
 export async function create_lead_action(
   formData: FormData,
 ): Promise<ActionResult> {
+  // Verificar autenticação
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      error: "Você precisa estar autenticado para criar um lead.",
+    };
+  }
+
   // Extract fields from FormData
   const nome = formData.get("nome");
   const email = formData.get("email");
@@ -75,7 +86,7 @@ export async function create_lead_action(
   const validated_input: CreateLeadInput = validation_result.data;
 
   try {
-    await create_lead(lead_repository, validated_input);
+    await create_lead(lead_repository, validated_input, session.user.id);
   } catch (error) {
     // Handle CPF_ALREADY_EXISTS error
     if (
@@ -122,6 +133,16 @@ export async function update_lead_action(
   id: string,
   formData: FormData,
 ): Promise<ActionResult> {
+  // Verificar autenticação
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      error: "Você precisa estar autenticado para atualizar um lead.",
+    };
+  }
+
   // Extract fields from FormData
   const nome = formData.get("nome");
   const email = formData.get("email");
@@ -168,7 +189,7 @@ export async function update_lead_action(
   const validated_input: UpdateLeadInput = validation_result.data;
 
   try {
-    await update_lead(lead_repository, id, validated_input);
+    await update_lead(lead_repository, id, session.user.id, validated_input);
   } catch (error) {
     // Handle CPF_ALREADY_EXISTS error
     if (
@@ -212,8 +233,18 @@ export async function update_lead_action(
 }
 
 export async function delete_lead_action(id: string): Promise<ActionResult> {
+  // Verificar autenticação
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      error: "Você precisa estar autenticado para excluir um lead.",
+    };
+  }
+
   try {
-    await delete_lead(lead_repository, id);
+    await delete_lead(lead_repository, id, session.user.id);
   } catch (error) {
     // Handle DATABASE_UNAVAILABLE error
     if (
