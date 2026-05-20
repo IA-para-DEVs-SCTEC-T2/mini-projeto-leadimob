@@ -158,8 +158,8 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
       - Se sucesso: `redirect('/auth/login')`
       - Erro genérico: retornar `{ success: false, errors: { _form: ['Erro interno. Tente novamente.'] } }` e logar
     - _Requirements: AC-1.1.2, AC-1.2.4, AC-1.3.3_
-- [ ] 14. Camada `app/` — atualizar Server Actions de leads para usar sessão
-  - [ ] 14.1 Atualizar `src/app/leads/actions.ts`
+- [x] 14. Camada `app/` — atualizar Server Actions de leads para usar sessão
+  - [x] 14.1 Atualizar `src/app/leads/actions.ts`
     - Importar `get_session` de `@/lib/session`
     - Em `create_lead_action`: chamar `get_session()` para obter `corretor_id`, passar para `create_lead(repository, input, corretor_id)`
     - Em `update_lead_action`: chamar `get_session()`, passar `corretor_id` para `update_lead(repository, id, input, corretor_id)`
