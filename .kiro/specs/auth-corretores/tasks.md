@@ -115,8 +115,8 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Configurar `matcher` para `['/leads/:path*', '/auth/:path*']`
     - _Requirements: AC-3.1.1, AC-3.1.2, AC-3.1.3, AC-3.1.4_
 
-- [ ] 12. Componentes de UI — autenticação
-  - [ ] 12.1 Criar `src/components/register_form.tsx` — Client Component
+- [x] 12. Componentes de UI — autenticação
+  - [x] 12.1 Criar `src/components/register_form.tsx` — Client Component
     - Campos: Nome, E-mail, Senha
     - Gerenciar estado com `useTransition`
     - Chamar Server Action `register_action` ao submeter
@@ -125,7 +125,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Link para `/auth/login`
     - _Requirements: AC-1.1.1, AC-1.1.3, AC-1.1.4, AC-1.1.5_
 
-  - [ ] 12.2 Criar `src/components/login_form.tsx` — Client Component
+  - [x] 12.2 Criar `src/components/login_form.tsx` — Client Component
     - Campos: E-mail, Senha
     - Chamar `signIn('credentials', { email, senha, redirectTo: '/leads' })` ao submeter
     - Exibir mensagem de erro genérica em caso de falha (`"Credenciais inválidas. Verifique e tente novamente."`)
@@ -133,7 +133,7 @@ Implementação de autenticação mínima com next-auth v5 (`CredentialsProvider
     - Link para `/auth/register`
     - _Requirements: AC-2.1.1, AC-2.1.3, AC-2.1.4, AC-2.1.5_
 
-  - [ ] 12.3 Criar `src/components/logout_button.tsx` — Client Component
+  - [x] 12.3 Criar `src/components/logout_button.tsx` — Client Component
     - Botão que chama `signOut({ redirectTo: '/auth/login' })`
     - Receber prop `nome: string` para exibir o nome do corretor
     - _Requirements: AC-5.1.1, AC-5.1.2, AC-5.1.3_
