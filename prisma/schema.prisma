@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,19 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
-enum LeadPriority {
-  Alto
-  Medio
-  Baixo
-  NaoClassificado
-}
-
 model Corretor {
   id            String   @id @default(cuid())
   nome          String
   email         String   @unique
   password_hash String
   created_at    DateTime @default(now())
+  telefone      String?
   leads         Lead[]
 
   @@map("corretores")
@@ -30,18 +21,25 @@ model Corretor {
 
 model Lead {
   id           String       @id @default(cuid())
-  corretor_id  String
-  corretor     Corretor     @relation(fields: [corretor_id], references: [id])
   nome         String
   email        String
-  cpf          String
   telefone     String
   valor_imovel Decimal      @db.Decimal(15, 2)
   renda_mensal Decimal      @db.Decimal(15, 2)
   score        Decimal?     @db.Decimal(8, 2)
-  priority     LeadPriority
   created_at   DateTime     @default(now())
+  cpf          String
+  priority     LeadPriority
+  corretor_id  String
+  corretor     Corretor     @relation(fields: [corretor_id], references: [id])
 
   @@unique([cpf, corretor_id])
   @@map("leads")
+}
+
+enum LeadPriority {
+  Alto
+  Medio
+  Baixo
+  NaoClassificado
 }

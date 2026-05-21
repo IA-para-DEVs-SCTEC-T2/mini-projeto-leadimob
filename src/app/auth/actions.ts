@@ -10,6 +10,7 @@ interface RegisterActionResult {
   errors?: {
     nome?: string[]
     email?: string[]
+    telefone?: string[]
     senha?: string[]
     _form?: string[]
   }
@@ -22,6 +23,7 @@ export async function register_action(
   const data = {
     nome: formData.get('nome') as string,
     email: formData.get('email') as string,
+    telefone: (formData.get('telefone') as string) || undefined,
     senha: formData.get('senha') as string,
   }
 

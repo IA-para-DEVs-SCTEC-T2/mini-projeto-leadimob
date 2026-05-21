@@ -7,7 +7,12 @@ async function create_corretor(
   input: CreateCorretorInput
 ): Promise<Corretor> {
   const password_hash = await bcrypt.hash(input.senha, 10)
-  return repository.create({ nome: input.nome, email: input.email, password_hash })
+  return repository.create({
+    nome: input.nome,
+    email: input.email,
+    telefone: input.telefone,
+    password_hash,
+  })
 }
 
 export { create_corretor }

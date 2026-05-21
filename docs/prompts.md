@@ -4224,3 +4224,123 @@ A sessão focou em garantir a qualidade e corretude de toda a implementação da
 - ✅ 176 testes passando
 - ✅ Build de produção limpo
 - ✅ Isolamento de dados por corretor implementado em todas as camadas
+
+---
+
+# Prompts Utilizados na Sessão — Ajustes de UI, Correções e Campo Telefone
+
+Registro dos prompts utilizados durante a sessão de ajustes de design, correção de bugs e adição do campo telefone ao corretor.
+
+---
+
+## Prompt 82 — Adequação das Páginas de Login e Cadastro ao Design
+
+```
+As paginas de login e cadastro não estão de acordo com o design passados em
+docs/LoginCorretor.png e docs/CadastroCorretor.png
+```
+
+**Como foi executado:**
+
+**Login (`src/components/login_form.tsx`):**
+- Fundo alterado para `bg-slate-900` (dark sólido, sem gradiente)
+- Logo movida para fora do card — posicionada acima com ícone 🏠 e texto amarelo
+- Card compacto (`max-w-sm`) com bordas `border-slate-700`
+- Título "Bem-vindo de volta" + subtítulo dentro do card
+- Campos com label + asterisco vermelho de obrigatório
+- Inputs com `bg-slate-700/50` e `border-slate-600`
+- Botão de mostrar/ocultar senha (ícone olho) no campo senha
+- Checkbox "Lembrar-me" + link "Esqueceu a senha?" na mesma linha
+- Botão "Entrar" em `bg-yellow-400 text-slate-900`
+- Link "Não tem uma conta? Cadastre-se" em amarelo
+
+**Cadastro (`src/components/register_form.tsx`):**
+- Seta de voltar + logo acima do card
+- Card `max-w-lg` com título "Criar Conta"
+- Seção "DADOS PESSOAIS" em amarelo uppercase
+- Grid 2 colunas: Nome Completo + E-mail
+- Campo Telefone em largura total com máscara `(00) 00000-0000`
+- Seção "SENHA DE ACESSO" em amarelo uppercase
+- Grid 2 colunas: Senha + Confirmar Senha (ambos com toggle de visibilidade)
+- Checkbox "Concordo com os termos de uso e política de privacidade" com links amarelos
+- Botões em grid 2 colunas: "Cancelar" (borda) + "Criar Conta" (amarelo)
+- Validação client-side de confirmação de senha
+- Link "Já tem uma conta? Faça login" em amarelo
+
+---
+
+## Prompt 83 — Erro de eval() no CSP
+
+```
+eval() is not supported in this environment. If this page was served with a
+`Content-Security-Policy` header, make sure that `unsafe-eval` is included.
+```
+
+**Como foi executado:**
+- Identificado que `next.config.ts` tinha CSP com `script-src 'self' 'unsafe-inline'` sem `'unsafe-eval'`
+- React exige `eval()` em modo de desenvolvimento para reconstrução de callstacks
+- Solução: adicionado `isDev = process.env.NODE_ENV === 'development'` e `unsafe-eval` condicional
+- Em produção o CSP permanece restrito (sem `unsafe-eval`)
+
+---
+
+## Prompt 84 — Adicionar Campo Telefone ao Schema do DB
+
+```
+Adicione o campo de telefone no schema do DB e atualize o db
+```
+
+**Como foi executado:**
+- `prisma/schema.prisma` — adicionado `telefone String?` ao model `Corretor`
+- `npx prisma migrate dev --name add_telefone_corretor` — migration aplicada
+- `src/types/corretor.ts` — `telefone: string | null` adicionado ao tipo `Corretor`
+- `src/schemas/corretor.schema.ts` — campo `telefone` opcional com transform (remove máscara) e refine (mínimo 10 dígitos)
+- `src/infra/repositories/corretor_repository.ts` — `telefone` incluído nos métodos `create`, `find_by_email` e `find_by_id`
+- `src/services/create_corretor.ts` — `telefone` passado ao repositório
+- `src/app/auth/actions.ts` — `telefone` extraído do `FormData`
+
+---
+
+## Prompt 85 — Correção do Bug de Login (password → senha)
+
+```
+Credenciais inválidas. Verifique e tente novamente. o login esta dando erro
+```
+
+**Como foi executado:**
+- Identificado que `login_form.tsx` chamava `signIn('credentials', { password: ... })`
+- O `authorize` do NextAuth esperava `credentials.senha`, não `credentials.password`
+- Corrigido para `signIn('credentials', { senha: formData.senha, ... })`
+
+---
+
+## Prompt 86 — Análise Completa do Projeto (sem erros)
+
+```
+Esta cadastrando corretamente, analise o projeto para não ter erros
+```
+
+**Como foi executado:**
+- `npx tsc --noEmit` — 5 erros encontrados em `corretor_repository.test.ts`
+  - Mocks de `Corretor` e `CorretorWithHash` sem o campo `telefone: null`
+  - Corrigidos todos os 5 mocks adicionando `telefone: null`
+- `npx jest --runInBand` — **176/176 testes passando**
+- `npx next build` — **build limpo**, 9 rotas compiladas
+
+---
+
+## Contexto da Sessão — Ajustes de UI, Correções e Campo Telefone
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/auth-next-auth` |
+| Arquivos modificados (UI) | `login_form.tsx`, `register_form.tsx` |
+| Arquivos modificados (DB) | `schema.prisma`, migration `add_telefone_corretor` |
+| Arquivos modificados (backend) | `corretor.ts`, `corretor.schema.ts`, `corretor_repository.ts`, `create_corretor.ts`, `actions.ts` |
+| Arquivos modificados (config) | `next.config.ts` |
+| Arquivos modificados (testes) | `corretor_repository.test.ts` |
+| Bug corrigido | Login: `password` → `senha` no `signIn()` |
+| Migration | `20260521000119_add_telefone_corretor` |
+| TypeScript | ✅ Zero erros |
+| Testes | ✅ 176/176 passando |
+| Build | ✅ Sucesso — 9 rotas |

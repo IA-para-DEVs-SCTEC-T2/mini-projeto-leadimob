@@ -38,12 +38,14 @@ function handle_repository_error(error: unknown): never {
     }
   }
 
+  console.error('[corretor_repository] Unhandled error:', error)
   throw { error: 'DATABASE_UNAVAILABLE' } satisfies RepositoryError
 }
 
 async function create(data: {
   nome: string
   email: string
+  telefone?: string
   password_hash: string
 }): Promise<Corretor> {
   try {
@@ -51,12 +53,14 @@ async function create(data: {
       data: {
         nome: data.nome,
         email: data.email,
+        telefone: data.telefone ?? null,
         password_hash: data.password_hash,
       },
       select: {
         id: true,
         nome: true,
         email: true,
+        telefone: true,
         created_at: true,
       },
     })
@@ -75,6 +79,7 @@ async function find_by_email(email: string): Promise<CorretorWithHash | null> {
         id: true,
         nome: true,
         email: true,
+        telefone: true,
         password_hash: true,
         created_at: true,
       },
@@ -94,6 +99,7 @@ async function find_by_id(id: string): Promise<Corretor | null> {
         id: true,
         nome: true,
         email: true,
+        telefone: true,
         created_at: true,
       },
     })

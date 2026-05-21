@@ -9,6 +9,7 @@ describe('corretor_repository', () => {
         id: 'corretor-123',
         nome: 'João Silva',
         email: 'joao@example.com',
+        telefone: null,
         created_at: new Date('2024-01-15T10:30:00'),
       }
 
@@ -40,6 +41,7 @@ describe('corretor_repository', () => {
         id: 'corretor-123',
         nome: 'João Silva',
         email: 'joao@example.com',
+        telefone: null,
         created_at: new Date('2024-01-15T10:30:00'),
       }
 
@@ -55,6 +57,7 @@ describe('corretor_repository', () => {
         nome: 'João Silva',
         email: 'joao@example.com',
         password_hash: '$2a$10$hashedpassword',
+        telefone: null,
         created_at: new Date('2024-01-15T10:30:00'),
       }
 
@@ -79,6 +82,7 @@ describe('corretor_repository', () => {
         id: 'corretor-123',
         nome: 'João Silva',
         email: 'joao@example.com',
+        telefone: null,
         created_at: new Date('2024-01-15T10:30:00'),
       }
 
@@ -102,6 +106,7 @@ describe('corretor_repository', () => {
         id: 'corretor-123',
         nome: 'João Silva',
         email: 'joao@example.com',
+        telefone: null,
         created_at: new Date('2024-01-15T10:30:00'),
       }
 
@@ -109,3 +114,5 @@ describe('corretor_repository', () => {
     })
   })
 })
+
+
