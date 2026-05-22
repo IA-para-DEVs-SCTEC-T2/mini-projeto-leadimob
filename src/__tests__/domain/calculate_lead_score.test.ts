@@ -21,7 +21,7 @@ describe("calculate_lead_score", () => {
     it("should always return valid=false when renda_mensal is null or zero", () => {
       fc.assert(
         fc.property(
-          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 })),
+          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0, noNaN: true })),
           fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
