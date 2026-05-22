@@ -1,17 +1,25 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import LeadForm from "@/components/lead_form";
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 
 interface EditLeadPageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditLeadPage({ params }: EditLeadPageProps) {
+  // Verificar autenticação
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/auth/login");
+  }
+
   const { id } = await params;
 
-  const lead = await lead_repository.find_by_id(id);
+  const lead = await lead_repository.find_by_id(id, session.user.id);
 
   if (!lead) {
     notFound();

@@ -10,6 +10,7 @@ import type {
 export async function update_lead(
   repository: LeadRepository,
   id: string,
+  corretor_id: string,
   input: UpdateLeadInput,
 ): Promise<Lead> {
   const score_result = calculate_lead_score(
@@ -28,5 +29,5 @@ export async function update_lead(
     priority: score_result.priority,
   };
 
-  return await repository.update(id, data);
+  return await repository.update(id, corretor_id, data);
 }

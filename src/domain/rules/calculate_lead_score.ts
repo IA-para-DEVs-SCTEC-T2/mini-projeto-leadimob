@@ -16,14 +16,14 @@ export function calculate_lead_score(
   renda_mensal: number | null,
   valor_imovel: number | null,
 ): LeadScoreResult {
-  if (valor_imovel === null || valor_imovel <= 0) {
+  if (valor_imovel === null || !(valor_imovel > 0)) {
     return {
       valid: false,
       priority: "NaoClassificado",
     };
   }
 
-  if (renda_mensal === null || renda_mensal <= 0) {
+  if (renda_mensal === null || !(renda_mensal > 0)) {
     return {
       valid: false,
       priority: "NaoClassificado",

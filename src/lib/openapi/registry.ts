@@ -3,8 +3,6 @@
  * Registro centralizado de todas as rotas e schemas OpenAPI
  */
 
-import { createDocument } from "zod-openapi";
-
 import { openapi_config } from "./config";
 import {
   CreateLeadRequestSchema,
@@ -243,28 +241,30 @@ const routes = [
 // ============================================================================
 
 export function get_openapi_document() {
-  return createDocument({
+  const paths = routes.reduce(
+    (acc, route) => {
+      const pathKey = route.path;
+      if (!acc[pathKey]) {
+        acc[pathKey] = {};
+      }
+      acc[pathKey][route.method] = {
+        summary: route.summary,
+        description: route.description,
+        tags: route.tags,
+        ...(route.parameters && { parameters: route.parameters }),
+        ...(route.requestBody && { requestBody: route.requestBody }),
+        responses: route.responses,
+      };
+      return acc;
+    },
+    {} as Record<string, Record<string, unknown>>,
+  );
+
+  return {
     openapi: openapi_config.openapi,
     info: openapi_config.info,
     servers: openapi_config.servers,
     tags: openapi_config.tags,
-    paths: routes.reduce(
-      (acc, route) => {
-        const pathKey = route.path;
-        if (!acc[pathKey]) {
-          acc[pathKey] = {};
-        }
-        acc[pathKey][route.method] = {
-          summary: route.summary,
-          description: route.description,
-          tags: route.tags,
-          ...(route.parameters && { parameters: route.parameters }),
-          ...(route.requestBody && { requestBody: route.requestBody }),
-          responses: route.responses,
-        };
-        return acc;
-      },
-      {} as Record<string, Record<string, unknown>>,
-    ),
-  });
+    paths,
+  };
 }

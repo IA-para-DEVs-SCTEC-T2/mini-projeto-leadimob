@@ -8,8 +8,8 @@ describe("calculate_lead_score", () => {
     it("should always return valid=false when valor_imovel is null or zero", () => {
       fc.assert(
         fc.property(
-          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 }).filter(x => !isNaN(x) && isFinite(x))),
-          fc.oneof(fc.constant(null), fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }).filter(x => !isNaN(x) && isFinite(x))),
+          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 })),
+          fc.oneof(fc.constant(null), fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true })),
           (valor_imovel, renda_mensal) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             return !result.valid && result.priority === "NaoClassificado";
@@ -21,8 +21,8 @@ describe("calculate_lead_score", () => {
     it("should always return valid=false when renda_mensal is null or zero", () => {
       fc.assert(
         fc.property(
-          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0 }).filter(x => !isNaN(x) && isFinite(x))),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.oneof(fc.constant(null), fc.constant(0), fc.float({ max: 0, noNaN: true })),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             return !result.valid && result.priority === "NaoClassificado";
@@ -34,8 +34,8 @@ describe("calculate_lead_score", () => {
     it("should always return valid=true when both inputs are positive", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             return result.valid;
@@ -47,8 +47,8 @@ describe("calculate_lead_score", () => {
     it("should return score >= 80 implies priority Alto", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             if (result.valid && result.score >= 80) {
@@ -63,8 +63,8 @@ describe("calculate_lead_score", () => {
     it("should return score between 40-79 implies priority Medio", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             if (result.valid && result.score >= 40 && result.score < 80) {
@@ -79,8 +79,8 @@ describe("calculate_lead_score", () => {
     it("should return score < 40 implies priority Baixo", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             const result = calculate_lead_score(renda_mensal, valor_imovel);
             if (result.valid && result.score < 40) {
@@ -95,9 +95,9 @@ describe("calculate_lead_score", () => {
     it("should be monotonic: higher renda_mensal should yield higher or equal score", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(50000) }).filter(x => !isNaN(x) && isFinite(x)),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(50000) }).filter(x => !isNaN(x) && isFinite(x)),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(50000), noNaN: true }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(50000), noNaN: true }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }).filter(x => !isNaN(x) && isFinite(x)),
           (renda1, renda2, valor_imovel) => {
             fc.pre(renda1 <= renda2 && !isNaN(renda1) && !isNaN(renda2) && !isNaN(valor_imovel));
 
@@ -116,9 +116,9 @@ describe("calculate_lead_score", () => {
     it("should be inversely monotonic: higher valor_imovel should yield lower or equal score", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(500000) }),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(500000) }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(500000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(500000), noNaN: true }),
           (renda_mensal, valor1, valor2) => {
             fc.pre(valor1 <= valor2);
 
@@ -137,8 +137,8 @@ describe("calculate_lead_score", () => {
     it("should always return score >= 0 when valid", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }).filter(x => !isNaN(x) && isFinite(x)),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }).filter(x => !isNaN(x) && isFinite(x)),
           (renda_mensal, valor_imovel) => {
             fc.pre(!isNaN(renda_mensal) && !isNaN(valor_imovel));
 
@@ -155,8 +155,8 @@ describe("calculate_lead_score", () => {
     it("should maintain formula consistency: score = (renda * 12 * 5) / valor * 100", () => {
       fc.assert(
         fc.property(
-          fc.float({ min: Math.fround(0.01), max: Math.fround(100000) }).filter(x => !isNaN(x) && isFinite(x)),
-          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000) }).filter(x => !isNaN(x) && isFinite(x)),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+          fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
           (renda_mensal, valor_imovel) => {
             fc.pre(!isNaN(renda_mensal) && !isNaN(valor_imovel) && isFinite(renda_mensal) && isFinite(valor_imovel));
 
@@ -359,7 +359,9 @@ describe("calculate_lead_score", () => {
         const result = calculate_lead_score(5500.50, 350000.75);
 
         expect(result.valid).toBe(true);
-        expect(result.score).toBeCloseTo(94.29, 2);
+        if (result.valid) {
+          expect(result.score).toBeCloseTo(94.29, 2);
+        }
         expect(result.priority).toBe("Alto");
       });
 
@@ -370,7 +372,9 @@ describe("calculate_lead_score", () => {
         const result = calculate_lead_score(3333, 500000);
 
         expect(result.valid).toBe(true);
-        expect(result.score).toBe(40); // Should be rounded to 2 decimal places
+        if (result.valid) {
+          expect(result.score).toBe(40); // Should be rounded to 2 decimal places
+        }
         expect(result.priority).toBe("Medio");
       });
     });
@@ -380,7 +384,9 @@ describe("calculate_lead_score", () => {
         const result = calculate_lead_score(0.01, 0.01);
 
         expect(result.valid).toBe(true);
-        expect(result.score).toBe(6000); // (0.01 * 12 * 5) / 0.01 * 100
+        if (result.valid) {
+          expect(result.score).toBe(6000); // (0.01 * 12 * 5) / 0.01 * 100
+        }
         expect(result.priority).toBe("Alto");
       });
 
@@ -388,7 +394,9 @@ describe("calculate_lead_score", () => {
         const result = calculate_lead_score(1000000, 10000000);
 
         expect(result.valid).toBe(true);
-        expect(result.score).toBe(600); // (1000000 * 12 * 5) / 10000000 * 100
+        if (result.valid) {
+          expect(result.score).toBe(600); // (1000000 * 12 * 5) / 10000000 * 100
+        }
         expect(result.priority).toBe("Alto");
       });
     });

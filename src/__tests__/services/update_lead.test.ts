@@ -39,9 +39,9 @@ describe("update_lead", () => {
 
     (mock_repository.update as jest.Mock).mockResolvedValue(expected_lead);
 
-    const result = await update_lead(mock_repository, "lead-123", input);
+    const result = await update_lead(mock_repository, "lead-123", "corretor-test-id", input);
 
-    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", {
+    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", "corretor-test-id", {
       nome: "João Silva Atualizado",
       email: "joao.atualizado@email.com",
       cpf: "12345678901",
@@ -80,9 +80,9 @@ describe("update_lead", () => {
 
     (mock_repository.update as jest.Mock).mockResolvedValue(expected_lead);
 
-    const result = await update_lead(mock_repository, "lead-123", input);
+    const result = await update_lead(mock_repository, "lead-123", "corretor-test-id", input);
 
-    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", {
+    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", "corretor-test-id", {
       nome: "João Silva",
       email: "joao@email.com",
       cpf: "12345678901",
@@ -121,9 +121,9 @@ describe("update_lead", () => {
 
     (mock_repository.update as jest.Mock).mockResolvedValue(expected_lead);
 
-    await update_lead(mock_repository, "lead-123", input);
+    await update_lead(mock_repository, "lead-123", "corretor-test-id", input);
 
-    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", {
+    expect(mock_repository.update).toHaveBeenCalledWith("lead-123", "corretor-test-id", {
       nome: "João Silva",
       email: "joao@email.com", // Should be normalized
       cpf: "12345678901",
@@ -148,6 +148,7 @@ describe("update_lead", () => {
     const error = new Error("Database error");
     (mock_repository.update as jest.Mock).mockRejectedValue(error);
 
-    await expect(update_lead(mock_repository, "lead-123", input)).rejects.toThrow("Database error");
+    await expect(update_lead(mock_repository, "lead-123", "corretor-test-id", input)).rejects.toThrow("Database error");
   });
 });
+

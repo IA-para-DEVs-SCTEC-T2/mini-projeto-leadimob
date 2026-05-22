@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
+import { LogoutButton } from "@/components/logout_button";
 import PriorityBadge from "@/components/priority_badge";
 import SearchFilter from "@/components/search_filter";
 import SortSelector from "@/components/sort_selector";
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import { format_currency, format_score } from "@/lib/formatters";
 import { list_leads } from "@/services/list_leads";
 import type { SortOption } from "@/services/rank_leads";
@@ -53,6 +56,13 @@ function matches_search(lead: Lead, query: string): boolean {
 }
 
 export default async function LeadsPage({ searchParams }: LeadsPageProps) {
+  // Verificar autenticação
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/auth/login");
+  }
+
   const params = await searchParams;
   const search_query = (params.q ?? "").trim().toLowerCase();
 
@@ -66,7 +76,7 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   let error: string | null = null;
 
   try {
-    leads = await list_leads(lead_repository, sort_by);
+    leads = await list_leads(lead_repository, session.user.id, sort_by);
   } catch (err) {
     console.error("Erro ao carregar leads:", err);
     error =
@@ -80,11 +90,12 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
     <div className="min-h-screen">
       {/* Header */}
       <header className="border-b border-slate-700 bg-slate-800/80 backdrop-blur-sm px-4 py-3 sm:px-6 sm:py-4">
-        <div className="mx-auto flex max-w-7xl items-center">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl sm:text-2xl">🏠</span>
             <h1 className="text-xl font-bold text-yellow-400 sm:text-2xl">LeadImobi</h1>
           </div>
+          <LogoutButton nome={session.user.name ?? "Corretor"} />
         </div>
       </header>
 

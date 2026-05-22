@@ -25,6 +25,8 @@ describe("List consistency after lead creation", () => {
         return mockLeads.map(lead => ({ ...lead })); // Return deep copies to avoid mutation
       }),
       find_by_id: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     };
   });
 
@@ -45,10 +47,10 @@ describe("List consistency after lead creation", () => {
       };
 
       // Create lead
-      const createdLead = await create_lead(mockRepository, input);
+      const createdLead = await create_lead(mockRepository, input, "corretor-test-id");
 
       // List leads
-      const leadsList = await list_leads(mockRepository);
+      const leadsList = await list_leads(mockRepository, "corretor-test-id");
 
       expect(leadsList).toHaveLength(1);
       expect(leadsList[0]).toEqual(createdLead);
@@ -68,8 +70,8 @@ describe("List consistency after lead creation", () => {
         renda_mensal: 6000,
       };
 
-      await create_lead(mockRepository, input);
-      const leadsList = await list_leads(mockRepository);
+      const _createdLead = await create_lead(mockRepository, input, "corretor-test-id");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id");
 
       const listedLead = leadsList[0];
 
@@ -117,11 +119,11 @@ describe("List consistency after lead creation", () => {
 
       // Create leads in order: Baixo, Alto, Medio
       for (const input of inputs) {
-        await create_lead(mockRepository, input);
+        await create_lead(mockRepository, input, "corretor-test-id");
       }
 
       // List leads (should be ordered by score: Alto, Alto, Medio)
-      const leadsList = await list_leads(mockRepository, "score");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id", "score");
 
       expect(leadsList).toHaveLength(3);
       expect(leadsList[0].nome).toBe("Ana Costa");   // Score: 180
@@ -158,10 +160,10 @@ describe("List consistency after lead creation", () => {
       ];
 
       for (const input of inputs) {
-        await create_lead(mockRepository, input);
+        await create_lead(mockRepository, input, "corretor-test-id");
       }
 
-      const leadsList = await list_leads(mockRepository, "score");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id", "score");
 
       expect(leadsList).toHaveLength(3);
 
@@ -208,12 +210,12 @@ describe("List consistency after lead creation", () => {
       ];
 
       for (const input of inputs) {
-        await create_lead(mockRepository, input);
+        await create_lead(mockRepository, input, "corretor-test-id");
       }
     });
 
     it("should maintain consistency when sorting by priority", async () => {
-      const leadsList = await list_leads(mockRepository, "priority");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id", "priority");
 
       expect(leadsList).toHaveLength(3);
       expect(leadsList[0].priority).toBe("Alto");   // Ana
@@ -222,7 +224,7 @@ describe("List consistency after lead creation", () => {
     });
 
     it("should maintain consistency when sorting by renda", async () => {
-      const leadsList = await list_leads(mockRepository, "renda");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id", "renda");
 
       expect(leadsList).toHaveLength(3);
       expect(leadsList[0].renda_mensal).toBe(12000); // Ana
@@ -231,7 +233,7 @@ describe("List consistency after lead creation", () => {
     });
 
     it("should maintain consistency when sorting by valor_imovel", async () => {
-      const leadsList = await list_leads(mockRepository, "valor_imovel");
+      const leadsList = await list_leads(mockRepository, "corretor-test-id", "valor_imovel");
 
       expect(leadsList).toHaveLength(3);
       expect(leadsList[0].valor_imovel).toBe(450000); // Carla
@@ -252,11 +254,11 @@ describe("List consistency after lead creation", () => {
       };
 
       // Create lead
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
       expect(mockRepository.create).toHaveBeenCalledTimes(1);
 
       // List leads
-      await list_leads(mockRepository);
+      await list_leads(mockRepository, "corretor-test-id");
       expect(mockRepository.find_all).toHaveBeenCalledTimes(1);
 
       // Verify create was called before find_all
@@ -280,10 +282,10 @@ describe("List consistency after lead creation", () => {
       mockRepository.create.mockRejectedValueOnce(repositoryError);
 
       // Create should fail
-      await expect(create_lead(mockRepository, input)).rejects.toEqual(repositoryError);
+      await expect(create_lead(mockRepository, input, "corretor-test-id")).rejects.toEqual(repositoryError);
 
       // List should still work (empty list)
-      const leadsList = await list_leads(mockRepository);
+      const leadsList = await list_leads(mockRepository, "corretor-test-id");
       expect(leadsList).toHaveLength(0);
     });
 
@@ -298,7 +300,7 @@ describe("List consistency after lead creation", () => {
       };
 
       // Create should succeed
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
       expect(mockRepository.create).toHaveBeenCalledTimes(1);
 
       // Mock repository error on find_all
@@ -306,7 +308,7 @@ describe("List consistency after lead creation", () => {
       mockRepository.find_all.mockRejectedValueOnce(repositoryError);
 
       // List should fail
-      await expect(list_leads(mockRepository)).rejects.toEqual(repositoryError);
+      await expect(list_leads(mockRepository, "corretor-test-id")).rejects.toEqual(repositoryError);
     });
   });
 
@@ -321,10 +323,10 @@ describe("List consistency after lead creation", () => {
         renda_mensal: 12000,
       };
 
-      const createdLead = await create_lead(mockRepository, input);
+      const createdLead = await create_lead(mockRepository, input, "corretor-test-id");
       const originalLead = { ...createdLead };
 
-      await list_leads(mockRepository);
+      await list_leads(mockRepository, "corretor-test-id");
 
       // Verify created lead wasn't mutated
       expect(createdLead).toEqual(originalLead);
@@ -340,10 +342,10 @@ describe("List consistency after lead creation", () => {
         renda_mensal: 12000,
       };
 
-      await create_lead(mockRepository, input);
+      await create_lead(mockRepository, input, "corretor-test-id");
 
-      const leadsList1 = await list_leads(mockRepository);
-      const leadsList2 = await list_leads(mockRepository);
+      const leadsList1 = await list_leads(mockRepository, "corretor-test-id");
+      const leadsList2 = await list_leads(mockRepository, "corretor-test-id");
 
       // Lists should be equal but not the same reference
       expect(leadsList1).toEqual(leadsList2);
@@ -368,11 +370,11 @@ describe("List consistency after lead creation", () => {
 
       // Create multiple leads
       for (const input of inputs) {
-        await create_lead(mockRepository, input);
+        await create_lead(mockRepository, input, "corretor-test-id");
       }
 
       // List should contain all leads
-      const leadsList = await list_leads(mockRepository);
+      const leadsList = await list_leads(mockRepository, "corretor-test-id");
       expect(leadsList).toHaveLength(10);
 
       // Verify repository was called correct number of times
@@ -391,3 +393,6 @@ describe("List consistency after lead creation", () => {
     });
   });
 });
+
+
+

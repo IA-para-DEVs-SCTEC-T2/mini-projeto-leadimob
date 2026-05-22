@@ -7,6 +7,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import { UpdateLeadSchema } from "@/schemas/lead.schema";
 import { delete_lead } from "@/services/delete_lead";
 import { update_lead } from "@/services/update_lead";
@@ -22,10 +23,16 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ success: false, error: "Não autorizado." }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
 
-    const lead = await lead_repository.find_by_id(id);
+    const lead = await lead_repository.find_by_id(id, session.user.id);
 
     if (!lead) {
       return NextResponse.json(
@@ -73,6 +80,12 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ success: false, error: "Não autorizado." }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -111,6 +124,7 @@ export async function PUT(
       const updated_lead = await update_lead(
         lead_repository,
         id,
+        session.user.id,
         validated_input,
       );
 
@@ -196,11 +210,17 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ success: false, error: "Não autorizado." }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
 
     try {
-      await delete_lead(lead_repository, id);
+      await delete_lead(lead_repository, id, session.user.id);
 
       return NextResponse.json(null, { status: 204 });
     } catch (error) {

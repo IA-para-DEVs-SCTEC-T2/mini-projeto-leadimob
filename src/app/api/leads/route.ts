@@ -7,6 +7,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import { CreateLeadSchema } from "@/schemas/lead.schema";
 import { create_lead } from "@/services/create_lead";
 import { list_leads } from "@/services/list_leads";
@@ -19,8 +20,14 @@ import { list_leads } from "@/services/list_leads";
  * Lista todos os leads ordenados por score
  */
 export async function GET() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ success: false, error: "Não autorizado." }, { status: 401 });
+  }
+
   try {
-    const leads = await list_leads(lead_repository);
+    const leads = await list_leads(lead_repository, session.user.id);
 
     return NextResponse.json(
       {
@@ -56,6 +63,12 @@ export async function GET() {
  * Cria um novo lead
  */
 export async function POST(request: NextRequest) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ success: false, error: "Não autorizado." }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
 
@@ -90,7 +103,7 @@ export async function POST(request: NextRequest) {
     const validated_input = validation_result.data;
 
     try {
-      const created_lead = await create_lead(lead_repository, validated_input);
+      const created_lead = await create_lead(lead_repository, validated_input, session.user.id);
 
       return NextResponse.json(
         {

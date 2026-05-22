@@ -61,9 +61,11 @@ function handle_repository_error(error: unknown): never {
       const target = error.meta?.target as string[] | undefined;
 
       // Check both target array and error message for CPF field
+      // Constraint name changed from leads_cpf_key to leads_cpf_corretor_id_key after migration
       const isCpfError = target?.includes("cpf") ??
                         error.message?.includes("cpf") ??
-                        error.message?.includes("leads_cpf_key");
+                        error.message?.includes("leads_cpf_key") ??
+                        error.message?.includes("leads_cpf_corretor_id_key");
 
       if (isCpfError) {
         throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
@@ -86,11 +88,10 @@ async function create(data: CreateLeadData): Promise<Lead> {
   }
 }
 
-async function find_all(page = 1, page_size = 50): Promise<Lead[]> {
+async function find_all(corretor_id: string): Promise<Lead[]> {
   try {
     const leads = await prisma.lead.findMany({
-      take: page_size,
-      skip: (page - 1) * page_size,
+      where: { corretor_id },
       orderBy: { created_at: "desc" },
     });
 
@@ -100,10 +101,10 @@ async function find_all(page = 1, page_size = 50): Promise<Lead[]> {
   }
 }
 
-async function find_by_id(id: string): Promise<Lead | null> {
+async function find_by_id(id: string, corretor_id: string): Promise<Lead | null> {
   try {
-    const lead = await prisma.lead.findUnique({
-      where: { id },
+    const lead = await prisma.lead.findFirst({
+      where: { id, corretor_id },
     });
 
     return lead === null ? null : map_prisma_to_lead(lead);
@@ -112,10 +113,10 @@ async function find_by_id(id: string): Promise<Lead | null> {
   }
 }
 
-async function update(id: string, data: UpdateLeadData): Promise<Lead> {
+async function update(id: string, corretor_id: string, data: UpdateLeadData): Promise<Lead> {
   try {
-    const lead = await prisma.lead.update({
-      where: { id },
+    const result = await prisma.lead.updateMany({
+      where: { id, corretor_id },
       data: {
         nome: data.nome,
         email: data.email,
@@ -128,16 +129,25 @@ async function update(id: string, data: UpdateLeadData): Promise<Lead> {
       },
     });
 
+    if (result.count === 0) {
+      throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
+    }
+
+    const lead = await prisma.lead.findFirst({ where: { id, corretor_id } });
+    if (!lead) {
+      throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
+    }
+
     return map_prisma_to_lead(lead);
   } catch (error) {
     handle_repository_error(error);
   }
 }
 
-async function delete_lead(id: string): Promise<void> {
+async function delete_lead(id: string, corretor_id: string): Promise<void> {
   try {
-    await prisma.lead.delete({
-      where: { id },
+    await prisma.lead.deleteMany({
+      where: { id, corretor_id },
     });
   } catch (error) {
     handle_repository_error(error);

@@ -17,9 +17,9 @@ describe("delete_lead", () => {
   it("should delete lead by id", async () => {
     (mock_repository.delete as jest.Mock).mockResolvedValue(undefined);
 
-    await delete_lead(mock_repository, "lead-123");
+    await delete_lead(mock_repository, "lead-123", "corretor-test-id");
 
-    expect(mock_repository.delete).toHaveBeenCalledWith("lead-123");
+    expect(mock_repository.delete).toHaveBeenCalledWith("lead-123", "corretor-test-id");
     expect(mock_repository.delete).toHaveBeenCalledTimes(1);
   });
 
@@ -27,13 +27,13 @@ describe("delete_lead", () => {
     const error = new Error("Database error");
     (mock_repository.delete as jest.Mock).mockRejectedValue(error);
 
-    await expect(delete_lead(mock_repository, "lead-123")).rejects.toThrow("Database error");
+    await expect(delete_lead(mock_repository, "lead-123", "corretor-test-id")).rejects.toThrow("Database error");
   });
 
   it("should handle non-existent lead gracefully", async () => {
     const error = { error: "LEAD_NOT_FOUND" };
     (mock_repository.delete as jest.Mock).mockRejectedValue(error);
 
-    await expect(delete_lead(mock_repository, "non-existent-id")).rejects.toEqual(error);
+    await expect(delete_lead(mock_repository, "non-existent-id", "corretor-test-id")).rejects.toEqual(error);
   });
 });
