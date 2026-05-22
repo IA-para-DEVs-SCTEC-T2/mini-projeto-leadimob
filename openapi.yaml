@@ -1,0 +1,594 @@
+openapi: 3.0.3
+info:
+  title: LeadImobi API
+  description: |
+    API REST para qualificação inteligente de leads imobiliários. Centraliza o cadastro de leads e calcula automaticamente um Índice de Qualificação Financeira baseado em padrões bancários.
+
+    ## Fórmula de Qualificação
+
+    O Índice de Qualificação Financeira é calculado automaticamente:
+
+    ```
+    Índice = (Renda Mensal × 12 × 5) ÷ Valor do Imóvel × 100
+    ```
+
+    Baseada no padrão bancário de comprometimento máximo de 30% da renda mensal (equivalente a financiamento em até 5 anos de renda anual).
+
+    ## Classificação de Prioridade
+
+    - **Alto** (≥ 80): Alta capacidade de financiamento
+    - **Médio** (40–79): Capacidade moderada
+    - **Baixo** (< 40): Capacidade limitada
+    - **NaoClassificado**: Score inválido (valor_imovel = 0 ou nulo)
+
+    ## Validação de Dados
+
+    - **Nome**: 2-100 caracteres
+    - **Email**: Formato válido de email
+    - **CPF**: 11 dígitos, validação de dígitos verificadores
+    - **Telefone**: 10-15 dígitos
+    - **Valor do Imóvel**: Maior que zero
+    - **Renda Mensal**: Maior que zero
+
+  version: 1.0.0
+  contact:
+    name: LeadImobi Support
+    url: https://leadimobi.com
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://api.leadimobi.com
+    description: Production server
+
+tags:
+  - name: Leads
+    description: Operações de gerenciamento de leads imobiliários
+
+paths:
+  /api/leads:
+    get:
+      summary: Listar todos os leads
+      description: |
+        Retorna uma lista de todos os leads cadastrados, ordenados por Índice de Qualificação Financeira (score) em ordem decrescente.
+      operationId: listLeads
+      tags:
+        - Leads
+      responses:
+        '200':
+          description: Lista de leads retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsListResponse'
+              example:
+                success: true
+                data:
+                  - id: clh7x8q9z0000qz088a1b2c3d
+                    nome: Ana Costa
+                    email: ana.costa@email.com
+                    cpf: '12345678901'
+                    telefone: '11987654321'
+                    valor_imovel: 400000
+                    renda_mensal: 12000
+                    score: 90
+                    priority: Alto
+                    created_at: '2026-05-18T10:30:00Z'
+                  - id: clh7x8q9z0000qz088a1b2c3e
+                    nome: Bruno Lima
+                    email: bruno.lima@email.com
+                    cpf: '98765432101'
+                    telefone: '11987654322'
+                    valor_imovel: 380000
+                    renda_mensal: 6000
+                    score: 57
+                    priority: Medio
+                    created_at: '2026-05-17T14:20:00Z'
+                total: 2
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Erro ao listar leads. Tente novamente.
+
+    post:
+      summary: Criar novo lead
+      description: |
+        Cria um novo lead com os dados fornecidos. O Índice de Qualificação Financeira é calculado automaticamente.
+
+        **Validações:**
+        - CPF deve ser único no sistema
+        - Email deve ser válido
+        - Valor do imóvel e renda mensal devem ser maiores que zero
+      operationId: createLead
+      tags:
+        - Leads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLeadRequest'
+            example:
+              nome: Ana Costa
+              email: ana.costa@email.com
+              cpf: '123.456.789-01'
+              telefone: '(11) 98765-4321'
+              valor_imovel: 400000
+              renda_mensal: 12000
+      responses:
+        '201':
+          description: Lead criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                data:
+                  id: clh7x8q9z0000qz088a1b2c3d
+                  nome: Ana Costa
+                  email: ana.costa@email.com
+                  cpf: '12345678901'
+                  telefone: '11987654321'
+                  valor_imovel: 400000
+                  renda_mensal: 12000
+                  score: 90
+                  priority: Alto
+                  created_at: '2026-05-18T10:30:00Z'
+        '400':
+          description: Erro de validação ou CPF já cadastrado
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationError:
+                  value:
+                    success: false
+                    errors:
+                      email:
+                        - Informe um email valido.
+                      cpf:
+                        - CPF inválido. Verifique os dígitos informados.
+                cpfExists:
+                  value:
+                    success: false
+                    errors:
+                      cpf:
+                        - Este CPF já está cadastrado.
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Erro ao criar lead. Tente novamente.
+
+  /api/leads/{id}:
+    get:
+      summary: Obter lead por ID
+      description: Retorna os detalhes de um lead específico pelo seu ID.
+      operationId: getLeadById
+      tags:
+        - Leads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único do lead (CUID)
+          schema:
+            type: string
+            example: clh7x8q9z0000qz088a1b2c3d
+      responses:
+        '200':
+          description: Lead encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                data:
+                  id: clh7x8q9z0000qz088a1b2c3d
+                  nome: Ana Costa
+                  email: ana.costa@email.com
+                  cpf: '12345678901'
+                  telefone: '11987654321'
+                  valor_imovel: 400000
+                  renda_mensal: 12000
+                  score: 90
+                  priority: Alto
+                  created_at: '2026-05-18T10:30:00Z'
+        '404':
+          description: Lead não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Lead não encontrado.
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Erro ao buscar lead. Tente novamente.
+
+    put:
+      summary: Atualizar lead
+      description: |
+        Atualiza os dados de um lead existente. O Índice de Qualificação Financeira é recalculado automaticamente.
+
+        **Validações:**
+        - CPF deve ser único no sistema (exceto o CPF do lead sendo atualizado)
+        - Email deve ser válido
+        - Valor do imóvel e renda mensal devem ser maiores que zero
+      operationId: updateLead
+      tags:
+        - Leads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único do lead (CUID)
+          schema:
+            type: string
+            example: clh7x8q9z0000qz088a1b2c3d
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLeadRequest'
+            example:
+              nome: Ana Costa Silva
+              email: ana.silva@email.com
+              cpf: '123.456.789-01'
+              telefone: '(11) 98765-4321'
+              valor_imovel: 450000
+              renda_mensal: 13000
+      responses:
+        '200':
+          description: Lead atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                data:
+                  id: clh7x8q9z0000qz088a1b2c3d
+                  nome: Ana Costa Silva
+                  email: ana.silva@email.com
+                  cpf: '12345678901'
+                  telefone: '11987654321'
+                  valor_imovel: 450000
+                  renda_mensal: 13000
+                  score: 95
+                  priority: Alto
+                  created_at: '2026-05-18T10:30:00Z'
+        '400':
+          description: Erro de validação ou CPF já cadastrado
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationError:
+                  value:
+                    success: false
+                    errors:
+                      email:
+                        - Informe um email valido.
+                cpfExists:
+                  value:
+                    success: false
+                    errors:
+                      cpf:
+                        - Este CPF já está cadastrado.
+        '404':
+          description: Lead não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Lead não encontrado.
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Erro ao atualizar lead. Tente novamente.
+
+    delete:
+      summary: Deletar lead
+      description: Remove um lead do sistema permanentemente.
+      operationId: deleteLead
+      tags:
+        - Leads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único do lead (CUID)
+          schema:
+            type: string
+            example: clh7x8q9z0000qz088a1b2c3d
+      responses:
+        '204':
+          description: Lead deletado com sucesso
+        '404':
+          description: Lead não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Lead não encontrado.
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Erro ao excluir lead. Tente novamente.
+
+components:
+  schemas:
+    Lead:
+      type: object
+      required:
+        - id
+        - nome
+        - email
+        - cpf
+        - telefone
+        - valor_imovel
+        - renda_mensal
+        - score
+        - priority
+        - created_at
+      properties:
+        id:
+          type: string
+          description: ID único do lead (CUID)
+          example: clh7x8q9z0000qz088a1b2c3d
+        nome:
+          type: string
+          description: Nome completo do lead
+          minLength: 2
+          maxLength: 100
+          example: Ana Costa
+        email:
+          type: string
+          format: email
+          description: Email do lead
+          example: ana.costa@email.com
+        cpf:
+          type: string
+          description: CPF do lead (11 dígitos, sem formatação)
+          pattern: '^\d{11}$'
+          example: '12345678901'
+        telefone:
+          type: string
+          description: Telefone do lead (10-15 dígitos, sem formatação)
+          pattern: '^\d{10,15}$'
+          example: '11987654321'
+        valor_imovel:
+          type: number
+          format: double
+          description: Valor do imóvel desejado em reais
+          minimum: 0.01
+          example: 400000
+        renda_mensal:
+          type: number
+          format: double
+          description: Renda mensal do lead em reais
+          minimum: 0.01
+          example: 12000
+        score:
+          type: number
+          format: double
+          nullable: true
+          description: |
+            Índice de Qualificação Financeira (0-100).
+            Null se valor_imovel for zero ou nulo.
+          example: 90
+        priority:
+          type: string
+          enum:
+            - Alto
+            - Medio
+            - Baixo
+            - NaoClassificado
+          description: |
+            Classificação de prioridade:
+            - Alto: score ≥ 80
+            - Medio: 40 ≤ score < 80
+            - Baixo: score < 40
+            - NaoClassificado: score inválido
+          example: Alto
+        created_at:
+          type: string
+          format: date-time
+          description: Data e hora de criação do lead (ISO 8601)
+          example: '2026-05-18T10:30:00Z'
+
+    CreateLeadRequest:
+      type: object
+      required:
+        - nome
+        - email
+        - cpf
+        - telefone
+        - valor_imovel
+        - renda_mensal
+      properties:
+        nome:
+          type: string
+          description: Nome completo do lead (2-100 caracteres)
+          minLength: 2
+          maxLength: 100
+          example: Ana Costa
+        email:
+          type: string
+          format: email
+          description: Email válido do lead
+          example: ana.costa@email.com
+        cpf:
+          type: string
+          description: CPF do lead (11 dígitos, pode conter formatação)
+          example: '123.456.789-01'
+        telefone:
+          type: string
+          description: Telefone do lead (10-15 dígitos, pode conter formatação)
+          example: '(11) 98765-4321'
+        valor_imovel:
+          type: number
+          format: double
+          description: Valor do imóvel desejado em reais (> 0)
+          minimum: 0.01
+          example: 400000
+        renda_mensal:
+          type: number
+          format: double
+          description: Renda mensal do lead em reais (> 0)
+          minimum: 0.01
+          example: 12000
+
+    UpdateLeadRequest:
+      type: object
+      required:
+        - nome
+        - email
+        - cpf
+        - telefone
+        - valor_imovel
+        - renda_mensal
+      properties:
+        nome:
+          type: string
+          description: Nome completo do lead (2-100 caracteres)
+          minLength: 2
+          maxLength: 100
+          example: Ana Costa Silva
+        email:
+          type: string
+          format: email
+          description: Email válido do lead
+          example: ana.silva@email.com
+        cpf:
+          type: string
+          description: CPF do lead (11 dígitos, pode conter formatação)
+          example: '123.456.789-01'
+        telefone:
+          type: string
+          description: Telefone do lead (10-15 dígitos, pode conter formatação)
+          example: '(11) 98765-4321'
+        valor_imovel:
+          type: number
+          format: double
+          description: Valor do imóvel desejado em reais (> 0)
+          minimum: 0.01
+          example: 450000
+        renda_mensal:
+          type: number
+          format: double
+          description: Renda mensal do lead em reais (> 0)
+          minimum: 0.01
+          example: 13000
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          description: Indica sucesso da operação
+        data:
+          $ref: '#/components/schemas/Lead'
+
+    LeadsListResponse:
+      type: object
+      required:
+        - success
+        - data
+        - total
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          description: Indica sucesso da operação
+        data:
+          type: array
+          description: Lista de leads ordenados por score (decrescente)
+          items:
+            $ref: '#/components/schemas/Lead'
+        total:
+          type: integer
+          description: Total de leads no sistema
+          example: 42
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+          description: Indica falha da operação
+        error:
+          type: string
+          description: Mensagem de erro
+          example: Lead não encontrado.
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - success
+        - errors
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+          description: Indica falha de validação
+        errors:
+          type: object
+          description: Mapa de erros por campo
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email:
+              - Informe um email valido.
+            cpf:
+              - Este CPF já está cadastrado.

@@ -1,0 +1,339 @@
+import fc from "fast-check";
+
+import { CreateLeadSchema } from "@/schemas/lead.schema";
+
+describe("CreateLeadSchema", () => {
+  // Feature: leadimobi-core, Property 7: Rejeição de entradas inválidas pelo schema Zod
+  describe("Property 7: Rejeição de entradas inválidas", () => {
+    it("should reject nome with less than 2 characters", () => {
+      fc.assert(
+        fc.property(fc.string({ maxLength: 1 }), (nome) => {
+          const result = CreateLeadSchema.safeParse({
+            nome,
+            email: "test@example.com",
+            cpf: "11144477735", // Valid CPF
+            telefone: "1234567890",
+            valor_imovel: 100000,
+            renda_mensal: 5000,
+          });
+
+          return !result.success;
+        }),
+      );
+    });
+
+    it("should reject email without @", () => {
+      fc.assert(
+        fc.property(fc.string({ minLength: 1 }).filter((s) => !s.includes("@")), (email) => {
+          const result = CreateLeadSchema.safeParse({
+            nome: "John Doe",
+            email,
+            cpf: "11144477735", // Valid CPF
+            telefone: "1234567890",
+            valor_imovel: 100000,
+            renda_mensal: 5000,
+          });
+
+          return !result.success;
+        }),
+      );
+    });
+
+    it("should reject CPF with less than 11 digits", () => {
+      fc.assert(
+        fc.property(
+          fc.integer({ min: 0, max: 10 }).chain((len) =>
+            fc.tuple(
+              fc.constant(len),
+              fc.stringMatching(/^\d{0,10}$/),
+            ),
+          ),
+          ([len, cpf]) => {
+            if (cpf.length !== len) {
+              return true;
+            } // Skip if length doesn't match
+
+            const result = CreateLeadSchema.safeParse({
+              nome: "John Doe",
+              email: "test@example.com",
+              cpf,
+              telefone: "1234567890",
+              valor_imovel: 100000,
+              renda_mensal: 5000,
+            });
+
+            return !result.success;
+          },
+        ),
+      );
+    });
+
+    it("should reject CPF with more than 11 digits", () => {
+      fc.assert(
+        fc.property(
+          fc.stringMatching(/^\d{12,}$/),
+          (cpf) => {
+            const result = CreateLeadSchema.safeParse({
+              nome: "John Doe",
+              email: "test@example.com",
+              cpf,
+              telefone: "1234567890",
+              valor_imovel: 100000,
+              renda_mensal: 5000,
+            });
+
+            return !result.success;
+          },
+        ),
+      );
+    });
+
+    it("should reject invalid CPF (all same digits)", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11111111111", // Invalid CPF (all same digits)
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject invalid CPF (wrong check digits)", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "12345678901", // Invalid CPF (wrong check digits)
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject telefone with less than 10 digits", () => {
+      fc.assert(
+        fc.property(
+          fc.stringMatching(/^\d{0,9}$/),
+          (telefone) => {
+            const result = CreateLeadSchema.safeParse({
+              nome: "John Doe",
+              email: "test@example.com",
+              cpf: "11144477735", // Valid CPF
+              telefone,
+              valor_imovel: 100000,
+              renda_mensal: 5000,
+            });
+
+            return !result.success;
+          },
+        ),
+      );
+    });
+
+    it("should reject valor_imovel <= 0", () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(fc.constant(0), fc.float({ max: 0 })),
+          (valor_imovel) => {
+            const result = CreateLeadSchema.safeParse({
+              nome: "John Doe",
+              email: "test@example.com",
+              cpf: "11144477735", // Valid CPF
+              telefone: "1234567890",
+              valor_imovel,
+              renda_mensal: 5000,
+            });
+
+            return !result.success;
+          },
+        ),
+      );
+    });
+
+    it("should reject renda_mensal <= 0", () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(fc.constant(0), fc.float({ max: 0 })),
+          (renda_mensal) => {
+            const result = CreateLeadSchema.safeParse({
+              nome: "John Doe",
+              email: "test@example.com",
+              cpf: "11144477735", // Valid CPF
+              telefone: "1234567890",
+              valor_imovel: 100000,
+              renda_mensal,
+            });
+
+            return !result.success;
+          },
+        ),
+      );
+    });
+  });
+
+  // Feature: leadimobi-core, Property 8: Aceitação de entradas válidas pelo schema Zod
+  describe("Property 8: Aceitação de entradas válidas", () => {
+    it("should accept valid input with all fields correct", () => {
+      const validData = {
+        nome: "John Doe",
+        email: "john@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 400000,
+        renda_mensal: 12000,
+      };
+
+      const result = CreateLeadSchema.safeParse(validData);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.nome).toBe("John Doe");
+        expect(result.data.email).toBe("john@example.com");
+        expect(result.data.cpf).toBe("11144477735");
+      }
+    });
+
+    it("should accept valid CPF with formatting", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "111.444.777-35", // Valid formatted CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.cpf).toBe("11144477735"); // Should be cleaned
+      }
+    });
+
+    it("should accept telefone with formatting and extract digits", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "(11) 98765-4321",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.telefone).toBe("11987654321"); // Should be cleaned
+      }
+    });
+  });
+
+  // Unit tests for specific cases
+  describe("Unit tests for specific cases", () => {
+    it("should reject nome with 1 character", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "A",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should accept nome with 2 characters", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "AB",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject email without @", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "testexample.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject CPF with 10 digits", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "1234567890",
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should accept valid CPF with 11 digits", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject telefone with 9 digits", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "123456789",
+        valor_imovel: 100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject valor_imovel negative", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: -100000,
+        renda_mensal: 5000,
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject renda_mensal zero", () => {
+      const result = CreateLeadSchema.safeParse({
+        nome: "John Doe",
+        email: "test@example.com",
+        cpf: "11144477735", // Valid CPF
+        telefone: "1234567890",
+        valor_imovel: 100000,
+        renda_mensal: 0,
+      });
+
+      expect(result.success).toBe(false);
+    });
+  });
+});
