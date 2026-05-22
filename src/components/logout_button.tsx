@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { signOut } from 'next-auth/react'
+import { signOut } from "next-auth/react";
 
 interface LogoutButtonProps {
   nome: string
@@ -8,8 +8,8 @@ interface LogoutButtonProps {
 
 export function LogoutButton({ nome }: LogoutButtonProps) {
   const handleLogout = async () => {
-    await signOut({ redirectTo: '/auth/login' })
-  }
+    await signOut({ redirectTo: "/auth/login" });
+  };
 
   return (
     <div className="flex items-center gap-4">
@@ -23,5 +23,5 @@ export function LogoutButton({ nome }: LogoutButtonProps) {
         Sair
       </button>
     </div>
-  )
+  );
 }

@@ -1,47 +1,47 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import Link from 'next/link'
+import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    senha: '',
-  })
+    email: "",
+    senha: "",
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: formData.email,
         senha: formData.senha,
         redirect: false,
-      })
+      });
 
       if (result?.error) {
-        setError('Credenciais inválidas. Verifique e tente novamente.')
+        setError("Credenciais inválidas. Verifique e tente novamente.");
       } else if (result?.ok) {
-        window.location.href = '/leads'
+        window.location.href = "/leads";
       }
     } catch {
-      setError('Erro ao fazer login. Tente novamente.')
+      setError("Erro ao fazer login. Tente novamente.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 px-4">
@@ -92,7 +92,7 @@ export function LoginForm() {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="senha"
                 name="senha"
                 value={formData.senha}
@@ -147,14 +147,14 @@ export function LoginForm() {
             disabled={isLoading}
             className="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-semibold py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-slate-800 text-sm"
           >
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
         {/* Link para Cadastro */}
         <div className="mt-5 text-center">
           <p className="text-slate-400 text-sm">
-            Não tem uma conta?{' '}
+            Não tem uma conta?{" "}
             <Link
               href="/auth/register"
               className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors"
@@ -165,5 +165,5 @@ export function LoginForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -9,7 +9,7 @@ export const RegisterSchema = z.object({
   telefone: z
     .string()
     .optional()
-    .transform((val) => val?.replace(/\D/g, '') || undefined)
+    .transform((val) => val?.replace(/\D/g, "") ?? undefined)
     .refine((val) => !val || val.length >= 10, {
       message: "Telefone inválido.",
     }),

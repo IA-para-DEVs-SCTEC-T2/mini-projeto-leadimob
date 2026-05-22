@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { list_leads } from "@/services/list_leads";
-import { lead_repository } from "@/infra/repositories/lead_repository";
-import type { Lead } from "@/types/lead";
-import type { SortOption } from "@/services/rank_leads";
+
+import { LogoutButton } from "@/components/logout_button";
 import PriorityBadge from "@/components/priority_badge";
 import SearchFilter from "@/components/search_filter";
-import { LogoutButton } from "@/components/logout_button";
 import SortSelector from "@/components/sort_selector";
+import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import { format_currency, format_score } from "@/lib/formatters";
+import { list_leads } from "@/services/list_leads";
+import type { SortOption } from "@/services/rank_leads";
+import type { Lead } from "@/types/lead";
 
 interface LeadStats {
   total: number;
@@ -57,7 +58,7 @@ function matches_search(lead: Lead, query: string): boolean {
 export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     redirect("/auth/login");
   }
@@ -94,7 +95,7 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
             <span className="text-xl sm:text-2xl">🏠</span>
             <h1 className="text-xl font-bold text-yellow-400 sm:text-2xl">LeadImobi</h1>
           </div>
-          <LogoutButton nome={session.user.name || "Corretor"} />
+          <LogoutButton nome={session.user.name ?? "Corretor"} />
         </div>
       </header>
 

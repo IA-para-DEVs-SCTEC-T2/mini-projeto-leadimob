@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // 'unsafe-eval' é necessário em dev para o React (callstack reconstruction)
               // Em produção o React nunca usa eval()
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data:",
               "font-src 'self'",

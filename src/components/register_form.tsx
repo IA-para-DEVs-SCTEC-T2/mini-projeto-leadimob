@@ -1,8 +1,9 @@
-'use client'
+"use client";
 
-import { useState, useTransition } from 'react'
-import { register_action } from '@/app/auth/actions'
-import Link from 'next/link'
+import Link from "next/link";
+import { useState, useTransition } from "react";
+
+import { register_action } from "@/app/auth/actions";
 
 interface FormErrors {
   nome?: string[]
@@ -14,70 +15,70 @@ interface FormErrors {
 }
 
 export function RegisterForm() {
-  const [isPending, startTransition] = useTransition()
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [isPending, startTransition] = useTransition();
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    telefone: '',
-    senha: '',
-    confirmar_senha: '',
-  })
+    nome: "",
+    email: "",
+    telefone: "",
+    senha: "",
+    confirmar_senha: "",
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setErrors({})
+    e.preventDefault();
+    setErrors({});
 
     // Validação client-side de confirmação de senha
     if (formData.senha !== formData.confirmar_senha) {
-      setErrors({ confirmar_senha: ['As senhas não coincidem.'] })
-      return
+      setErrors({ confirmar_senha: ["As senhas não coincidem."] });
+      return;
     }
 
     if (!acceptedTerms) {
-      setErrors({ _form: ['Você precisa aceitar os termos de uso e política de privacidade.'] })
-      return
+      setErrors({ _form: ["Você precisa aceitar os termos de uso e política de privacidade."] });
+      return;
     }
 
-    const form = new FormData()
-    form.append('nome', formData.nome)
-    form.append('email', formData.email)
-    form.append('telefone', formData.telefone)
-    form.append('senha', formData.senha)
+    const form = new FormData();
+    form.append("nome", formData.nome);
+    form.append("email", formData.email);
+    form.append("telefone", formData.telefone);
+    form.append("senha", formData.senha);
 
     startTransition(async () => {
-      const result = await register_action(form)
+      const result = await register_action(form);
       if (result && !result.success) {
-        setErrors(result.errors || {})
+        setErrors(result.errors ?? {});
       }
-    })
-  }
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digits = e.target.value.replace(/\D/g, '').slice(0, 11)
-    let masked = digits
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+    let masked = digits;
     if (digits.length > 10) {
-      masked = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
+      masked = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
     } else if (digits.length > 6) {
-      masked = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+      masked = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
     } else if (digits.length > 2) {
-      masked = `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+      masked = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
     } else if (digits.length > 0) {
-      masked = `(${digits}`
+      masked = `(${digits}`;
     }
-    setFormData((prev) => ({ ...prev, telefone: masked }))
-  }
+    setFormData((prev) => ({ ...prev, telefone: masked }));
+  };
 
   const inputBase =
-    'w-full px-3 py-2.5 bg-slate-700/50 border rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400/50 transition-all disabled:opacity-50'
+    "w-full px-3 py-2.5 bg-slate-700/50 border rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400/50 transition-all disabled:opacity-50";
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 px-4 py-8">
@@ -134,7 +135,7 @@ export function RegisterForm() {
                   onChange={handleChange}
                   disabled={isPending}
                   required
-                  className={`${inputBase} ${errors.nome ? 'border-red-500' : 'border-slate-600'}`}
+                  className={`${inputBase} ${errors.nome ? "border-red-500" : "border-slate-600"}`}
                   placeholder="Ex: João da Silva"
                 />
                 {errors.nome && (
@@ -154,7 +155,7 @@ export function RegisterForm() {
                   onChange={handleChange}
                   disabled={isPending}
                   required
-                  className={`${inputBase} ${errors.email ? 'border-red-500' : 'border-slate-600'}`}
+                  className={`${inputBase} ${errors.email ? "border-red-500" : "border-slate-600"}`}
                   placeholder="Ex: joao.silva@email.com"
                 />
                 {errors.email && (
@@ -175,7 +176,7 @@ export function RegisterForm() {
                 value={formData.telefone}
                 onChange={handleTelefoneChange}
                 disabled={isPending}
-                className={`${inputBase} ${errors.telefone ? 'border-red-500' : 'border-slate-600'}`}
+                className={`${inputBase} ${errors.telefone ? "border-red-500" : "border-slate-600"}`}
                 placeholder="(11) 98765-4321"
               />
               {errors.telefone && (
@@ -198,14 +199,14 @@ export function RegisterForm() {
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     id="senha"
                     name="senha"
                     value={formData.senha}
                     onChange={handleChange}
                     disabled={isPending}
                     required
-                    className={`${inputBase} pr-10 ${errors.senha ? 'border-red-500' : 'border-slate-600'}`}
+                    className={`${inputBase} pr-10 ${errors.senha ? "border-red-500" : "border-slate-600"}`}
                     placeholder="Mínimo 8 caracteres"
                   />
                   <button
@@ -238,14 +239,14 @@ export function RegisterForm() {
                 </label>
                 <div className="relative">
                   <input
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     id="confirmar_senha"
                     name="confirmar_senha"
                     value={formData.confirmar_senha}
                     onChange={handleChange}
                     disabled={isPending}
                     required
-                    className={`${inputBase} pr-10 ${errors.confirmar_senha ? 'border-red-500' : 'border-slate-600'}`}
+                    className={`${inputBase} pr-10 ${errors.confirmar_senha ? "border-red-500" : "border-slate-600"}`}
                     placeholder="Digite a senha novamente"
                   />
                   <button
@@ -282,11 +283,11 @@ export function RegisterForm() {
               className="mt-0.5 w-3.5 h-3.5 rounded border-slate-600 bg-slate-700 text-yellow-400 focus:ring-yellow-400/50 shrink-0"
             />
             <span className="text-slate-400 text-sm leading-snug">
-              Concordo com os{' '}
+              Concordo com os{" "}
               <button type="button" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 termos de uso
               </button>
-              {' '}e{' '}
+              {" "}e{" "}
               <button type="button" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 política de privacidade
               </button>
@@ -306,7 +307,7 @@ export function RegisterForm() {
               disabled={isPending}
               className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-semibold py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-slate-800 text-sm"
             >
-              {isPending ? 'Criando...' : 'Criar Conta'}
+              {isPending ? "Criando..." : "Criar Conta"}
             </button>
           </div>
         </form>
@@ -314,7 +315,7 @@ export function RegisterForm() {
         {/* Link para Login */}
         <div className="mt-5 text-center">
           <p className="text-slate-400 text-sm">
-            Já tem uma conta?{' '}
+            Já tem uma conta?{" "}
             <Link
               href="/auth/login"
               className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors"
@@ -325,5 +326,5 @@ export function RegisterForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }

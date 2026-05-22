@@ -62,11 +62,11 @@ function handle_repository_error(error: unknown): never {
 
       // Check both target array and error message for CPF field
       // Constraint name changed from leads_cpf_key to leads_cpf_corretor_id_key after migration
-      const isCpfError = target?.includes("cpf") || 
-                        error.message?.includes("cpf") ||
-                        error.message?.includes("leads_cpf_key") ||
+      const isCpfError = target?.includes("cpf") ??
+                        error.message?.includes("cpf") ??
+                        error.message?.includes("leads_cpf_key") ??
                         error.message?.includes("leads_cpf_corretor_id_key");
-      
+
       if (isCpfError) {
         throw { error: "CPF_ALREADY_EXISTS" } satisfies RepositoryError;
       }
@@ -92,7 +92,7 @@ async function find_all(corretor_id: string): Promise<Lead[]> {
   try {
     const leads = await prisma.lead.findMany({
       where: { corretor_id },
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
 
     return leads.map(map_prisma_to_lead);

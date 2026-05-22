@@ -70,7 +70,7 @@ describe("List consistency after lead creation", () => {
         renda_mensal: 6000,
       };
 
-      const createdLead = await create_lead(mockRepository, input, "corretor-test-id");
+      const _createdLead = await create_lead(mockRepository, input, "corretor-test-id");
       const leadsList = await list_leads(mockRepository, "corretor-test-id");
 
       const listedLead = leadsList[0];
@@ -343,7 +343,7 @@ describe("List consistency after lead creation", () => {
       };
 
       await create_lead(mockRepository, input, "corretor-test-id");
-      
+
       const leadsList1 = await list_leads(mockRepository, "corretor-test-id");
       const leadsList2 = await list_leads(mockRepository, "corretor-test-id");
 

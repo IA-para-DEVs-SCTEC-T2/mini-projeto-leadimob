@@ -1,12 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { CreateLeadSchema, UpdateLeadSchema, type CreateLeadInput, type UpdateLeadInput } from "@/schemas/lead.schema";
-import { create_lead } from "@/services/create_lead";
-import { update_lead } from "@/services/update_lead";
-import { delete_lead } from "@/services/delete_lead";
+
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
+import { type CreateLeadInput, CreateLeadSchema, type UpdateLeadInput,UpdateLeadSchema } from "@/schemas/lead.schema";
+import { create_lead } from "@/services/create_lead";
+import { delete_lead } from "@/services/delete_lead";
+import { update_lead } from "@/services/update_lead";
 
 type ActionResult =
   | {
@@ -26,7 +27,7 @@ export async function create_lead_action(
 ): Promise<ActionResult> {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     return {
       success: false,
@@ -135,7 +136,7 @@ export async function update_lead_action(
 ): Promise<ActionResult> {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     return {
       success: false,
@@ -235,7 +236,7 @@ export async function update_lead_action(
 export async function delete_lead_action(id: string): Promise<ActionResult> {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     return {
       success: false,

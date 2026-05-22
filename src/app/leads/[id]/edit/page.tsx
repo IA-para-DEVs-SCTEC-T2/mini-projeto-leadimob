@@ -1,8 +1,9 @@
-import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { lead_repository } from "@/infra/repositories/lead_repository";
+import { notFound, redirect } from "next/navigation";
+
 import LeadForm from "@/components/lead_form";
+import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 
 interface EditLeadPageProps {
   params: Promise<{ id: string }>;
@@ -11,7 +12,7 @@ interface EditLeadPageProps {
 export default async function EditLeadPage({ params }: EditLeadPageProps) {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     redirect("/auth/login");
   }

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { lead_repository } from "@/infra/repositories/lead_repository";
-import PriorityBadge from "@/components/priority_badge";
+
 import LeadActions from "@/components/lead_actions";
+import PriorityBadge from "@/components/priority_badge";
+import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import {
   format_currency,
   format_date,
@@ -20,7 +21,7 @@ export default async function LeadDetailPage({
 }: LeadDetailPageProps) {
   // Verificar autenticação
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     redirect("/auth/login");
   }

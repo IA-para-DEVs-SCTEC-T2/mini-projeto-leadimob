@@ -6,8 +6,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/lib/auth";
 import { lead_repository } from "@/infra/repositories/lead_repository";
+import { auth } from "@/lib/auth";
 import { CreateLeadSchema } from "@/schemas/lead.schema";
 import { create_lead } from "@/services/create_lead";
 import { list_leads } from "@/services/list_leads";
