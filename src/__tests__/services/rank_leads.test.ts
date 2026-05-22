@@ -3,7 +3,7 @@ import type { Lead } from "@/types/lead";
 
 describe("rank_leads", () => {
   // Task 8.3: Unit tests for rank_leads function
-  
+
   const mockLeads: Lead[] = [
     {
       id: "1",
@@ -18,7 +18,7 @@ describe("rank_leads", () => {
       created_at: new Date("2024-01-01T10:00:00Z"),
     },
     {
-      id: "2", 
+      id: "2",
       nome: "Bruno Lima",
       email: "bruno@example.com",
       cpf: "22255588846",
@@ -32,7 +32,7 @@ describe("rank_leads", () => {
     {
       id: "3",
       nome: "Carla Melo",
-      email: "carla@example.com", 
+      email: "carla@example.com",
       cpf: "33366699957",
       telefone: "11777777777",
       valor_imovel: 450000,
@@ -46,7 +46,7 @@ describe("rank_leads", () => {
       nome: "David Silva",
       email: "david@example.com",
       cpf: "44477700068",
-      telefone: "11666666666", 
+      telefone: "11666666666",
       valor_imovel: 500000,
       renda_mensal: 0,
       score: null,
@@ -70,7 +70,7 @@ describe("rank_leads", () => {
   describe("Sort by score (default)", () => {
     it("should sort leads by score in descending order", () => {
       const result = rank_leads(mockLeads, "score");
-      
+
       expect(result).toHaveLength(5);
       expect(result[0].id).toBe("5"); // Elena - score 160
       expect(result[1].id).toBe("1"); // Ana - score 90
@@ -81,7 +81,7 @@ describe("rank_leads", () => {
 
     it("should use default sort by score when no sort option provided", () => {
       const result = rank_leads(mockLeads);
-      
+
       expect(result[0].score).toBe(200); // Elena - score 200
       expect(result[1].score).toBe(180); // Ana - score 180
       expect(result[2].score).toBe(94.74); // Bruno - score 94.74
@@ -99,14 +99,14 @@ describe("rank_leads", () => {
         },
         {
           ...mockLeads[1],
-          id: "same2", 
+          id: "same2",
           score: 80,
           created_at: new Date("2024-01-01T12:00:00Z"), // Later
         },
       ];
 
       const result = rank_leads(leadsWithSameScore, "score");
-      
+
       expect(result[0].id).toBe("same2"); // Later creation date first
       expect(result[1].id).toBe("same1");
     });
@@ -115,7 +115,7 @@ describe("rank_leads", () => {
       const result = rank_leads(mockLeads, "score");
       const scoredLeads = result.filter(lead => lead.score !== null);
       const unclassifiedLeads = result.filter(lead => lead.score === null);
-      
+
       expect(scoredLeads).toHaveLength(4);
       expect(unclassifiedLeads).toHaveLength(1);
       expect(unclassifiedLeads[0].priority).toBe("NaoClassificado");
@@ -125,7 +125,7 @@ describe("rank_leads", () => {
   describe("Sort by priority", () => {
     it("should sort leads by priority order (Alto > Medio > Baixo > NaoClassificado)", () => {
       const result = rank_leads(mockLeads, "priority");
-      
+
       expect(result[0].priority).toBe("Alto");   // Elena or Ana
       expect(result[1].priority).toBe("Alto");   // Ana or Elena or Bruno
       expect(result[2].priority).toBe("Alto");   // Bruno
@@ -135,7 +135,7 @@ describe("rank_leads", () => {
 
     it("should handle leads with same priority by creation date (newer first)", () => {
       const result = rank_leads(mockLeads, "priority");
-      
+
       // Both Elena and Ana have "Alto" priority
       // Elena created at 09:00, Ana at 10:00, Bruno at 11:00 - Ana should come first (newer among Ana and Elena)
       const altoLeads = result.filter(lead => lead.priority === "Alto");
@@ -146,7 +146,7 @@ describe("rank_leads", () => {
 
     it("should include all leads regardless of score when sorting by priority", () => {
       const result = rank_leads(mockLeads, "priority");
-      
+
       expect(result).toHaveLength(5);
       expect(result.some(lead => lead.score === null)).toBe(true);
     });
@@ -155,7 +155,7 @@ describe("rank_leads", () => {
   describe("Sort by renda_mensal", () => {
     it("should sort leads by renda_mensal in descending order", () => {
       const result = rank_leads(mockLeads, "renda");
-      
+
       expect(result[0].renda_mensal).toBe(12000); // Ana
       expect(result[1].renda_mensal).toBe(8000);  // Elena
       expect(result[2].renda_mensal).toBe(6000);  // Bruno
@@ -180,7 +180,7 @@ describe("rank_leads", () => {
       ];
 
       const result = rank_leads(leadsWithSameRenda, "renda");
-      
+
       expect(result[0].id).toBe("renda2"); // Later creation date first
       expect(result[1].id).toBe("renda1");
     });
@@ -189,7 +189,7 @@ describe("rank_leads", () => {
   describe("Sort by valor_imovel", () => {
     it("should sort leads by valor_imovel in descending order", () => {
       const result = rank_leads(mockLeads, "valor_imovel");
-      
+
       expect(result[0].valor_imovel).toBe(500000); // David
       expect(result[1].valor_imovel).toBe(450000); // Carla
       expect(result[2].valor_imovel).toBe(400000); // Ana
@@ -214,7 +214,7 @@ describe("rank_leads", () => {
       ];
 
       const result = rank_leads(leadsWithSameValor, "valor_imovel");
-      
+
       expect(result[0].id).toBe("valor2"); // Later creation date first
       expect(result[1].id).toBe("valor1");
     });
@@ -223,14 +223,14 @@ describe("rank_leads", () => {
   describe("Edge cases", () => {
     it("should handle empty array", () => {
       const result = rank_leads([], "score");
-      
+
       expect(result).toEqual([]);
     });
 
     it("should handle array with single lead", () => {
       const singleLead = [mockLeads[0]];
       const result = rank_leads(singleLead, "score");
-      
+
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(mockLeads[0]);
     });
@@ -250,7 +250,7 @@ describe("rank_leads", () => {
       ];
 
       const result = rank_leads(unclassifiedLeads, "score");
-      
+
       expect(result).toHaveLength(2);
       expect(result[0].id).toBe("unclass1"); // Earlier creation date first for unclassified
       expect(result[1].id).toBe("unclass2");
@@ -266,7 +266,7 @@ describe("rank_leads", () => {
       }));
 
       const result = rank_leads(sameScoreLeads, "score");
-      
+
       expect(result).toHaveLength(3);
       expect(result[0].id).toBe("same2"); // Latest creation date
       expect(result[1].id).toBe("same1");
@@ -276,7 +276,7 @@ describe("rank_leads", () => {
     it("should not mutate original array", () => {
       const originalLeads = [...mockLeads];
       const result = rank_leads(mockLeads, "score");
-      
+
       expect(mockLeads).toEqual(originalLeads);
       expect(result).not.toBe(mockLeads); // Different array reference
     });
@@ -284,7 +284,7 @@ describe("rank_leads", () => {
     it("should handle invalid sort option gracefully", () => {
       // TypeScript should prevent this, but testing runtime behavior
       const result = rank_leads(mockLeads, "invalid" as SortOption);
-      
+
       // Should fall through to default case (score sorting) and filter out unclassified leads
       expect(result).toHaveLength(4); // Only scored leads
       expect(result.every(lead => lead.score !== null)).toBe(true);
@@ -294,7 +294,7 @@ describe("rank_leads", () => {
   describe("Type safety", () => {
     it("should maintain lead object structure", () => {
       const result = rank_leads(mockLeads, "score");
-      
+
       result.forEach(lead => {
         expect(lead).toHaveProperty("id");
         expect(lead).toHaveProperty("nome");
@@ -311,7 +311,7 @@ describe("rank_leads", () => {
 
     it("should preserve all lead data during sorting", () => {
       const result = rank_leads(mockLeads, "score");
-      
+
       // Check that all original leads are present
       mockLeads.forEach(originalLead => {
         const foundLead = result.find(lead => lead.id === originalLead.id);

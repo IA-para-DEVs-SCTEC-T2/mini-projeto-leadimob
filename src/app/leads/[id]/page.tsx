@@ -92,7 +92,7 @@ export default async function LeadDetailPage({
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Pessoais
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm text-slate-400 mb-1">
@@ -144,7 +144,7 @@ export default async function LeadDetailPage({
             <h3 className="text-lg font-semibold text-yellow-400 mb-6 uppercase tracking-wide">
               Dados Financeiros
             </h3>
-            
+
             <div className="space-y-6">
               <div className="bg-slate-700/50 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">

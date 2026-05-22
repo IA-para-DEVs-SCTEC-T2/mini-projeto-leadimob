@@ -24,14 +24,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/leads', request.url));
   }
   // Aplicar rate limiting apenas nas rotas de criação de leads
-  if (request.nextUrl.pathname === '/leads/novo' || 
-      request.nextUrl.pathname.startsWith('/leads') && request.method === 'POST') {
-    
+  if (request.nextUrl.pathname === "/leads/novo" ||
+      request.nextUrl.pathname.startsWith("/leads") && request.method === "POST") {
+
     // Obter IP do cliente (considerando proxies)
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
-               request.headers.get('x-real-ip') || 
-               'unknown';
-    
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ??
+               request.headers.get("x-real-ip") ??
+               "unknown";
+
     const now = Date.now();
     const entry = request_counts.get(ip);
 
@@ -42,30 +42,30 @@ export async function proxy(request: NextRequest) {
       // Limite excedido - retornar erro 429
       return new Response(
         JSON.stringify({
-          error: 'Too Many Requests',
+          error: "Too Many Requests",
           message: `Rate limit exceeded. Maximum ${LIMIT} requests per minute allowed.`,
-          retry_after: Math.ceil((entry.reset_at - now) / 1000)
+          retry_after: Math.ceil((entry.reset_at - now) / 1000),
         }),
-        { 
+        {
           status: 429,
           headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': Math.ceil((entry.reset_at - now) / 1000).toString(),
-            'X-RateLimit-Limit': LIMIT.toString(),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': entry.reset_at.toString()
-          }
-        }
+            "Content-Type": "application/json",
+            "Retry-After": Math.ceil((entry.reset_at - now) / 1000).toString(),
+            "X-RateLimit-Limit": LIMIT.toString(),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": entry.reset_at.toString(),
+          },
+        },
       );
     } else {
       // Incrementar contador
       entry.count++;
-      
+
       // Adicionar headers informativos sobre rate limit
       const response = new Response(null, { status: 200 });
-      response.headers.set('X-RateLimit-Limit', LIMIT.toString());
-      response.headers.set('X-RateLimit-Remaining', (LIMIT - entry.count).toString());
-      response.headers.set('X-RateLimit-Reset', entry.reset_at.toString());
+      response.headers.set("X-RateLimit-Limit", LIMIT.toString());
+      response.headers.set("X-RateLimit-Remaining", (LIMIT - entry.count).toString());
+      response.headers.set("X-RateLimit-Reset", entry.reset_at.toString());
     }
   }
 

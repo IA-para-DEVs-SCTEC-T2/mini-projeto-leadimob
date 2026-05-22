@@ -153,12 +153,12 @@ export async function update_lead_action(
 
   // Convert to proper types
   const data = {
-    nome: nome?.toString() || "",
-    email: email?.toString() || "",
-    cpf: cpf?.toString() || "",
-    telefone: telefone?.toString() || "",
-    valor_imovel: parseFloat(valor_imovel?.toString() || "0"),
-    renda_mensal: parseFloat(renda_mensal?.toString() || "0"),
+    nome: nome?.toString() ?? "",
+    email: email?.toString() ?? "",
+    cpf: cpf?.toString() ?? "",
+    telefone: telefone?.toString() ?? "",
+    valor_imovel: parseFloat(valor_imovel?.toString() ?? "0"),
+    renda_mensal: parseFloat(renda_mensal?.toString() ?? "0"),
   };
 
   // Validate with Zod

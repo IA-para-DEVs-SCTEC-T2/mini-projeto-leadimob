@@ -1,5 +1,5 @@
 import { update_lead } from "@/services/update_lead";
-import type { LeadRepository, UpdateLeadInput, Lead } from "@/types/lead";
+import type { Lead,LeadRepository, UpdateLeadInput } from "@/types/lead";
 
 describe("update_lead", () => {
   const mock_repository: LeadRepository = {

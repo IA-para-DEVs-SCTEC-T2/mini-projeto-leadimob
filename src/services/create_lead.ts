@@ -1,11 +1,11 @@
+import { normalize_email } from "@/domain/entities/lead";
+import { calculate_lead_score } from "@/domain/rules/calculate_lead_score";
 import type {
   CreateLeadData,
   CreateLeadInput,
   Lead,
   LeadRepository,
 } from "@/types/lead";
-import { normalize_email } from "@/domain/entities/lead";
-import { calculate_lead_score } from "@/domain/rules/calculate_lead_score";
 
 export async function create_lead(
   repository: LeadRepository,

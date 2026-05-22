@@ -1,12 +1,12 @@
-import { Prisma } from "@/generated/prisma/client";
 import type { Lead as PrismaLead } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/infra/db/prisma";
 import type {
   CreateLeadData,
-  UpdateLeadData,
   Lead,
   LeadPriority,
   LeadRepository,
+  UpdateLeadData,
 } from "@/types/lead";
 
 type RepositoryError = {
@@ -15,13 +15,13 @@ type RepositoryError = {
 
 function map_priority(priority: string): LeadPriority {
   switch (priority) {
-    case "Alto":
-    case "Medio":
-    case "Baixo":
-    case "NaoClassificado":
-      return priority;
-    default:
-      throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
+  case "Alto":
+  case "Medio":
+  case "Baixo":
+  case "NaoClassificado":
+    return priority;
+  default:
+    throw { error: "DATABASE_UNAVAILABLE" } satisfies RepositoryError;
   }
 }
 
@@ -59,7 +59,7 @@ function handle_repository_error(error: unknown): never {
     if (error.code === "P2002") {
       // P2002 is unique constraint violation
       const target = error.meta?.target as string[] | undefined;
-      
+
       // Check both target array and error message for CPF field
       // Constraint name changed from leads_cpf_key to leads_cpf_corretor_id_key after migration
       const isCpfError = target?.includes("cpf") || 

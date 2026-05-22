@@ -263,7 +263,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           email: "test@example.com",
-        })
+        }),
       );
     });
 
@@ -297,7 +297,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           email: "test@example.com",
-        })
+        }),
       );
     });
   });
@@ -334,7 +334,7 @@ describe("create_lead service", () => {
         expect.objectContaining({
           score: 96,
           priority: "Alto",
-        })
+        }),
       );
     });
 
@@ -350,6 +350,16 @@ describe("create_lead service", () => {
 
       const expectedScore = Math.round(((5500 * 12 * 5) / 350000) * 100 * 100) / 100;
 
+      const getPriority = (score: number): "Alto" | "Medio" | "Baixo" => {
+        if (score >= 80) {
+          return "Alto";
+        }
+        if (score >= 40) {
+          return "Medio";
+        }
+        return "Baixo";
+      };
+
       const expectedLead: Lead = {
         id: "decimal-id",
         nome: "Decimal Test",
@@ -359,7 +369,7 @@ describe("create_lead service", () => {
         valor_imovel: 350000,
         renda_mensal: 5500,
         score: expectedScore,
-        priority: expectedScore >= 80 ? "Alto" : expectedScore >= 40 ? "Medio" : "Baixo",
+        priority: getPriority(expectedScore),
         created_at: new Date(),
       };
 
@@ -370,7 +380,7 @@ describe("create_lead service", () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           score: expectedScore,
-        })
+        }),
       );
     });
   });
@@ -508,7 +518,7 @@ describe("create_lead service", () => {
           valor_imovel: 400000.50,
           renda_mensal: 12000.75,
           score: expect.any(Number),
-        })
+        }),
       );
     });
   });

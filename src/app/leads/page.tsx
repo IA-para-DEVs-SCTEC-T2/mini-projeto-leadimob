@@ -6,9 +6,9 @@ import { lead_repository } from "@/infra/repositories/lead_repository";
 import type { Lead } from "@/types/lead";
 import type { SortOption } from "@/services/rank_leads";
 import PriorityBadge from "@/components/priority_badge";
-import SortSelector from "@/components/sort_selector";
 import SearchFilter from "@/components/search_filter";
 import { LogoutButton } from "@/components/logout_button";
+import SortSelector from "@/components/sort_selector";
 import { format_currency, format_score } from "@/lib/formatters";
 
 interface LeadStats {
@@ -22,9 +22,13 @@ function calculate_stats(leads: Lead[]): LeadStats {
   return leads.reduce(
     (stats, lead) => {
       stats.total += 1;
-      if (lead.priority === "Alto") stats.alto += 1;
-      else if (lead.priority === "Medio") stats.medio += 1;
-      else if (lead.priority === "Baixo") stats.baixo += 1;
+      if (lead.priority === "Alto") {
+        stats.alto += 1;
+      } else if (lead.priority === "Medio") {
+        stats.medio += 1;
+      } else if (lead.priority === "Baixo") {
+        stats.baixo += 1;
+      }
       return stats;
     },
     {
@@ -37,7 +41,17 @@ function calculate_stats(leads: Lead[]): LeadStats {
 }
 
 interface LeadsPageProps {
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string }>;
+}
+
+function matches_search(lead: Lead, query: string): boolean {
+  if (!query) {
+    return true;
+  }
+
+  return `${lead.nome} ${lead.email} ${lead.telefone}`
+    .toLowerCase()
+    .includes(query);
 }
 
 export default async function LeadsPage({ searchParams }: LeadsPageProps) {
@@ -49,12 +63,13 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   }
 
   const params = await searchParams;
-  
+  const search_query = (params.q ?? "").trim().toLowerCase();
+
   // Whitelist de opções válidas de ordenação
-  const VALID_SORTS: SortOption[] = ['score', 'priority', 'renda', 'valor_imovel'];
+  const VALID_SORTS: SortOption[] = ["score", "priority", "renda", "valor_imovel"];
   const sort_by: SortOption = VALID_SORTS.includes(params.sort as SortOption)
     ? (params.sort as SortOption)
-    : 'score';
+    : "score";
 
   let leads: Lead[] = [];
   let error: string | null = null;
@@ -68,6 +83,7 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
   }
 
   const stats = calculate_stats(leads);
+  const filtered_leads = leads.filter((lead) => matches_search(lead, search_query));
 
   return (
     <div className="min-h-screen">
@@ -136,8 +152,20 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
           </div>
         )}
 
+        {!error && leads.length > 0 && filtered_leads.length === 0 && (
+          <div className="rounded-lg border border-slate-600 bg-slate-800 p-12 text-center">
+            <div className="mb-4 text-5xl">🔍</div>
+            <h2 className="mb-2 text-xl font-semibold text-slate-100">
+              Nenhum lead encontrado
+            </h2>
+            <p className="text-slate-400">
+              Tente buscar por nome, email ou telefone.
+            </p>
+          </div>
+        )}
+
         {/* Stats Section */}
-        {!error && leads.length > 0 && (
+        {!error && leads.length > 0 && filtered_leads.length > 0 && (
           <>
             <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
               <div className="rounded-lg border border-slate-600 bg-slate-800 p-3 sm:p-4">
@@ -207,14 +235,13 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
                     </th>
                   </tr>
                 </thead>
-                <tbody id="leads-table-body">
-                  {leads.map((lead, index) => (
+                <tbody>
+                  {filtered_leads.map((lead, index) => (
                     <tr
                       key={lead.id}
-                      className={`lead-row border-b border-slate-700 transition-colors hover:bg-slate-700/50 ${
+                      className={`border-b border-slate-700 transition-colors hover:bg-slate-700/50 ${
                         index % 2 === 0 ? "bg-slate-800" : "bg-slate-800/50"
                       }`}
-                      data-search-text={`${lead.nome} ${lead.email} ${lead.telefone}`.toLowerCase()}
                     >
                       <td className="px-6 py-4">
                         <div className="font-medium text-slate-100">
@@ -258,12 +285,11 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
             </div>
 
             {/* Card View - Mobile */}
-            <div className="space-y-3 rounded-b-lg border border-t-0 border-slate-600 bg-slate-800 p-4 lg:hidden" id="leads-cards-container">
-              {leads.map((lead) => (
+            <div className="space-y-3 rounded-b-lg border border-t-0 border-slate-600 bg-slate-800 p-4 lg:hidden">
+              {filtered_leads.map((lead) => (
                 <div
                   key={lead.id}
-                  className="lead-card rounded-lg border border-slate-700 bg-slate-700/50 p-4"
-                  data-search-text={`${lead.nome} ${lead.email} ${lead.telefone}`.toLowerCase()}
+                  className="rounded-lg border border-slate-700 bg-slate-700/50 p-4"
                 >
                   {/* Lead Name and Priority */}
                   <div className="mb-3 flex items-start justify-between gap-2">

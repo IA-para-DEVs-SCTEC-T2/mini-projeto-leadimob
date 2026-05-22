@@ -40,13 +40,18 @@ export async function register_action(
   // Tentar criar o corretor
   try {
     await create_corretor(corretor_repository, result.data)
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Erro de email duplicado
-    if (error?.error === 'EMAIL_ALREADY_EXISTS') {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'error' in error &&
+      (error as { error: string }).error === 'EMAIL_ALREADY_EXISTS'
+    ) {
       return {
         success: false,
         errors: {
-          _form: ['Não foi possível criar a conta. Verifique os dados e tente novamente.'],
+          _form: ['Dados já cadastrados. Tente fazer login ou use outro endereço.'],
         },
       }
     }
@@ -61,6 +66,6 @@ export async function register_action(
     }
   }
 
-  // Sucesso - redirecionar para login
+  // Sucesso - redirecionar para login (fora do try/catch para não capturar NEXT_REDIRECT)
   redirect('/auth/login')
 }

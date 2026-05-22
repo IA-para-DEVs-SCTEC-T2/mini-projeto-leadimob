@@ -1,5 +1,5 @@
-import type { Lead, LeadRepository } from "@/types/lead";
 import { rank_leads, type SortOption } from "@/services/rank_leads";
+import type { Lead, LeadRepository } from "@/types/lead";
 
 export async function list_leads(
   lead_repository: LeadRepository,

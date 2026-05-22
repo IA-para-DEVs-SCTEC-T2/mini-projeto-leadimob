@@ -1,11 +1,11 @@
-import type {
-  UpdateLeadData,
-  UpdateLeadInput,
-  Lead,
-  LeadRepository,
-} from "@/types/lead";
 import { normalize_email } from "@/domain/entities/lead";
 import { calculate_lead_score } from "@/domain/rules/calculate_lead_score";
+import type {
+  Lead,
+  LeadRepository,
+  UpdateLeadData,
+  UpdateLeadInput,
+} from "@/types/lead";
 
 export async function update_lead(
   repository: LeadRepository,
