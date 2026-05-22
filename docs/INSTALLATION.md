@@ -1,6 +1,6 @@
 # LeadImobi — Guia de Instalação
 
-Este documento explica como preparar o ambiente e executar a API LeadImobi localmente.
+Este documento explica como preparar o ambiente e executar o LeadImobi localmente.
 
 ---
 
@@ -107,12 +107,14 @@ Você deve ver arquivos como `package.json`, `next.config.ts`, `prisma/`, etc.
 npm install
 ```
 
-Este comando:
-- Baixa todas as dependências listadas em `package.json`
-- Instala Next.js, Prisma, Zod, Tailwind CSS e outras bibliotecas
-- Cria a pasta `node_modules/`
+Este comando instala Next.js, Prisma, NextAuth.js, bcryptjs, Zod, Tailwind CSS e todas as outras dependências.
 
 **Tempo estimado**: 2-5 minutos (depende da velocidade da internet)
+
+> Este comando:
+> - Baixa todas as dependências listadas em `package.json`
+> - Instala Next.js, Prisma, Zod, Tailwind CSS e outras bibliotecas
+> - Cria a pasta `node_modules/`
 
 ---
 
@@ -126,8 +128,6 @@ cp .env.example .env
 
 ### 2. Editar o Arquivo `.env`
 
-Abra o arquivo `.env` em seu editor de texto favorito:
-
 ```bash
 # macOS/Linux
 nano .env
@@ -136,38 +136,38 @@ nano .env
 code .env
 ```
 
-### 3. Preencher a Variável `DATABASE_URL`
+### 3. Preencher as Variáveis
 
-Substitua a linha:
-
-```
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/leadimobi?schema=public"
-```
-
-Por:
-
-```
+```env
+# Conexão com o banco de dados PostgreSQL
 DATABASE_URL="postgresql://postgres:sua_senha@localhost:5432/leadimobi?schema=public"
+
+# Chave secreta para assinar tokens JWT (NextAuth.js)
+# Gere uma chave segura com: openssl rand -base64 32
+NEXTAUTH_SECRET="sua-chave-secreta-aqui"
+
+# URL base da aplicação
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
-**Onde**:
-- `postgres` — usuário padrão do PostgreSQL
-- `sua_senha` — senha que você definiu ao instalar PostgreSQL
-- `localhost:5432` — host e porta padrão do PostgreSQL
-- `leadimobi` — nome do banco de dados criado anteriormente
+#### Gerar `NEXTAUTH_SECRET`
 
-### Exemplo Completo
+```bash
+# macOS/Linux
+openssl rand -base64 32
 
-Se você criou o banco sem senha (desenvolvimento local):
-
-```
-DATABASE_URL="postgresql://postgres@localhost:5432/leadimobi?schema=public"
+# Windows (PowerShell)
+[Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
 ```
 
-Se você definiu uma senha:
+> ⚠️ **Importante**: `NEXTAUTH_SECRET` é obrigatório. Sem ele, a autenticação não funcionará.
 
-```
-DATABASE_URL="postgresql://postgres:minha_senha_segura@localhost:5432/leadimobi?schema=public"
+#### Exemplo Completo de `.env`
+
+```env
+DATABASE_URL="postgresql://postgres:minha_senha@localhost:5432/leadimobi?schema=public"
+NEXTAUTH_SECRET="K7xP2mN9qR4vL8wJ3hF6yT1cB5nA0eD"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ---
@@ -182,14 +182,14 @@ npm run setup
 
 Este comando:
 - Executa todas as migrações Prisma
-- Cria as tabelas no banco de dados
+- Cria as tabelas `corretores` e `leads` no banco de dados
 - Gera o cliente Prisma atualizado
 
 **Saída esperada**:
 ```
-✔ Generated Prisma Client (v7.8.0) to ./node_modules/@prisma/client in 234ms
+✔ Generated Prisma Client (v7.x.x) to ./node_modules/@prisma/client
 
-Running migrations to the same database that's used by Prisma introspection.
+Running migrations...
 
 Prisma Migrate applied the following migration(s):
 
@@ -197,11 +197,13 @@ migrations/
   ✔ 20260507184654_init
   ✔ 20260513000000_add_cpf_field
   ✔ 20260516000331_convert_priority_to_enum
+  ✔ 20260517230645_add_corretor_auth
+  ✔ 20260521000119_add_telefone_corretor
 
 All migrations have been successfully applied.
 ```
 
-### 2. Verificar Banco de Dados
+### 2. Verificar Banco de Dados (opcional)
 
 ```bash
 npm run db:studio
@@ -210,7 +212,8 @@ npm run db:studio
 Isso abre uma interface visual do banco em `http://localhost:5555`.
 
 Você deve ver as tabelas:
-- `leads` — Tabela principal com dados dos leads
+- `corretores` — Contas dos corretores
+- `leads` — Leads cadastrados por cada corretor
 
 ---
 
@@ -239,7 +242,7 @@ Abra seu navegador e acesse:
 http://localhost:3000
 ```
 
-Você deve ver a página inicial com a lista de leads (vazia no início).
+Você será redirecionado para `/auth/login`. Como ainda não tem conta, clique em **"Criar conta"** para se cadastrar.
 
 ### Parar o Servidor
 
@@ -247,33 +250,12 @@ Pressione `Ctrl + C` no terminal.
 
 ---
 
-## 🚀 Executar em Modo Padrão (Produção)
+## 🚀 Executar em Modo de Produção
 
 ### 1. Build da Aplicação
 
 ```bash
 npm run build
-```
-
-**Saída esperada**:
-```
-  ▲ Next.js 16.2.6
-
-  ✓ Compiled successfully
-  ✓ Linting and checking validity of types
-  ✓ Collecting page data
-  ✓ Generating static pages (3/3)
-  ✓ Finalizing page optimization
-
-Route (kind)                 Size     First Load JS
-┌ ○ /                        0 B            73 kB
-├ ○ /api/docs               0 B            73 kB
-├ ○ /leads                  0 B            73 kB
-├ ○ /leads/[id]             0 B            73 kB
-├ ○ /leads/[id]/edit        0 B            73 kB
-└ ○ /leads/new              0 B            73 kB
-
-✓ Build successful
 ```
 
 ### 2. Iniciar o Servidor de Produção
@@ -282,133 +264,165 @@ Route (kind)                 Size     First Load JS
 npm run start
 ```
 
-**Saída esperada**:
-```
-  ▲ Next.js 16.2.6
-  - Local:        http://localhost:3000
-
-✓ Ready in 1.2s
-```
-
-### 3. Acessar a Aplicação
-
-```
-http://localhost:3000
-```
-
 ---
 
-## ✅ Validar se a API Está Funcionando
+## ✅ Validar se a Aplicação Está Funcionando
 
-### 1. Verificar a Página Principal
+### 1. Criar uma Conta de Corretor
 
 Acesse no navegador:
 
 ```
-http://localhost:3000
+http://localhost:3000/auth/register
 ```
 
-Você deve ver a página de leads (vazia inicialmente).
+Preencha:
+- Nome: `João Silva`
+- E-mail: `joao@example.com`
+- Senha: `minhasenha123`
 
-### 2. Testar a API com cURL
+Após o cadastro, você será redirecionado para a página de login.
 
-#### Listar Leads (deve retornar lista vazia)
+### 2. Fazer Login
 
+Acesse:
+
+```
+http://localhost:3000/auth/login
+```
+
+Use as credenciais que você acabou de criar. Após o login, você será redirecionado para `/leads`.
+
+### 3. Cadastrar um Lead de Teste
+
+Na página de leads, clique em **"Novo Lead"** e preencha:
+
+- Nome: `Ana Costa`
+- E-mail: `ana@example.com`
+- CPF: `529.982.247-25`
+- Telefone: `(11) 98765-4321`
+- Valor do Imóvel: `400000`
+- Renda Mensal: `12000`
+
+O lead deve aparecer na lista com score **90,00** e prioridade **🟢 Alto**.
+
+### 4. Testar a API com cURL
+
+**Listar leads** (requer cookie de sessão):
 ```bash
-curl -X GET http://localhost:3000/api/leads
+curl -X GET http://localhost:3000/api/leads \
+  -H "Cookie: next-auth.session-token=<seu-token>"
 ```
 
-**Resposta esperada**:
-```json
-{
-  "success": true,
-  "data": [],
-  "total": 0
-}
-```
-
-#### Criar um Lead de Teste
-
-```bash
-curl -X POST http://localhost:3000/api/leads \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nome": "João Silva",
-    "email": "joao@example.com",
-    "cpf": "12345678901",
-    "telefone": "11987654321",
-    "valor_imovel": 400000,
-    "renda_mensal": 12000
-  }'
-```
-
-**Resposta esperada**:
-```json
-{
-  "success": true,
-  "data": {
-    "id": "uuid-aqui",
-    "nome": "João Silva",
-    "email": "joao@example.com",
-    "cpf": "123.456.789-01",
-    "telefone": "(11) 98765-4321",
-    "valor_imovel": 400000,
-    "renda_mensal": 12000,
-    "score": 90.00,
-    "priority": "Alto",
-    "created_at": "2026-05-19T10:30:00Z"
-  }
-}
-```
-
-#### Listar Leads Novamente
-
-```bash
-curl -X GET http://localhost:3000/api/leads
-```
-
-Agora deve retornar o lead criado.
-
-### 3. Acessar a Documentação Interativa
-
-Abra no navegador:
+### 5. Acessar a Documentação Interativa
 
 ```
 http://localhost:3000/api/docs
 ```
 
-Você deve ver a interface Swagger UI com todos os endpoints documentados.
-
-### 4. Testar com Postman ou Insomnia
-
-Se preferir uma interface gráfica:
-
-1. Baixe [Postman](https://www.postman.com/downloads/) ou [Insomnia](https://insomnia.rest/download)
-2. Importe a especificação OpenAPI:
-   ```
-   http://localhost:3000/api/openapi.json
-   ```
-3. Teste os endpoints diretamente
-
 ---
 
 ## 🐛 Problemas Comuns e Soluções
+
+### Erro: `NEXTAUTH_SECRET is not set`
+
+**Problema**: Variável `NEXTAUTH_SECRET` não está configurada.
+
+**Solução**:
+```bash
+# Gere uma chave segura
+openssl rand -base64 32
+
+# Adicione ao .env
+NEXTAUTH_SECRET="chave-gerada-aqui"
+```
+
+---
 
 ### Erro: `connect ECONNREFUSED 127.0.0.1:5432`
 
 **Problema**: PostgreSQL não está rodando.
 
 **Solução**:
-
 ```bash
 # macOS
 brew services start postgresql@15
 
 # Linux
 sudo systemctl start postgresql
+```
 
-# Windows
-# Abra Services (services.msc) e inicie o PostgreSQL
+---
+
+### Erro: `database "leadimobi" does not exist`
+
+**Problema**: Banco de dados não foi criado.
+
+**Solução**:
+```bash
+psql -U postgres -c "CREATE DATABASE leadimobi;"
+```
+
+---
+
+### Erro: `Error: P1000: Authentication failed`
+
+**Problema**: Senha do PostgreSQL está incorreta no `.env`.
+
+**Solução**:
+1. Verifique a senha que você definiu ao instalar PostgreSQL
+2. Atualize a variável `DATABASE_URL` no arquivo `.env`
+3. Teste a conexão:
+```bash
+psql -U postgres -d leadimobi -c "SELECT 1;"
+```
+
+---
+
+### Erro: `Port 3000 is already in use`
+
+**Problema**: Outra aplicação está usando a porta 3000.
+
+**Solução**:
+```bash
+# macOS/Linux — encontre e mate o processo
+lsof -i :3000
+kill -9 <PID>
+
+# Ou use uma porta diferente
+PORT=3001 npm run dev
+```
+
+---
+
+### Erro: `Prisma Client not found`
+
+**Problema**: Cliente Prisma não foi gerado.
+
+**Solução**:
+```bash
+npm run db:generate
+```
+
+---
+
+### Login não funciona após configurar `.env`
+
+**Problema**: Servidor ainda está usando variáveis antigas em cache.
+
+**Solução**: Pare o servidor (`Ctrl + C`) e reinicie com `npm run dev`.
+
+---
+
+### Erro: `npm ERR! code ERESOLVE`
+
+**Problema**: Conflito de dependências.
+
+**Solução**:
+```bash
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ---
@@ -418,7 +432,6 @@ sudo systemctl start postgresql
 **Problema**: Usuário PostgreSQL não foi criado corretamente.
 
 **Solução**:
-
 ```bash
 # Verifique os usuários existentes
 psql -U postgres -l
@@ -435,118 +448,15 @@ sudo apt-get install postgresql postgresql-contrib
 
 ---
 
-### Erro: `database "leadimobi" does not exist`
-
-**Problema**: Banco de dados não foi criado.
-
-**Solução**:
-
-```bash
-# Criar o banco
-psql -U postgres -c "CREATE DATABASE leadimobi;"
-
-# Verificar se foi criado
-psql -U postgres -l | grep leadimobi
-```
-
----
-
-### Erro: `Error: P1000: Authentication failed`
-
-**Problema**: Senha do PostgreSQL está incorreta no `.env`.
-
-**Solução**:
-
-1. Verifique a senha que você definiu ao instalar PostgreSQL
-2. Atualize a variável `DATABASE_URL` no arquivo `.env`
-3. Teste a conexão:
-
-```bash
-psql -U postgres -d leadimobi -c "SELECT 1;"
-```
-
----
-
-### Erro: `Port 3000 is already in use`
-
-**Problema**: Outra aplicação está usando a porta 3000.
-
-**Solução**:
-
-```bash
-# Encontre o processo usando a porta 3000
-lsof -i :3000
-
-# Mate o processo (macOS/Linux)
-kill -9 <PID>
-
-# Ou use uma porta diferente
-PORT=3001 npm run dev
-```
-
----
-
-### Erro: `npm ERR! code ERESOLVE`
-
-**Problema**: Conflito de dependências.
-
-**Solução**:
-
-```bash
-# Limpe o cache do npm
-npm cache clean --force
-
-# Delete node_modules e package-lock.json
-rm -rf node_modules package-lock.json
-
-# Reinstale
-npm install
-```
-
----
-
-### Erro: `Prisma Client not found`
-
-**Problema**: Cliente Prisma não foi gerado.
-
-**Solução**:
-
-```bash
-npm run db:generate
-```
-
----
-
 ### Erro: `ENOENT: no such file or directory, open '.env'`
 
 **Problema**: Arquivo `.env` não existe.
 
 **Solução**:
-
 ```bash
 cp .env.example .env
 # Edite o arquivo com suas configurações
 ```
-
----
-
-### Aplicação Inicia mas Não Conecta ao Banco
-
-**Problema**: Variável `DATABASE_URL` está incorreta.
-
-**Solução**:
-
-1. Verifique o formato da URL:
-   ```
-   postgresql://usuario:senha@host:porta/banco?schema=public
-   ```
-
-2. Teste a conexão manualmente:
-   ```bash
-   psql postgresql://usuario:senha@localhost:5432/leadimobi
-   ```
-
-3. Se funcionar, a URL está correta. Atualize o `.env` e reinicie.
 
 ---
 
@@ -555,7 +465,6 @@ cp .env.example .env
 **Problema**: Permissões insuficientes.
 
 **Solução**:
-
 ```bash
 # Corrija as permissões
 sudo chown -R $USER:$USER .
@@ -571,7 +480,6 @@ sudo npm install
 **Problema**: Banco de testes não está configurado.
 
 **Solução**:
-
 ```bash
 # Certifique-se de que o banco principal está funcionando
 npm run test
@@ -584,30 +492,43 @@ npm run test
 
 ---
 
+### Aplicação Inicia mas Não Conecta ao Banco
+
+**Problema**: Variável `DATABASE_URL` está incorreta.
+
+**Solução**:
+1. Verifique o formato da URL:
+   ```
+   postgresql://usuario:senha@host:porta/banco?schema=public
+   ```
+2. Teste a conexão manualmente:
+   ```bash
+   psql postgresql://usuario:senha@localhost:5432/leadimobi
+   ```
+
+---
+
 ## 📚 Próximos Passos
 
 Após a instalação bem-sucedida:
 
-1. **Explore a Interface**
-   - Acesse `http://localhost:3000`
-   - Crie alguns leads de teste
+1. **Crie sua conta de corretor** em `/auth/register`
+2. **Faça login** em `/auth/login`
+3. **Explore a Interface**
+   - Cadastre alguns leads de teste
    - Veja o cálculo automático do score
-
-2. **Teste a API**
+4. **Teste a API**
    - Acesse `http://localhost:3000/api/docs`
    - Teste os endpoints no Swagger UI
-
-3. **Leia a Documentação**
+5. **Leia a Documentação**
    - `README.md` — Visão geral do projeto
    - `docs/PRD.md` — Requisitos do produto
-   - `docs/uml_use_cases.md` — Casos de uso
-
-4. **Execute os Testes**
+   - `docs/diagrams/uml_use_cases.md` — Casos de uso
+6. **Execute os Testes**
    ```bash
    npm run test
    ```
-
-5. **Explore o Código**
+7. **Explore o Código**
    - Estrutura em `src/`
    - Regras de negócio em `src/domain/`
    - Serviços em `src/services/`
@@ -621,7 +542,8 @@ Se encontrar problemas não listados aqui:
 1. Verifique os logs do servidor (terminal onde rodou `npm run dev`)
 2. Consulte a documentação do [Next.js](https://nextjs.org/docs)
 3. Consulte a documentação do [Prisma](https://www.prisma.io/docs/)
-4. Abra uma issue no repositório
+4. Consulte a documentação do [NextAuth.js](https://authjs.dev/)
+5. Abra uma issue no repositório
 
 ---
 
@@ -649,7 +571,13 @@ Abre interface visual em `http://localhost:5555`.
 npm run db:reset
 ```
 
-⚠️ **Cuidado**: Isso deleta todos os dados!
+⚠️ **Cuidado**: Isso deleta todos os dados, incluindo contas de corretores e leads!
+
+### Executar Testes
+
+```bash
+npm run test
+```
 
 ### Linting Automático
 
@@ -671,4 +599,4 @@ Cria versão otimizada para produção em `.next/`.
 
 **Pronto para começar! 🚀**
 
-Se tudo funcionou, você agora tem a API LeadImobi rodando localmente.
+Se tudo funcionou, você agora tem o LeadImobi rodando localmente com autenticação de corretores.

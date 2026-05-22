@@ -15,6 +15,7 @@ Corretores de imóveis recebem alto volume de leads dispersos em múltiplos cana
 - **Objetividade**: Critério baseado em padrão bancário consolidado
 - **Foco**: Priorização visual clara (Alto/Médio/Baixo)
 - **Simplicidade**: Interface intuitiva, sem curva de aprendizado
+- **Privacidade**: Cada corretor acessa apenas seus próprios leads
 
 ### Público-Alvo
 - Corretores de imóveis independentes
@@ -57,16 +58,18 @@ Aplicar critério bancário consolidado (comprometimento máximo de 30% da renda
 ## 3. Objetivos do Produto
 
 ### Objetivos Principais
-1. Centralizar cadastro de leads imobiliários
-2. Calcular automaticamente índice de qualificação financeira
-3. Priorizar leads por capacidade de financiamento
-4. Reduzir tempo de qualificação manual
+1. Autenticar corretores com segurança (cadastro, login, logout)
+2. Centralizar cadastro de leads imobiliários por corretor
+3. Calcular automaticamente índice de qualificação financeira
+4. Priorizar leads por capacidade de financiamento
+5. Garantir isolamento de dados entre corretores
 
 ### Metas Funcionais
+- Cadastro de corretor em < 2 minutos
 - Cadastro de lead em < 1 minuto
 - Cálculo de índice em tempo real (< 100ms)
 - Visualização de lista priorizada instantânea
-- Suporte a 1000+ leads sem degradação de performance
+- Suporte a 1000+ leads por corretor sem degradação de performance
 
 ### Impacto Esperado
 - ↑ 70% de eficiência em vendas
@@ -78,7 +81,79 @@ Aplicar critério bancário consolidado (comprometimento máximo de 30% da renda
 
 ## 4. Funcionalidades
 
-### 4.1 Cadastro de Lead
+### 4.1 Cadastro de Corretor
+
+**Descrição**
+Formulário de registro para novos corretores criarem sua conta na plataforma.
+
+**Campos**
+- Nome completo (obrigatório, 2–100 caracteres)
+- E-mail (obrigatório, único no sistema)
+- Telefone (opcional)
+- Senha (obrigatório, mínimo 8 caracteres)
+
+**Comportamento**
+- Senha armazenada como hash bcrypt (10 rounds)
+- E-mail duplicado retorna erro específico sem revelar se a conta existe
+- Após cadastro bem-sucedido, redireciona para `/auth/login`
+
+**Dependências**
+- Validação com Zod (`RegisterSchema`)
+- `create_corretor` service
+- `corretor_repository`
+
+---
+
+### 4.2 Login de Corretor
+
+**Descrição**
+Autenticação de corretor existente com e-mail e senha.
+
+**Campos**
+- E-mail
+- Senha
+
+**Comportamento**
+- Autenticação via NextAuth.js com provider Credentials
+- Sessão JWT com expiração de 7 dias
+- Após login bem-sucedido, redireciona para `/leads`
+- Credenciais inválidas retornam erro genérico (sem revelar qual campo está errado)
+
+**Dependências**
+- NextAuth.js v5
+- `corretor_repository.find_by_email`
+- bcryptjs para comparação de hash
+
+---
+
+### 4.3 Logout
+
+**Descrição**
+Encerramento seguro da sessão do corretor.
+
+**Comportamento**
+- Invalida o token JWT
+- Redireciona para `/auth/login`
+- Botão de logout exibe o nome do corretor logado
+
+---
+
+### 4.4 Proteção de Rotas
+
+**Descrição**
+Controle de acesso baseado em autenticação via `proxy.ts`.
+
+**Regras**
+- `/leads/*` — Requer autenticação; redireciona para `/auth/login` se não autenticado
+- `/auth/*` — Redireciona para `/leads` se já autenticado
+
+**Dependências**
+- `proxy.ts` (substitui `middleware.ts` no Next.js 16)
+- `auth()` do NextAuth.js
+
+---
+
+### 4.5 Cadastro de Lead
 
 **Descrição**
 Formulário estruturado para registro de novo lead com dados financeiros essenciais.
@@ -91,19 +166,19 @@ Formulário estruturado para registro de novo lead com dados financeiros essenci
 - Valor do imóvel desejado (R$)
 - Renda mensal (R$)
 
-**Valor Gerado**
-- Centralização de dados do cliente
-- Captura de informações necessárias para qualificação
-- Validação de entrada em tempo real
+**Comportamento**
+- Lead é automaticamente vinculado ao `corretor_id` da sessão ativa
+- CPF é único por corretor (não globalmente)
+- Índice de qualificação calculado automaticamente no cadastro
 
 **Dependências**
-- Validação com Zod
-- Persistência em banco de dados (Prisma)
-- Cálculo automático de índice
+- Validação com Zod (`LeadSchema`)
+- `create_lead` service
+- `lead_repository`
 
 ---
 
-### 4.2 Cálculo de Índice de Qualificação
+### 4.6 Cálculo de Índice de Qualificação
 
 **Descrição**
 Algoritmo automático que calcula índice de qualificação financeira baseado em padrão bancário.
@@ -137,7 +212,7 @@ O índice é calculado com precisão de 2 casas decimais para maior exatidão na
 
 ---
 
-### 4.3 Classificação de Prioridade
+### 4.7 Classificação de Prioridade
 
 **Descrição**
 Categorização visual do lead em três níveis de prioridade baseado no índice.
@@ -161,10 +236,10 @@ Categorização visual do lead em três níveis de prioridade baseado no índice
 
 ---
 
-### 4.4 Lista Priorizada de Leads
+### 4.8 Lista Priorizada de Leads
 
 **Descrição**
-Visualização centralizada de todos os leads ordenados por índice de qualificação (decrescente).
+Visualização centralizada de todos os leads do corretor autenticado, ordenados por índice de qualificação.
 
 **Informações Exibidas**
 - Nome do lead
@@ -179,7 +254,7 @@ Visualização centralizada de todos os leads ordenados por índice de qualifica
 
 **Ordenação**
 - Padrão: Índice decrescente (maior para menor)
-- Alternativa: Data de cadastro (mais recente primeiro)
+- Alternativas: Prioridade, renda, valor do imóvel
 
 **Valor Gerado**
 - Visão consolidada de pipeline de leads
@@ -191,9 +266,12 @@ Visualização centralizada de todos os leads ordenados por índice de qualifica
 - Cálculo de índice
 - Componente de listagem
 
+**Isolamento**
+- Exibe apenas leads do corretor autenticado
+
 ---
 
-### 4.5 Detalhes do Lead
+### 4.9 Detalhes, Edição e Exclusão de Lead
 
 **Descrição**
 Visualização completa dos dados de um lead individual com histórico e ações.
@@ -219,9 +297,26 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - Persistência de leads
 - Componente de detalhes
 
+Funcionalidades de CRUD completo com verificação de propriedade (o corretor só pode operar sobre seus próprios leads).
+
 ---
 
 ## 5. Regras de Negócio
+
+### RN00 — Autenticação Obrigatória
+- **Regra**: Todas as operações de leads exigem corretor autenticado
+- **Condição**: Qualquer acesso a `/leads/*`
+- **Resultado Esperado**: Redirecionamento para login se não autenticado
+
+### RN00A — Isolamento de Dados
+- **Regra**: Corretor só acessa seus próprios leads
+- **Condição**: Qualquer operação de leitura, escrita ou exclusão de lead
+- **Resultado Esperado**: `corretor_id` da sessão é sempre usado como filtro
+
+### RN00B — Unicidade de E-mail de Corretor
+- **Regra**: E-mail de corretor deve ser único no sistema
+- **Condição**: Cadastro de novo corretor
+- **Resultado Esperado**: Erro genérico sem revelar existência da conta
 
 ### RN01 — Validação de Valor do Imóvel
 - **Regra**: Valor do imóvel deve ser maior que zero
@@ -241,7 +336,7 @@ Visualização completa dos dados de um lead individual com histórico e ações
 ### RN04 — Classificação de Prioridade
 - **Regra**: Classificar baseado em intervalo de índice
 - **Condição**: Após cálculo de índice
-- **Resultado Esperado**: 
+- **Resultado Esperado**:
   - Índice ≥ 80 → Alto
   - Índice 40–79 → Médio
   - Índice < 40 → Baixo
@@ -258,33 +353,69 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - **Resultado Esperado**: Se inválido, rejeitar com mensagem
 
 ### RN06A — Validação de CPF
-- **Regra**: CPF deve ser válido (algoritmo oficial dos dígitos verificadores) e único por lead
+- **Regra**: CPF deve ser válido (algoritmo oficial dos dígitos verificadores) e único por corretor
 - **Condição**: Campo "CPF" na entrada
-- **Resultado Esperado**: Se inválido ou duplicado, rejeitar com mensagem de erro específica
+- **Resultado Esperado**: Se inválido ou duplicado para o mesmo corretor, rejeitar com mensagem de erro específica
 
-### RN07 — Validação de Telefone
+### RN07A — Validação de Telefone
 - **Regra**: Telefone deve estar em formato válido
 - **Condição**: Campo "Telefone" na entrada
 - **Resultado Esperado**: Se inválido, rejeitar com mensagem
+
+### RN07 — Validação de Senha
+- **Regra**: Senha deve ter mínimo 8 caracteres
+- **Resultado Esperado**: Armazenada como hash bcrypt, nunca em texto plano
 
 ### RN08 — Imutabilidade de Índice
 - **Regra**: Índice não deve ser recalculado automaticamente após cadastro
 - **Condição**: Lead já cadastrado
 - **Resultado Esperado**: Índice permanece constante até edição manual de dados
 
+### RN09 — Rate Limiting
+- **Regra**: Máximo de 10 requisições por minuto por IP nas rotas de criação
+- **Resultado Esperado**: HTTP 429 com header `Retry-After` ao exceder limite
+
 ---
 
 ## 6. Fluxos Funcionais
 
-### 6.1 Fluxo Principal — Cadastro e Qualificação
+### 6.1 Fluxo de Cadastro de Corretor
 
 ```
-1. Corretor acessa página de cadastro
+1. Usuário acessa /auth/register
+2. Preenche formulário (nome, e-mail, telefone, senha)
+3. Sistema valida entrada (Zod)
+4. Sistema verifica unicidade do e-mail
+5. Sistema cria hash da senha (bcrypt)
+6. Corretor é persistido no banco
+7. Usuário é redirecionado para /auth/login
+```
+
+---
+
+### 6.2 Fluxo de Login
+
+```
+1. Corretor acessa /auth/login
+2. Preenche e-mail e senha
+3. NextAuth.js valida credenciais
+4. Sistema busca corretor por e-mail
+5. Sistema compara senha com hash (bcrypt)
+6. Token JWT é gerado com corretor_id
+7. Corretor é redirecionado para /leads
+```
+
+---
+
+### 6.3 Fluxo Principal — Cadastro e Qualificação de Lead
+
+```
+1. Corretor autenticado acessa /leads/novo
 2. Preenche formulário com dados do lead
 3. Sistema valida entrada (Zod)
 4. Sistema calcula índice de qualificação
 5. Sistema classifica prioridade
-6. Lead é persistido no banco
+6. Lead é persistido com corretor_id da sessão
 7. Corretor é redirecionado para lista de leads
 8. Lead aparece na posição correta (ordenado por índice)
 9. Corretor visualiza classificação visual (badge)
@@ -294,7 +425,7 @@ Visualização completa dos dados de um lead individual com histórico e ações
 
 ---
 
-### 6.2 Fluxo Alternativo — Edição de Lead
+### 6.4 Fluxo Alternativo — Edição de Lead
 
 ```
 1. Corretor acessa lista de leads
@@ -312,7 +443,7 @@ Visualização completa dos dados de um lead individual com histórico e ações
 
 ---
 
-### 6.3 Fluxo Alternativo — Visualização de Detalhes
+### 6.5 Fluxo Alternativo — Visualização de Detalhes
 
 ```
 1. Corretor acessa lista de leads
@@ -328,7 +459,7 @@ Visualização completa dos dados de um lead individual com histórico e ações
 
 ---
 
-### 6.4 Fluxo Alternativo — Deleção de Lead
+### 6.6 Fluxo Alternativo — Deleção de Lead
 
 ```
 1. Corretor acessa detalhes do lead
@@ -342,15 +473,23 @@ Visualização completa dos dados de um lead individual com histórico e ações
 
 ---
 
-### 6.5 Exceções
+### 6.7 Exceções
+
+**Exceção E00 — Acesso Não Autenticado**
+- Condição: Usuário tenta acessar `/leads/*` sem sessão
+- Ação: Redirecionamento para `/auth/login`
+
+**Exceção E00A — E-mail de Corretor Duplicado**
+- Condição: E-mail já cadastrado no sistema
+- Ação: Erro genérico "Dados já cadastrados. Tente fazer login ou use outro endereço."
 
 **Exceção E01 — Valor do Imóvel Inválido**
 - Condição: Usuário tenta cadastrar com valor ≤ 0
 - Ação: Sistema exibe erro "Valor do imóvel deve ser maior que zero"
 - Resultado: Cadastro não é persistido
 
-**Exceção E02 — CPF Duplicado**
-- Condição: CPF já existe no banco
+**Exceção E02 — CPF Duplicado por Corretor**
+- Condição: CPF já existe para o mesmo corretor
 - Ação: Sistema exibe erro "Este CPF já está cadastrado"
 - Resultado: Cadastro não é persistido
 
@@ -364,12 +503,28 @@ Visualização completa dos dados de um lead individual com histórico e ações
 - Ação: Sistema exibe erro genérico "Erro ao salvar. Tente novamente"
 - Resultado: Usuário pode tentar novamente
 
+**Exceção E04 — Rate Limit Excedido**
+- Condição: Mais de 10 requisições/minuto do mesmo IP
+- Ação: HTTP 429 com `Retry-After` em segundos
+
 ---
 
 ## 7. Requisitos Funcionais
 
+### RF00 — Cadastro de Corretor
+O sistema deve permitir que um novo corretor crie uma conta com nome, e-mail, telefone (opcional) e senha.
+
+### RF00A — Login de Corretor
+O sistema deve autenticar corretores com e-mail e senha, gerando sessão JWT.
+
+### RF00B — Logout de Corretor
+O sistema deve permitir encerrar a sessão de forma segura.
+
+### RF00C — Proteção de Rotas
+O sistema deve redirecionar usuários não autenticados para `/auth/login` ao tentar acessar `/leads/*`.
+
 ### RF01 — Cadastro de Lead
-O sistema deve permitir que o usuário cadastre um novo lead com os campos: Nome, E-mail, CPF, Telefone, Valor do Imóvel e Renda Mensal.
+O sistema deve permitir que o corretor autenticado cadastre um novo lead com os campos: Nome, E-mail, CPF, Telefone, Valor do Imóvel e Renda Mensal.
 
 ### RF02 — Validação de Entrada
 O sistema deve validar todos os campos de entrada antes de persistir, rejeitando dados inválidos com mensagens claras.
@@ -384,7 +539,7 @@ O sistema deve calcular automaticamente o índice de qualificação usando a fó
 O sistema deve classificar o lead em Alto (≥80), Médio (40–79) ou Baixo (<40) baseado no índice.
 
 ### RF05 — Listagem de Leads
-O sistema deve exibir todos os leads ordenados por índice em ordem decrescente.
+O sistema deve exibir apenas os leads do corretor autenticado, ordenados por índice em ordem decrescente.
 
 ### RF06 — Visualização de Detalhes
 O sistema deve permitir visualizar detalhes completos de um lead individual, incluindo índice e explicação da fórmula.
@@ -404,6 +559,12 @@ O sistema deve tratar erros de validação, persistência e negócio com mensage
 ### RF11 — Formatação e Máscaras
 O sistema deve aplicar máscaras automáticas durante a digitação para CPF, telefone e valores monetários, melhorando a experiência do usuário.
 
+### RF12 — Isolamento de Dados
+O sistema deve garantir que um corretor não possa acessar, editar ou excluir leads de outro corretor.
+
+### RF13 — Rate Limiting
+O sistema deve limitar a 10 requisições por minuto por IP nas rotas de criação de leads.
+
 ---
 
 ## 8. Requisitos Não Funcionais
@@ -411,11 +572,13 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 ### RNF01 — Performance
 - Cadastro de lead: < 500ms
 - Cálculo de índice: < 100ms
-- Listagem de leads: < 1s (até 1000 leads)
+- Listagem de leads: < 1s (até 1000 leads por corretor)
 - Detalhes de lead: < 300ms
+- Login: < 500ms
 
 ### RNF02 — Escalabilidade
-- Suportar até 10.000 leads sem degradação significativa
+- Suportar múltiplos corretores com isolamento de dados
+- Suportar até 10.000 leads por corretor sem degradação significativa
 - Arquitetura preparada para migração futura para API dedicada
 - Banco de dados com índices otimizados
 
@@ -425,14 +588,16 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 - Sem perda de dados em caso de falha
 
 ### RNF04 — Segurança
+- Senhas armazenadas como hash bcrypt (10 rounds)
+- Sessões JWT com expiração de 7 dias
+- Rate limiting nas rotas de criação
 - Validação de entrada contra injeção SQL (Prisma)
-- Sem armazenamento de senhas (v1 sem autenticação)
 - HTTPS obrigatório em produção
 - Dados sensíveis (telefone, e-mail) não expostos em logs
 
 ### RNF05 — Usabilidade
 - Interface intuitiva sem curva de aprendizado
-- Feedback visual claro (cores, badges, mensagens)
+- Feedback visual claro (cores, badges, mensagens de erro)
 - Responsivo em desktop (mobile futuro)
 - Tempo de resposta perceptível (< 2s)
 
@@ -462,10 +627,10 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 **Responsabilidade**: Receber requisições HTTP e retornar respostas
 
 **Componentes**
-- Rotas de página (leads list, lead detail)
+- Rotas de página (leads list, lead detail, auth)
 - Rotas de API (POST /leads, GET /leads, etc.)
 - Server Actions para operações
-- Componentes React (formulário, card, badge)
+- Componentes React (formulário, card, badge, login, register)
 
 **Integrações**
 - Recebe dados do usuário
@@ -493,8 +658,9 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 **Responsabilidade**: Orquestrar casos de uso
 
 **Componentes**
+- CreateCorretor: cadastro de corretor
 - CreateLead: cadastro de novo lead
-- ListLeads: listagem com ordenação
+- ListLeads: listagem com ordenação (filtrada por corretor)
 - RankLeads: ranking por índice
 - UpdateLead: edição de lead
 - DeleteLead: deleção de lead
@@ -511,7 +677,8 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 
 **Componentes**
 - PrismaClient (singleton)
-- LeadRepository (CRUD)
+- LeadRepository (CRUD com filtro por corretor_id)
+- CorretorRepository (busca por e-mail, criação)
 - Futuras integrações (APIs, WhatsApp)
 
 **Características**
@@ -526,6 +693,7 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 
 **Componentes**
 - LeadSchema: validação de lead
+- RegisterSchema / LoginSchema: validação de corretor
 - Schemas específicos por operação
 
 **Características**
@@ -535,7 +703,49 @@ O sistema deve aplicar máscaras automáticas durante a digitação para CPF, te
 
 ---
 
-### 9.2 Fluxo de Dados
+### 9.2 Modelo de Dados
+
+```
+Corretor
+├── id (cuid)
+├── nome
+├── email (único)
+├── password_hash
+├── telefone (opcional)
+├── created_at
+└── leads[] → Lead
+
+Lead
+├── id (cuid)
+├── nome
+├── email
+├── cpf (único por corretor)
+├── telefone
+├── valor_imovel
+├── renda_mensal
+├── score
+├── priority (Alto | Medio | Baixo | NaoClassificado)
+├── created_at
+└── corretor_id → Corretor
+```
+
+### 9.2 Fluxo de Autenticação
+
+```
+Usuário (UI)
+    ↓
+proxy.ts (verificação de sessão)
+    ↓
+NextAuth.js (JWT)
+    ↓
+corretor_repository (busca por e-mail)
+    ↓
+bcryptjs (comparação de hash)
+    ↓
+Sessão com corretor_id
+```
+
+### 9.3 Fluxo de Dados de Lead
 
 ```
 Usuário (UI)
@@ -546,14 +756,12 @@ services/ (CreateLead, ListLeads, etc.)
     ↓
 domain/ (Regras de negócio)
     ↓
-infra/ (LeadRepository)
+infra/ (LeadRepository com corretor_id)
     ↓
 PostgreSQL (Persistência)
 ```
 
----
-
-### 9.3 Comunicação Entre Componentes
+### 9.4 Comunicação Entre Componentes
 
 | De | Para | Tipo | Dados |
 |---|---|---|---|
@@ -567,43 +775,52 @@ PostgreSQL (Persistência)
 
 ## 10. Critérios de Sucesso
 
-### Métrica 1 — Tempo de Qualificação
+### Métrica 1 — Tempo de Cadastro de Corretor
+- **Objetivo**: Onboarding rápido
+- **Meta**: < 2 minutos (incluindo preenchimento)
+- **Medição**: Cronômetro em teste de usuário
+
+### Métrica 2 — Tempo de Qualificação de Lead
 - **Objetivo**: Reduzir tempo de qualificação manual
 - **Métrica**: Tempo de cadastro + cálculo + visualização
 - **Meta**: < 1 minuto (incluindo preenchimento)
 - **Medição**: Cronômetro em teste de usuário
 
-### Métrica 2 — Eficiência em Vendas
+### Métrica 3 — Eficiência em Vendas
 - **Objetivo**: Aumentar foco em leads qualificados
 - **Métrica**: % de tempo gasto com leads de alta prioridade
 - **Meta**: ↑ 70% vs. baseline
 - **Medição**: Feedback do usuário, análise de uso
 
-### Métrica 3 — Taxa de Conversão
+### Métrica 4 — Taxa de Conversão
 - **Objetivo**: Melhorar taxa de fechamento
 - **Métrica**: % de leads contatados que resultam em venda
 - **Meta**: ↑ 40% vs. baseline
 - **Medição**: Feedback do usuário após 30 dias
 
-### Métrica 4 — Redução de Leads Não Qualificados
+### Métrica 5 — Redução de Leads Não Qualificados
 - **Objetivo**: Evitar contato com clientes sem capacidade
 - **Métrica**: % de leads com índice < 40 que não resultam em venda
 - **Meta**: ↓ 50% vs. baseline
 - **Medição**: Análise de dados após 30 dias
 
-### Métrica 5 — Satisfação do Usuário
+### Métrica 6 — Satisfação do Usuário
 - **Objetivo**: Validar usabilidade e valor
 - **Métrica**: NPS (Net Promoter Score)
 - **Meta**: ≥ 50
 - **Medição**: Survey após 2 semanas de uso
 
-### Métrica 6 — Performance
+### Métrica 7 — Segurança
+- **Objetivo**: Garantir isolamento de dados
+- **Meta**: Zero incidentes de acesso não autorizado a dados de outros corretores
+
+### Métrica 8 — Performance
 - **Objetivo**: Garantir responsividade
 - **Métrica**: Tempo de resposta de operações críticas
-- **Meta**: Cadastro < 500ms, Listagem < 1s
+- **Meta**: Login < 500ms, Cadastro < 500ms, Listagem < 1s
 - **Medição**: Monitoramento de logs
 
-### Métrica 7 — Confiabilidade
+### Métrica 9 — Confiabilidade
 - **Objetivo**: Garantir disponibilidade
 - **Métrica**: Uptime
 - **Meta**: ≥ 99%
@@ -624,9 +841,8 @@ PostgreSQL (Persistência)
 **Mitigação**: Usar `npx next typegen` para gerar tipos
 
 ### Restrição Técnica RT03
-**Descrição**: Sem autenticação em v1
-**Impacto**: Qualquer pessoa pode acessar e modificar dados
-**Mitigação**: Implementar autenticação em v2
+**Descrição**: `middleware.ts` renomeado para `proxy.ts` no Next.js 16
+**Mitigação**: Função exportada como `proxy`, não `middleware`
 
 ### Restrição Operacional RO01
 **Descrição**: Sem integração com portais imobiliários em v1
@@ -636,6 +852,10 @@ PostgreSQL (Persistência)
 ### Restrição Operacional RO02
 **Descrição**: Sem automação de contato (WhatsApp/e-mail) em v1
 **Impacto**: Corretor deve contatar manualmente
+**Mitigação**: Planejado para v2
+
+### Restrição Operacional RO03
+**Descrição**: Sem recuperação de senha por e-mail em v1
 **Mitigação**: Planejado para v2
 
 ---
@@ -652,12 +872,15 @@ A fórmula de qualificação (30% de comprometimento máximo) é válida para o 
 Leads com índice ≥ 80 têm taxa de conversão significativamente maior que leads com índice < 40.
 
 ### Premissa P04
-Corretores preferem interface simples a funcionalidades complexas em v1.
+Cada corretor gerencia sua própria base de leads de forma independente.
 
 ### Premissa P05
-PostgreSQL é suficiente para volume de dados esperado em v1 (até 10.000 leads).
+Corretores preferem interface simples a funcionalidades complexas em v1.
 
 ### Premissa P06
+PostgreSQL é suficiente para volume de dados esperado em v1 (até 10.000 leads por corretor).
+
+### Premissa P07
 Usuários têm acesso a navegador moderno com JavaScript habilitado.
 
 ---
@@ -677,7 +900,7 @@ Usuários têm acesso a navegador moderno com JavaScript habilitado.
 **Mitigação**: Adicionar validação e dicas de preenchimento; educação do usuário
 
 ### Risco Técnico RT01
-**Descrição**: Performance degrada com > 10.000 leads
+**Descrição**: Performance degrada com > 10.000 leads por corretor
 **Probabilidade**: Baixa
 **Impacto**: Alto (produto fica inutilizável)
 **Mitigação**: Implementar paginação; otimizar queries; monitorar performance
@@ -687,6 +910,12 @@ Usuários têm acesso a navegador moderno com JavaScript habilitado.
 **Probabilidade**: Baixa
 **Impacto**: Crítico (perda total de dados)
 **Mitigação**: Backup automático; replicação de BD; plano de recuperação
+
+### Risco de Segurança RS01
+**Descrição**: Vazamento de dados entre corretores por falha de isolamento
+**Probabilidade**: Baixa
+**Impacto**: Crítico (violação de privacidade)
+**Mitigação**: `corretor_id` sempre verificado nas queries; testes de isolamento
 
 ### Risco Operacional RO01
 **Descrição**: Baixa adoção por falta de integração com fluxo existente
@@ -707,11 +936,15 @@ Usuários têm acesso a navegador moderno com JavaScript habilitado.
 | Termo | Definição |
 |-------|-----------|
 | Lead | Potencial cliente interessado em imóvel |
+| Corretor | Profissional que vende imóveis e usa a plataforma |
 | Índice de Qualificação | Percentual de comprometimento de renda com imóvel |
 | Prioridade | Classificação de capacidade financeira (Alto/Médio/Baixo) |
-| Corretor | Profissional que vende imóveis |
 | Comprometimento | % da renda mensal necessária para financiar imóvel |
 | Financiamento | Empréstimo para compra de imóvel |
+| JWT | JSON Web Token — mecanismo de autenticação stateless |
+| Hash | Representação criptográfica irreversível de uma senha |
+| Rate Limiting | Controle de frequência de requisições por IP |
+| Isolamento | Garantia de que cada corretor acessa apenas seus dados |
 
 ---
 
@@ -719,4 +952,5 @@ Usuários têm acesso a navegador moderno com JavaScript habilitado.
 
 - Padrão bancário de comprometimento máximo: 30% da renda mensal
 - Fórmula de qualificação: (Renda × 12 × 5) ÷ Valor do Imóvel × 100
+- NextAuth.js v5: https://authjs.dev/
 - Steering files: tech.md, structure.md, product.md, nextjs16.md, gitflow.md

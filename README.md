@@ -31,6 +31,10 @@ Plataforma que centraliza e qualifica automaticamente leads imobiliários atrav�
 - **PostgreSQL** — Banco de dados relacional
 - **Prisma 7.8.0** — ORM com driver adapter para PostgreSQL
 
+### Autenticação
+- **NextAuth.js v5** — Autenticação com sessão JWT
+- **bcryptjs** — Hash seguro de senhas
+
 ### Validação & Estilização
 - **Zod 3.23.8** — Validação de schemas
 - **Tailwind CSS 4** — Estilização utilitária
@@ -48,7 +52,16 @@ Plataforma que centraliza e qualifica automaticamente leads imobiliários atrav�
 
 ## ✨ Funcionalidades
 
+### Autenticação de Corretores
+- **Cadastro de Corretor** — Registro com nome, e-mail, telefone (opcional) e senha
+- **Login** — Autenticação com e-mail e senha via JWT
+- **Logout** — Encerramento seguro de sessão
+- **Proteção de Rotas** — Acesso a leads restrito a corretores autenticados
+- **Rate Limiting** — Proteção contra abuso nas rotas de criação
+
+### Gestão de Leads
 - **Cadastro de Leads** — Formulário com validação de CPF, e-mail e dados financeiros
+- **Isolamento por Corretor** — Cada corretor vê apenas seus próprios leads
 - **Cálculo Automático de Índice** — Fórmula: `(Renda × 12 × 5) ÷ Valor do Imóvel × 100`
 - **Classificação Visual** — 🟢 Alto (≥80), 🟡 Médio (40-79), 🔴 Baixo (<40)
 - **Lista Priorizada** — Leads ordenados por capacidade de financiamento
@@ -56,7 +69,7 @@ Plataforma que centraliza e qualifica automaticamente leads imobiliários atrav�
 - **Edição de Leads** — Atualização com recálculo automático de score
 - **Exclusão de Leads** — Remoção segura com confirmação
 - **API REST** — 5 endpoints documentados com Swagger UI
-- **Validação Robusta** — CPF único, e-mail válido, valores positivos
+- **Validação Robusta** — CPF único por corretor, e-mail válido, valores positivos
 
 ---
 
@@ -66,22 +79,32 @@ Plataforma que centraliza e qualifica automaticamente leads imobiliários atrav�
 src/
 ├── app/                    # Next.js App Router (rotas e UI)
 │   ├── api/               # Route Handlers (API REST)
+│   │   ├── auth/          # NextAuth.js handlers
+│   │   │   └── [...nextauth]/
 │   │   ├── leads/         # GET/POST /api/leads
 │   │   │   └── [id]/      # GET/PUT/DELETE /api/leads/{id}
 │   │   ├── openapi.json/  # GET /api/openapi.json
 │   │   └── docs/          # GET /api/docs (Swagger UI)
-│   └── leads/             # Páginas de leads
+│   ├── auth/              # Páginas de autenticação
+│   │   ├── login/         # Página de login
+│   │   ├── register/      # Página de cadastro de corretor
+│   │   └── actions.ts     # Server Actions de autenticação
+│   └── leads/             # Páginas de leads (protegidas)
 │       ├── page.tsx       # Lista de leads
 │       ├── [id]/          # Detalhes do lead
 │       ├── [id]/edit/     # Edição do lead
-│       ├── new/           # Cadastro de novo lead
-│       └── actions.ts     # Server Actions
+│       ├── novo/          # Cadastro de novo lead
+│       └── actions.ts     # Server Actions de leads
 │
 ├── components/            # Componentes React reutilizáveis
 │   ├── lead_card.tsx      # Card de lead
-│   ├── lead_form.tsx      # Formulário
+│   ├── lead_form.tsx      # Formulário de lead
+│   ├── login_form.tsx     # Formulário de login
+│   ├── register_form.tsx  # Formulário de cadastro de corretor
+│   ├── logout_button.tsx  # Botão de logout com nome do corretor
 │   ├── priority_badge.tsx # Badge de classificação
-│   └── search_filter.tsx  # Filtro de busca
+│   ├── search_filter.tsx  # Filtro de busca
+│   └── sort_selector.tsx  # Seletor de ordenação
 │
 ├── domain/               # Regras de negócio puras
 │   ├── entities/         # Estruturas de dados
@@ -90,8 +113,9 @@ src/
 │       └── calculate_lead_score.ts # Cálculo do índice
 │
 ├── services/             # Casos de uso da aplicação
-│   ├── create_lead.ts    # Cadastro
-│   ├── list_leads.ts     # Listagem
+│   ├── create_corretor.ts # Cadastro de corretor
+│   ├── create_lead.ts    # Cadastro de lead
+│   ├── list_leads.ts     # Listagem (filtrada por corretor)
 │   ├── update_lead.ts    # Edição
 │   ├── delete_lead.ts    # Exclusão
 │   └── rank_leads.ts     # Ranking
@@ -100,15 +124,19 @@ src/
 │   ├── db/              # Configuração de banco
 │   │   └── prisma.ts    # Singleton do PrismaClient
 │   └── repositories/    # Operações CRUD
-│       └── lead_repository.ts
+│       ├── lead_repository.ts
+│       └── corretor_repository.ts
 │
 ├── schemas/             # Validação com Zod
-│   └── lead.schema.ts   # Schema de validação
+│   ├── lead.schema.ts   # Schema de validação de lead
+│   └── corretor.schema.ts # Schema de validação de corretor
 │
 ├── types/               # Tipos TypeScript
-│   └── lead.ts          # Interfaces do domínio
+│   ├── lead.ts          # Interfaces do domínio de lead
+│   └── corretor.ts      # Interfaces do domínio de corretor
 │
 ├── lib/                 # Utilitários
+│   ├── auth.ts          # Configuração NextAuth.js
 │   ├── formatters.ts    # Formatação de dados
 │   └── openapi/         # Configuração OpenAPI
 │
@@ -150,6 +178,8 @@ cp .env.example .env
 Exemplo de `.env`:
 ```
 DATABASE_URL="postgresql://user:password@localhost:5432/leadimobi"
+NEXTAUTH_SECRET="sua-chave-secreta-aqui"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 4. **Configure o banco de dados**
@@ -164,6 +194,8 @@ npm run dev
 ```
 
 A aplicação estará disponível em `http://localhost:3000`.
+
+> Ao acessar pela primeira vez, você será redirecionado para `/auth/login`. Crie uma conta em `/auth/register` para começar.
 
 ---
 
@@ -201,13 +233,44 @@ npm run lint:fix       # Corrige automaticamente
 
 ---
 
+## 🔐 Fluxo de Autenticação
+
+### Cadastro de Corretor
+```
+POST /auth/register
+```
+Campos: `nome`, `email`, `telefone` (opcional), `senha` (mín. 8 caracteres)
+
+Após o cadastro, o corretor é redirecionado para a página de login.
+
+### Login
+```
+POST /auth/login
+```
+Campos: `email`, `senha`
+
+Após o login, o corretor é redirecionado para `/leads` com uma sessão JWT válida por 7 dias.
+
+### Proteção de Rotas
+
+| Rota | Autenticado | Não Autenticado |
+|------|-------------|-----------------|
+| `/leads/*` | ✅ Acesso permitido | 🔄 Redireciona para `/auth/login` |
+| `/auth/*` | 🔄 Redireciona para `/leads` | ✅ Acesso permitido |
+
+### Isolamento de Dados
+
+Cada corretor acessa **apenas seus próprios leads**. O `corretor_id` é vinculado automaticamente a cada lead no momento do cadastro, garantindo isolamento total entre contas.
+
+---
+
 ## 🔌 Endpoints Principais
 
 ### Listar Leads
 ```
 GET /api/leads
 ```
-Retorna todos os leads ordenados por score (decrescente).
+Retorna todos os leads do corretor autenticado, ordenados por score (decrescente).
 
 **Resposta (200)**:
 ```json
@@ -237,7 +300,7 @@ Retorna todos os leads ordenados por score (decrescente).
 ```
 POST /api/leads
 ```
-Cria um novo lead com validação automática.
+Cria um novo lead vinculado ao corretor autenticado.
 
 **Corpo da Requisição**:
 ```json
@@ -287,26 +350,7 @@ Cria um novo lead com validação automática.
 ```
 GET /api/leads/{id}
 ```
-Retorna detalhes de um lead específico.
-
-**Resposta (200)**:
-```json
-{
-  "success": true,
-  "data": {
-    "id": "uuid",
-    "nome": "Ana Costa",
-    "email": "ana@example.com",
-    "cpf": "123.456.789-00",
-    "telefone": "(11) 98765-4321",
-    "valor_imovel": 400000,
-    "renda_mensal": 12000,
-    "score": 90.00,
-    "priority": "Alto",
-    "created_at": "2026-05-19T10:30:00Z"
-  }
-}
-```
+Retorna detalhes de um lead específico (somente do corretor autenticado).
 
 ---
 
@@ -361,13 +405,15 @@ Remove um lead do sistema.
 
 **Listar leads**:
 ```bash
-curl -X GET http://localhost:3000/api/leads
+curl -X GET http://localhost:3000/api/leads \
+  -H "Cookie: next-auth.session-token=<seu-token>"
 ```
 
 **Criar lead**:
 ```bash
 curl -X POST http://localhost:3000/api/leads \
   -H "Content-Type: application/json" \
+  -H "Cookie: next-auth.session-token=<seu-token>" \
   -d '{
     "nome": "João Silva",
     "email": "joao@example.com",
@@ -380,13 +426,15 @@ curl -X POST http://localhost:3000/api/leads \
 
 **Obter lead**:
 ```bash
-curl -X GET http://localhost:3000/api/leads/uuid-do-lead
+curl -X GET http://localhost:3000/api/leads/uuid-do-lead \
+  -H "Cookie: next-auth.session-token=<seu-token>"
 ```
 
 **Atualizar lead**:
 ```bash
 curl -X PUT http://localhost:3000/api/leads/uuid-do-lead \
   -H "Content-Type: application/json" \
+  -H "Cookie: next-auth.session-token=<seu-token>" \
   -d '{
     "renda_mensal": 7000
   }'
@@ -394,7 +442,8 @@ curl -X PUT http://localhost:3000/api/leads/uuid-do-lead \
 
 **Excluir lead**:
 ```bash
-curl -X DELETE http://localhost:3000/api/leads/uuid-do-lead
+curl -X DELETE http://localhost:3000/api/leads/uuid-do-lead \
+  -H "Cookie: next-auth.session-token=<seu-token>"
 ```
 
 ---
@@ -428,7 +477,10 @@ console.log(data);
 ```python
 import requests
 
-response = requests.get('http://localhost:3000/api/leads')
+response = requests.get(
+    'http://localhost:3000/api/leads',
+    cookies={'next-auth.session-token': '<seu-token>'}
+)
 leads = response.json()
 print(leads)
 ```
@@ -446,7 +498,11 @@ payload = {
     'renda_mensal': 6000
 }
 
-response = requests.post('http://localhost:3000/api/leads', json=payload)
+response = requests.post(
+    'http://localhost:3000/api/leads',
+    json=payload,
+    cookies={'next-auth.session-token': '<seu-token>'}
+)
 print(response.json())
 ```
 
@@ -459,12 +515,6 @@ Acesse a documentação completa da API em:
 ```
 http://localhost:3000/api/docs
 ```
-
-Lá você pode:
-- Explorar todos os endpoints
-- Ver schemas de requisição e resposta
-- Testar requisições diretamente no navegador
-- Copiar exemplos de código
 
 A especificação OpenAPI 3.0.3 em JSON está disponível em:
 ```
@@ -480,17 +530,6 @@ O índice de qualificação é calculado baseado em padrão bancário consolidad
 ```
 Índice = (Renda Mensal × 12 × 5) ÷ Valor do Imóvel × 100
 ```
-
-**Explicação**:
-- **Renda Mensal × 12** = Renda anual
-- **× 5** = Capacidade de financiamento em 5 anos
-- **÷ Valor do Imóvel** = Percentual de comprometimento
-- **× 100** = Escala 0-100+
-
-**Exemplo**:
-- Renda: R$ 12.000/mês
-- Imóvel: R$ 400.000
-- Índice: (12.000 × 12 × 5) ÷ 400.000 × 100 = **90,00**
 
 **Classificação**:
 - **Alto** (≥ 80) — Alta capacidade de financiamento
@@ -517,6 +556,14 @@ infra/ (Repositórios)
     ↓
 PostgreSQL (Persistência)
 ```
+
+### Modelo de Dados
+
+```
+Corretor (1) ──── (N) Lead
+```
+
+Cada corretor possui seus próprios leads. O CPF de um lead é único por corretor (não globalmente), permitindo que dois corretores cadastrem o mesmo cliente.
 
 ### Princípios
 
@@ -563,9 +610,16 @@ npm run test:watch
 
 ## 📋 Regras de Negócio
 
-### Validações
+### Validações de Corretor
 
-- **CPF** — Deve ser válido (algoritmo oficial) e único
+- **Nome** — Mínimo 2, máximo 100 caracteres
+- **E-mail** — Deve ser válido e único no sistema
+- **Telefone** — Opcional; se informado, deve ser válido
+- **Senha** — Mínimo 8 caracteres; armazenada como hash bcrypt
+
+### Validações de Lead
+
+- **CPF** — Deve ser válido (algoritmo oficial) e único por corretor
 - **E-mail** — Deve estar em formato válido
 - **Telefone** — Deve estar em formato válido
 - **Valor do Imóvel** — Deve ser maior que zero
@@ -582,22 +636,44 @@ npm run test:watch
 - Padrão: Leads ordenados por score decrescente (maior para menor)
 - Leads com score inválido aparecem no final
 
+### Isolamento de Dados
+
+- Leads são sempre vinculados ao `corretor_id` da sessão ativa
+- Operações de leitura, edição e exclusão verificam o `corretor_id` antes de executar
+- Um corretor não pode acessar leads de outro corretor
+
 ---
 
-## 🔒 Observações Finais
+## 🔒 Segurança
+
+- **Autenticação JWT** — Sessões com expiração de 7 dias
+- **Hash de Senhas** — bcrypt com salt de 10 rounds
+- **Proteção de Rotas** — `proxy.ts` intercepta requisições não autenticadas
+- **Rate Limiting** — Máximo de 10 requisições/minuto por IP nas rotas de criação
+- **Validação de Entrada** — Zod previne dados malformados
+- **Isolamento de Dados** — Cada corretor acessa apenas seus próprios leads
+- **Sem SQL Injection** — Prisma usa queries parametrizadas
+
+---
+
+## � Observações Finais
 
 ### Segurança
 
-- Validação de entrada contra injeção SQL (Prisma)
-- Tipagem forte reduz bugs
-- Sem armazenamento de senhas (v1 sem autenticação)
+- **Autenticação JWT** — Sessões com expiração de 7 dias
+- **Hash de Senhas** — bcrypt com salt de 10 rounds
+- **Proteção de Rotas** — `proxy.ts` intercepta requisições não autenticadas
+- **Rate Limiting** — Máximo de 10 requisições/minuto por IP nas rotas de criação
+- **Validação de Entrada** — Zod previne dados malformados
+- **Isolamento de Dados** — Cada corretor acessa apenas seus próprios leads
+- **Sem SQL Injection** — Prisma usa queries parametrizadas
 - HTTPS obrigatório em produção
 
 ### Performance
 
 - Cálculo de índice: < 100ms
-- Listagem de leads: < 1s (até 1000 leads)
-- Suporta até 10.000 leads sem degradação significativa
+- Listagem de leads: < 1s (até 1000 leads por corretor)
+- Suporta até 10.000 leads por corretor sem degradação significativa
 
 ### Escalabilidade
 
@@ -605,21 +681,26 @@ npm run test:watch
 - Banco de dados com índices otimizados
 - Separação clara entre frontend e backend
 
-### Roadmap
+---
+
+## �🗺️ Roadmap
 
 **v1.0** (Atual)
 - ✅ Cadastro e qualificação de leads
-- ✅ CRUD completo
+- ✅ CRUD completo de leads
+- ✅ Autenticação de corretores (login/cadastro/logout)
+- ✅ Isolamento de dados por corretor
 - ✅ API REST com Swagger UI
+- ✅ Rate limiting
 
 **v1.1** (Próximo)
 - 🔄 Filtros e busca avançada
 - 🔄 Exportação de dados
 
 **v2.0** (Futuro)
-- 📋 Autenticação
 - 📋 Integração com WhatsApp
 - 📋 Integração com portais imobiliários
+- 📋 Recuperação de senha por e-mail
 
 ---
 
@@ -629,7 +710,8 @@ Para dúvidas técnicas ou sugestões, abra uma issue no repositório.
 
 **Documentação adicional**:
 - `docs/PRD.md` — Product Requirements Document
-- `docs/uml_use_cases.md` — Casos de uso detalhados
+- `docs/INSTALLATION.md` — Guia de instalação detalhado
+- `docs/diagrams/` — Diagramas de casos de uso
 - `.kiro/steering/` — Regras técnicas e arquiteturais
 
 ---

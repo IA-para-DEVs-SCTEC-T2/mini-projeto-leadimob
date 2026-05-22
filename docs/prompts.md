@@ -4642,3 +4642,109 @@ A sessão focou na documentação visual do fluxo da aplicação:
 - ✅ Fluxo completo de requisição e resposta representado
 - ✅ Arquivo adicionado na pasta `docs/`
 - ✅ Sem invenção de serviços externos ou autenticação
+
+---
+
+# Prompts Utilizados na Sessão — Atualização da Documentação (README, INSTALLATION, PRD)
+
+Registro dos prompts utilizados durante a sessão de atualização dos arquivos de documentação do projeto na branch `feature/update-docs`.
+
+---
+
+## Prompt 72 — Abertura de Branch para Arquivos Modificados
+
+```
+Abra uma branch para esses arquivos modificados
+```
+
+**Como foi executado:**
+- Verificação dos arquivos modificados via `git status`
+- Identificados 3 arquivos: `README.md`, `docs/INSTALLATION.md`, `docs/PRD.md`
+- Criação da branch `feature/update-docs` a partir de `develop`
+- Resultado: ✅ Branch criada com sucesso
+
+---
+
+## Prompt 73 — Commit das Alterações
+
+```
+Commite com base no mini-projeto-leadimob/gitflow.md
+```
+
+**Como foi executado:**
+- Stage dos 3 arquivos modificados
+- Commit inicial: `docs: atualiza README, INSTALLATION e PRD`
+- Resultado: ✅ Commit `7bcae78` realizado
+
+---
+
+## Prompt 74 — Commit Detalhado Seguindo o Padrão GitFlow
+
+```
+O commit deve seguir o padrão de mini-projeto-leadimob/gitflow.md, com descrição do que foi feito, etc
+```
+
+**Como foi executado:**
+- Análise completa do diff dos 3 arquivos para entender o escopo das mudanças
+- Identificado tema central: implementação do sistema de autenticação de corretores
+- Amend no commit anterior com mensagem detalhada seguindo Conventional Commits:
+  - tipo: `docs`, escopo: `auth`
+  - corpo com bullet points por arquivo
+- Resultado: ✅ Commit `95d1cba` com mensagem completa
+
+**Mensagem de commit gerada:**
+```
+docs(auth): documenta sistema de autenticacao de corretores
+
+Atualiza README, INSTALLATION e PRD para refletir a implementacao
+completa do modulo de autenticacao com NextAuth.js v5.
+
+README.md:
+- Adiciona secao de autenticacao na stack (NextAuth.js v5, bcryptjs)
+- Documenta funcionalidades de cadastro, login, logout e protecao de rotas
+- Atualiza estrutura de pastas com novos modulos
+- Adiciona secao completa de fluxo de autenticacao com tabela de rotas
+- Documenta isolamento de dados por corretor
+- Atualiza exemplos de cURL com header de sessao JWT
+- Atualiza roadmap: autenticacao marcada como concluida na v1.0
+
+docs/INSTALLATION.md:
+- Adiciona instrucoes para configurar NEXTAUTH_SECRET e NEXTAUTH_URL
+- Documenta geracao de chave segura (openssl / PowerShell)
+- Atualiza validacao pos-instalacao com fluxo de cadastro e login
+- Adiciona erros comuns relacionados a autenticacao
+
+docs/PRD.md:
+- Adiciona funcionalidades 4.1-4.4 (cadastro, login, logout, protecao de rotas)
+- Adiciona regras de negocio RN00, RN00A, RN00B, RN07, RN09
+- Adiciona requisitos funcionais RF00-RF00C, RF12, RF13
+- Documenta modelo de dados Corretor (1) -> (N) Lead
+- Adiciona fluxos 6.1 (cadastro corretor) e 6.2 (login)
+```
+
+---
+
+## Prompt 75 — Adição dos Prompts da Sessão e Commit
+
+```
+[conteúdo do prompts.md colado pelo usuário]
+Faça o push, e adicione os prompts em c:\Users\betsa\Documents\mini-projeto-leadimob\docs\prompts.md
+```
+
+**Como foi executado:**
+- Adição dos prompts 72, 73, 74 e 75 ao arquivo `docs/prompts.md`
+- Commit seguindo Conventional Commits: `docs(prompts): adiciona prompts da sessao de atualizacao de documentacao`
+- Push para `origin/feature/update-docs`
+
+---
+
+## Contexto da Sessão — Atualização de Documentação
+
+| Item | Detalhe |
+|------|---------|
+| Branch | `feature/update-docs` |
+| Arquivos modificados | `README.md`, `docs/INSTALLATION.md`, `docs/PRD.md`, `docs/prompts.md` |
+| Tema central | Documentação do sistema de autenticação de corretores (NextAuth.js v5) |
+| Commits | 2 (`docs(auth)` + `docs(prompts)`) |
+| Prompts adicionados | 4 (Prompts 72–75) |
+| Próximo passo | Abrir PR de `feature/update-docs` → `develop` |
